@@ -1,4 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { loginUser } from "./authSlice";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 interface Data {
     id_number: string;
@@ -6,11 +9,29 @@ interface Data {
 }
 
 const LoginPage = () => {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const { errors, token } = useAppSelector((state) => state.auth)
+
     const [data, setData] = useState<Data>({
         id_number: '',
         password: ''
     })
+
+    useEffect(()=>{
+        console.log(token)
+        if(token){
+            navigate('/');
+        }
+    },[token])
+
+    useEffect(()=>{
+        console.log(errors)
+    },[])
+
     const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
+
 
     return (
         <>
@@ -24,18 +45,27 @@ const LoginPage = () => {
                         <div className="p-6 border border-neutral-400/30 shadow-xl rounded w-full md:w-96 bg-white/70">
                             <form className="w-full h-full flex flex-col items-center">
                                 <h1 className="font-bold text-2xl">LOGIN</h1>
+                                {
+                                    errors?.find((err) => err.path === 'all') && 
+                                    <div className="border border-red-600 bg-red-500/90 rounded text-white px-3 py-2 mt-3 ">
+                                        { errors?.find((err) => err.path === 'all')?.msg }
+                                    </div>
+                                }
                                 <div className="w-full h-full mt-6 text-gray-500">
                                     {/* ID Number Input */}
                                     <div className="relative w-full">
-                                        <input type="text" name="id_number" className="bg-[#EFF3F6] w-full h-10 pl-15.5 pr-3 border border-gray-300 shadow-inner rounded focus:outline-0"/>
+                                        <input type="text" onChange={(e)=>setData({...data, id_number: e.target.value})} value={data.id_number} className="bg-[#EFF3F6] w-full h-10 pl-15.5 pr-3 border border-gray-300 shadow-inner rounded focus:outline-0"/>
                                         <p className="absolute top-2 left-9">HII-</p>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="absolute left-1.5 top-1.5 h-7" viewBox="0 -960 960 960" fill="currentColor">
                                             <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/>
                                         </svg>
+                                        {
+                                            errors?.find((err) => err.path === 'id_number') && <p className="text-sm italic text-red-500">{errors?.find((err) => err.path === 'id_number')?.msg}</p>
+                                        }
                                     </div>
                                     {/* Password Input */}
                                     <div className="relative w-full mt-3">
-                                        <input type={(passwordVisibility) ? "text" : "password"} name="password" className="bg-[#EFF3F6] w-full h-10 pl-9 pr-9 border border-gray-300 shadow-inner rounded focus:outline-0"/>
+                                        <input type={(passwordVisibility) ? "text" : "password"} onChange={(e)=>setData({...data, password: e.target.value})} value={data.password} className="bg-[#EFF3F6] w-full h-10 pl-9 pr-9 border border-gray-300 shadow-inner rounded focus:outline-0"/>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="absolute left-2 top-2 h-6" viewBox="0 -960 960 960" fill="currentColor">
                                             <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z"/>
                                         </svg>
@@ -51,9 +81,12 @@ const LoginPage = () => {
                                             </svg>
                                         </button>
                                     </div>
+                                    {
+                                        errors?.find((err) => err.path === 'password') && <p className="text-sm italic text-red-500">{errors?.find((err) => err.path === 'password')?.msg}</p>
+                                    }
                                 </div>
                                 <div className="w-full mt-6">
-                                    <button type="button" className="w-full py-2 bg-gray-600 rounded text-white font-bold tracking-wide cursor-pointer">LOGIN</button>
+                                    <button onClick={()=>dispatch(loginUser(data))} type="button" className="w-full py-2 bg-gray-600 rounded text-white font-bold tracking-wide cursor-pointer">LOGIN</button>
                                 </div>
                             </form>
                         </div>
