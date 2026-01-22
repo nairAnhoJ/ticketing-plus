@@ -41,8 +41,8 @@ export const loginUser = createAsyncThunk<LoginResponse, LoginPayload, { rejectV
             user: null
         }
         if(response.data.status === 200){
-            const allowed_app = response.data.user.allowed_app.split(';');
-            if(allowed_app.includes('master-console')){
+            const allowed_app = response.data.user.allowed_app?.split(';');
+            if(allowed_app.includes('ticketing') || allowed_app.includes('all')){
                 res = {
                     token: response.data.token,
                     user: response.data.user
@@ -51,6 +51,7 @@ export const loginUser = createAsyncThunk<LoginResponse, LoginPayload, { rejectV
         }
         return res;
     } catch (err: any) {
+        console.log(err)
         if(err.response?.status === 401 || err.response?.status === 400){
             return thunkAPI.rejectWithValue(err.response.data.errors);
         }else{
@@ -75,6 +76,7 @@ const authSlice = createSlice({
             state.errors = null;
         })
         .addCase(loginUser.fulfilled, (state, action) => {
+            console.log(action.payload)
             state.loading = false;
 
             // redux store
