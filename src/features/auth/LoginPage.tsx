@@ -19,23 +19,29 @@ const LoginPage = () => {
         password: ''
     })
 
-    useEffect(()=>{
-        console.log(token)
+    function goFullscreen() {
+        const el = document.documentElement;
+
+        if (el.requestFullscreen) {
+            el.requestFullscreen();
+        }
+    }
+
+    useEffect(() => {
         if(token){
             navigate('/');
         }
     },[token])
 
-    useEffect(()=>{
-        console.log(errors)
-    },[])
-
     const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
 
+    const handleSubmit = () => {
+        dispatch(loginUser(data));
+    }
 
     return (
         <>
-            <div className="w-screen h-dvh overflow-hidden bg-[#CEDEF1] text-gray-700 flex flex-col">
+            <div onClick={goFullscreen} className="w-screen h-dvh overflow-hidden bg-[#CEDEF1] text-gray-700 flex flex-col">
                 <div className="w-15 h-15 p-3">
                     <img src="/Logo.png" alt="logo" className="h-full" />
                     {/* <p className="text-xl font-bold text-red-600/80">Ticketing+</p> */}
@@ -86,7 +92,7 @@ const LoginPage = () => {
                                     }
                                 </div>
                                 <div className="w-full mt-6">
-                                    <button onClick={()=>dispatch(loginUser(data))} type="button" className="w-full py-2 bg-gray-600 rounded text-white font-bold tracking-wide cursor-pointer">LOGIN</button>
+                                    <button onClick={handleSubmit} type="button" className="w-full py-2 bg-gray-600 rounded text-white font-bold tracking-wide cursor-pointer">LOGIN</button>
                                 </div>
                             </form>
                         </div>
