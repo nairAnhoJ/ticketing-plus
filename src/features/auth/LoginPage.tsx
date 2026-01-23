@@ -41,7 +41,7 @@ const LoginPage = () => {
 
     return (
         <>
-            <div onClick={goFullscreen} className="w-screen h-[100dvh] overflow-hidden bg-[#CEDEF1] text-gray-700 flex flex-col">
+            <div onClick={goFullscreen} className="w-screen h-dvh overflow-hidden bg-[#CEDEF1] text-gray-700 flex flex-col">
                 <div className="w-15 h-15 p-3">
                     <img src="/Logo.png" alt="logo" className="h-full" />
                     {/* <p className="text-xl font-bold text-red-600/80">Ticketing+</p> */}
