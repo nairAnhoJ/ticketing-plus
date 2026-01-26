@@ -15,7 +15,14 @@ const HomeIndex = () => {
 
     return (
         <>
-            <div className="lg:hidden w-screen h-screen overflow-hidden flex flex-col bg-[#212121]">
+            <div className="lg:hidden w-screen h-dvh overflow-hidden flex flex-col bg-[#212121]">
+                {/* Create new ticket button */}
+                <Link to='/ticket/create' className="bg-[#303030] absolute right-5 bottom-5 flex items-center justify-center pl-3.5 pr-2 py-3.5 rounded-full text-neutral-200">
+                    <h1 className="whitespace-nowrap">Write Ticket</h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6" viewBox="0 -960 960 960" fill="currentColor">
+                        <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                    </svg>
+                </Link>
                 <div className="w-full h-16 py-2.25 px-2.5 text-white flex justify-center items-end">
                     <div className="w-full h-full flex items-center">
                         <img src="/default-avatar.jpg" alt="avatar" className="h-full rounded-full border-2 border-neutral-500" />
@@ -39,12 +46,12 @@ const HomeIndex = () => {
                             }
                         </div>
                     </div>
-                    <Link to='/ticket/create' className=" whitespace-nowrap flex gap-x-1 bg-[#404040] px-3 py-1 pt-1.5 rounded-full text-neutral-300">
+                    {/* <Link to='/ticket/create' className=" whitespace-nowrap flex gap-x-1 bg-[#404040] px-3 py-1 pt-1.5 rounded-full text-neutral-300">
                         <h1 className="text-sm">Write Ticket</h1>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
                             <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
                         </svg>
-                    </Link>
+                    </Link> */}
                 </div>
                 <div className="w-full sm:w-112.5 h-15 flex gap-x-2 pb-2 px-2.5 mb-2 mx-auto">
                     <div className="bg-red-400 w-full rounded-xl flex flex-col justify-center items-center">
