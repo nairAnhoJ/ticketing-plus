@@ -76,11 +76,10 @@ const authSlice = createSlice({
             state.errors = null;
         })
         .addCase(loginUser.fulfilled, (state, action) => {
-            console.log(action.payload)
             state.loading = false;
 
             // redux store
-            state.user = action.payload.user;
+            state.user = JSON.stringify(action.payload.user);
             state.token = action.payload.token;
 
             // local store
