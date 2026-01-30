@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 const HomeIndex = () => {
     const { user } = useAppSelector((state) => state.auth);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<string>('all');
     const me = JSON.parse(user);
 
@@ -192,18 +193,18 @@ const HomeIndex = () => {
             </div>
 
             {/* FOR DESKTOP */}
-            <div className="hidden lg:flex w-screen h-dvh pl-16 bg-neutral-100 overflow-hidden">
+            <div className="hidden lg:flex w-screen bg-white h-dvh pl-16 overflow-hidden">
                 {/* TICKET LIST SECTION */}
                 <div className="h-full w-100 pt-6 border-r border-[#ccc] text-[#505050]">
                     {/* Header */}
                     <div className="flex items-center justify-between w-full h-10 px-6">
                         <h1 className="text-2xl font-bold">Inbox</h1>
-                        <Link to='/ticket/create' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
+                        {/* <Link to='/ticket/create' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
                             <h1 className="whitespace-nowrap text-xs">Write Ticket</h1>
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
                                 <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
                             </svg>
-                        </Link>
+                        </Link> */}
                     </div>
 
                     {/* SEARCH */}
@@ -238,7 +239,7 @@ const HomeIndex = () => {
                     {/* List */}
                     <div className="w-full h-[calc(100%-148px)] overflow-y-auto mt-3 pl-1">
                         {/* Row */}
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-b border-neutral-400 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-200 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
@@ -262,7 +263,7 @@ const HomeIndex = () => {
 
                             </div>
                         </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-b border-neutral-400 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-200 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
@@ -285,7 +286,7 @@ const HomeIndex = () => {
                                 </div>
                             </div>
                         </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-b border-neutral-400 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-200 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
@@ -308,7 +309,7 @@ const HomeIndex = () => {
                                 </div>
                             </div>
                         </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-b border-neutral-400 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-200 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
@@ -331,7 +332,7 @@ const HomeIndex = () => {
                                 </div>
                             </div>
                         </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-b border-neutral-400 p-2 pt-4 pb-2 flex items-center gap-x-2 bg-neutral-300 hover:bg-neutral-200 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-l-4 border-blue-500 p-2 pt-4 pb-2 flex items-center gap-x-2 bg-neutral-200/60 hover:bg-neutral-100 cursor-pointer">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
@@ -354,7 +355,7 @@ const HomeIndex = () => {
                                 </div>
                             </div>
                         </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-b border-neutral-400 p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-200 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
@@ -377,7 +378,7 @@ const HomeIndex = () => {
                                 </div>
                             </div>
                         </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-b border-neutral-400 p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-200 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
@@ -395,7 +396,7 @@ const HomeIndex = () => {
                                 <p className="text-xs truncate">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
                             </div>
                         </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-b border-neutral-400 p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-200 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
@@ -419,17 +420,17 @@ const HomeIndex = () => {
                 {/* BODY SECTION / RIGHT SIDE */}
                 <div className="h-dvh w-[calc(100%-400px)] flex-1">
                     {/* HEADER / COUNTER */}
-                    <div className="w-full h-34 flex items-center justify-center p-6 gap-x-6 text-[#161616] border-b border-[#ccc]">
-                        <div className="bg-red-500 h-full w-40 rounded-lg flex flex-col items-center justify-center">
-                            <h1 className="text-4xl leading-9 font-bold">999</h1>
-                            <p className="text-xs">Pending</p>
+                    <div className="w-full h-34 flex items-center justify-center p-6 gap-x-6 text-white border-b border-[#ccc]">
+                        <div className="bg-red-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
+                            <h1 className="text-5xl font-bold pb-1">299</h1>
+                            <p className="text-sm">Pending</p>
                         </div>
-                        <div className="bg-amber-500 h-full w-40 rounded-lg flex flex-col items-center justify-center">
-                            <h1 className="text-4xl leading-9 font-bold">999</h1>
+                        <div className="bg-amber-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
+                            <h1 className="text-5xl font-bold pb-1">4</h1>
                             <p className="text-xs">In-Progress</p>
                         </div>
-                        <div className="bg-emerald-500 h-full w-40 rounded-lg flex flex-col items-center justify-center">
-                            <h1 className="text-4xl leading-9 font-bold">999</h1>
+                        <div className="bg-emerald-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
+                            <h1 className="text-5xl font-bold pb-1">2</h1>
                             <p className="text-xs">Needs Feedback</p>
                         </div>
                     </div>
@@ -453,12 +454,25 @@ const HomeIndex = () => {
                                                 {/* <h1 className="font-semibold leading-4">TICKET NUMBER</h1> */}
                                                 <p className="text-xs">01/29/2026 11:25 AM</p>
                                             </div>
-                                            <div className="h-full aspect-square">
-                                                <button className="w-full h-full flex items-center justify-center cursor-pointer rounded-lg hover:bg-neutral-200">
+                                            <div className="h-full aspect-square relative">
+                                                <button onClick={()=>setShowTicketMenu(true)} className="w-full h-full flex items-center justify-center cursor-pointer rounded-lg hover:bg-neutral-200">
                                                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
                                                         <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
                                                     </svg>
                                                 </button>
+                                                {
+                                                    showTicketMenu &&
+                                                    <>
+                                                        <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
+                                                        <div className="w-60 h-auto absolute right-4 bottom-1 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
+                                                            <div className="w-full flex flex-col">
+                                                                <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Start Ticket</button>
+                                                                <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Mark as Completed</button>
+                                                                <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-b-lg">Cancel Ticket</button>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -474,29 +488,62 @@ const HomeIndex = () => {
                                         <div className="w-full mt-6">
                                             <div className="flex items-center justify-between">
                                                 <h1 className="text-sm font-bold">Attachment/s</h1>
-                                                <button className="text-sm text-blue-600 hover:underline cursor-pointer">Download All</button>
+                                                <button className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
                                             </div>
                                             <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
                                                 {/* Attachments */}
-                                                <button className="w-60 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-[#ddd]">
-                                                    <div className="h-full aspect-square flex items-center justify-center bg-[#aaa] rounded">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 -960 960 960" fill="currentColor"><path d="M320-440h320v-80H320v80Zm0 120h320v-80H320v80Zm0 120h200v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
+                                                        <img src="/icons/pdf.png" className="w-9 h-9" alt="pdf_icon" />
                                                     </div>
-                                                    <div className="w-[calc(100%-76px)] pl-2 flex items-center">
-                                                        <h1 className="w-full truncate text-xs text-left">File_name_na_mahabang_mahaba.pdf</h1>
+                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
+                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">File_name_na_mahabang_mahaba.pdf</h1>
                                                     </div>
-                                                    <div className="h-full aspect-square flex items-center justify-center">
+                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
                                                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
                                                     </div>
                                                 </button>
-                                                <button className="w-60 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-[#ddd]">
-                                                    <div className="h-full aspect-square flex items-center justify-center bg-[#aaa] rounded">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z"/></svg>
+                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
+                                                        <img src="/icons/image.png" className="w-9 h-9" alt="pdf_icon" />
                                                     </div>
-                                                    <div className="w-[calc(100%-76px)] pl-2 flex items-center">
-                                                        <h1 className="w-full truncate text-xs text-left">Image.png</h1>
+                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
+                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">Image File.png</h1>
                                                     </div>
-                                                    <div className="h-full aspect-square flex items-center justify-center">
+                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                                                    </div>
+                                                </button>
+                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
+                                                        <img src="/icons/doc.png" className="w-9 h-9" alt="pdf_icon" />
+                                                    </div>
+                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
+                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">Doc File.docx</h1>
+                                                    </div>
+                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                                                    </div>
+                                                </button>
+                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
+                                                        <img src="/icons/xls.png" className="w-9 h-9" alt="pdf_icon" />
+                                                    </div>
+                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
+                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">Excel File.xlsx</h1>
+                                                    </div>
+                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                                                    </div>
+                                                </button>
+                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
+                                                        <img src="/icons/ppt.png" className="w-9 h-9" alt="pdf_icon" />
+                                                    </div>
+                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
+                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">Power Point File.pptx</h1>
+                                                    </div>
+                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
                                                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
                                                     </div>
                                                 </button>
@@ -513,34 +560,34 @@ const HomeIndex = () => {
                                     <div className="h-[calc(100%-80px)] w-full flex flex-col-reverse gap-y-2 py-3 text-sm overflow-x-hidden overflow-y-auto">
                                         <div className="flex flex-col justify-end items-start">
                                             <span className="text-[11px] font-semibold ml-3.5">{me.name}</span>
-                                            <p className="bg-purple-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
+                                            <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
                                                 Test Reply 2 na sobrang haba na parang kasing haba ng building
-                                                <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-purple-300"></div>
-                                            </p>
+                                                <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
+                                            </div>
                                             <span className="text-[11px] font-semibold">01/29/2026 07:22 PM</span>
                                         </div>
                                         <div className="flex flex-col justify-end items-end">
-                                            <span className="text-[11px] font-semibold mr-3.5">John Arian Malondras</span>
-                                            <p className="bg-violet-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
+                                            <span className="text-[11px] font-semibold mr-3.5 h-3"></span>
+                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
                                                 Test Update 2 na mahabang mahaba, yung mas mahaba pa sa catdog
-                                                <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-violet-600/85"></div>
-                                            </p>
+                                                <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-blue-600/85"></div>
+                                            </div>
                                             <span className="text-[11px] font-semibold">01/29/2026 07:22 PM</span>
                                         </div>
                                         <div className="flex flex-col justify-end items-start">
                                             <span className="text-[11px] font-semibold ml-3.5">{me.name}</span>
-                                            <p className="bg-purple-300/80 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
+                                            <div className="bg-neutral-300/80 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
                                                 Test Reply 1
-                                                <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-purple-300"></div>
-                                            </p>
+                                                <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
+                                            </div>
                                             <span className="text-[11px] font-semibold">01/29/2026 07:22 PM</span>
                                         </div>
                                         <div className="flex flex-col justify-end items-end relative">
-                                            <span className="text-[11px] font-semibold mr-3.5">John Arian Malondras</span>
-                                            <p className="bg-violet-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
+                                            <span className="text-[11px] font-semibold mr-3.5 h-3"></span>
+                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
                                                 Test Update 1
-                                                <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-violet-600/85"></div>
-                                            </p>
+                                                <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-blue-600/85"></div>
+                                            </div>
                                             <span className="text-[11px] font-semibold">
                                                 01/29/2026 07:22 PM
                                             </span>
@@ -548,8 +595,9 @@ const HomeIndex = () => {
                                     </div>
                                     <div className="w-full h-12 mt-3">
                                         <div className="w-full h-full relative">
-                                            <input type="text" className="w-full h-full border border-violet-300/80 text-sm rounded-xl pl-2 pb-0.5 pr-10 bg-violet-300/60 focus:outline-0 shadow-inner shadow-violet-400" placeholder="Message"/>
-                                            <button className="w-9 h-9 absolute top-1.5 right-1 flex items-center justify-center cursor-pointer text-violet-600/80 hover:text-violet-600 rounded-full">
+                                            <input type="text" className="w-full h-full border border-neutral-300/80 text-sm rounded-xl pl-2 pb-0.5 pr-10 focus:outline-0 shadow-inner shadow-neutral-400" placeholder="Message"/>
+                                            <button className="w-9 h-9 absolute top-1.5 right-1 flex items-center justify-center cursor-pointer text-blue-600/80 hover:text-blue-600 rounded-full">
+                                                {/* <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M140-190v-580l688.46 290L140-190Zm60-90 474-200-474-200v147.69L416.92-480 200-427.69V-280Zm0 0v-400 400Z"/></svg> */}
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 -960 960 960" fill="currentColor"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg>
                                             </button>
                                         </div>
