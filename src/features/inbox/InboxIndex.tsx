@@ -3,7 +3,7 @@ import { useAppSelector } from "../../app/hooks";
 import { useEffect, useState } from "react";
 
 
-const HomeIndex = () => {
+const Inbox = () => {
     const { user } = useAppSelector((state) => state.auth);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
@@ -612,4 +612,4 @@ const HomeIndex = () => {
     )
 }
 
-export default HomeIndex
+export default Inbox
