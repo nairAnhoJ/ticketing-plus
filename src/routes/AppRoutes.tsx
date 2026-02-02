@@ -4,7 +4,11 @@ import ProtectedRoute from './ProtectedRoute'
 
 import LoginPage from '../features/auth/LoginPage'
 
+
 import HomeIndex from '../features/home/HomeIndex'
+import CreateTicket from '../features/home/createTicket'
+
+
 import Inbox from '../features/inbox/InboxIndex'
 
 function AppRoutes() {
@@ -14,6 +18,9 @@ function AppRoutes() {
 					<Route element={<ProtectedRoute />}>
 						<Route element={<MainLayout />}>
 							<Route path='/' element={<HomeIndex />}></Route>
+							<Route path='/create-ticket' element={<CreateTicket />}></Route>
+
+
 							<Route path='/inbox' element={<Inbox />}></Route>
 						</Route>
 					</Route>
