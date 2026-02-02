@@ -1,11 +1,13 @@
 
 
-const createTicket = () => {
+const CreateTicket = () => {
     return (
         <>
-            
+            <div className="">
+                Create Ticket
+            </div>
         </>
     )
 }
 
-export default createTicket
+export default CreateTicket
