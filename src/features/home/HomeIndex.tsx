@@ -197,7 +197,7 @@ const HomeIndex = () => {
                     {/* Header */}
                     <div className="flex items-center justify-between w-full h-10 px-6">
                         <h1 className="text-2xl font-bold">My Requests</h1>
-                        <Link to='/ticket/create' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
+                        <Link to='create-ticket' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
                             <h1 className="whitespace-nowrap text-xs">Write Ticket</h1>
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
                                 <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
