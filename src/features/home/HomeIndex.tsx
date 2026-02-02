@@ -2,14 +2,12 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { useEffect, useState } from "react";
 
-
 const HomeIndex = () => {
     const { user } = useAppSelector((state) => state.auth);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<string>('all');
     const me = JSON.parse(user);
-
 
     const handleTicketSelect = (id: number) => {
         console.log(me)
@@ -198,13 +196,13 @@ const HomeIndex = () => {
                 <div className="h-full w-100 pt-6 border-r border-[#ccc] text-[#505050]">
                     {/* Header */}
                     <div className="flex items-center justify-between w-full h-10 px-6">
-                        <h1 className="text-2xl font-bold">Inbox</h1>
-                        {/* <Link to='/ticket/create' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
+                        <h1 className="text-2xl font-bold">My Requests</h1>
+                        <Link to='/ticket/create' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
                             <h1 className="whitespace-nowrap text-xs">Write Ticket</h1>
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
                                 <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
                             </svg>
-                        </Link> */}
+                        </Link>
                     </div>
 
                     {/* SEARCH */}
@@ -260,7 +258,6 @@ const HomeIndex = () => {
                                         23
                                     </div>
                                 </div>
-
                             </div>
                         </button>
                         <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
