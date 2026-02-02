@@ -38,7 +38,7 @@ const Navigation = () => {
             </div>
 
             {/* For Desktop */}
-            <div className={`hidden lg:flex flex-col fixed top-0 left-0 bg-[#212121] h-dvh ${expandMenu?'w-52':'w-16'} p-3 transition-all duration-200 items-center justify-between`}>
+            <div className={`hidden lg:flex flex-col fixed top-0 left-0 bg-[#212121] h-dvh ${expandMenu?'w-52':'w-16'} p-3 transition-all duration-200 items-center justify-between z-1`}>
                 {/* HEADER */}
                 <div className="relative w-full flex justify-center">
                     {/* Logo */}
@@ -64,6 +64,12 @@ const Navigation = () => {
                             <path fill="currentColor" d="M8 4L2 8v7h5v-3h2v3h5V8z"/>
                         </svg>
                         <h1 className="absolute top-2.5 left-10 text-sm font-semibold">Home</h1>
+                    </Link>
+
+                    {/* INBOX */}
+                    <Link to='/inbox' className={`${expandMenu ? 'w-46' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M212.31-140Q182-140 161-161q-21-21-21-51.31v-535.38Q140-778 161-799q21-21 51.31-21h535.38Q778-820 799-799q21 21 21 51.31v535.38Q820-182 799-161q-21 21-51.31 21H212.31Zm0-60h535.38q5.39 0 8.85-3.46t3.46-8.85v-115.38H628.46q-26.15 38-64.96 59-38.81 21-83.5 21t-83.5-21q-38.81-21-64.96-59H200v115.38q0 5.39 3.46 8.85t8.85 3.46ZM480-307.69q38 0 69-22t43-58h168v-360q0-5.39-3.46-8.85t-8.85-3.46H212.31q-5.39 0-8.85 3.46t-3.46 8.85v360h168q12 36 43 58t69 22ZM212.31-200H200h560H212.31Z"/></svg>
+                        <h1 className="absolute top-2.5 left-10 text-sm font-semibold">Inbox</h1>
                     </Link>
 
                     {/* TICKET REPORT */}
