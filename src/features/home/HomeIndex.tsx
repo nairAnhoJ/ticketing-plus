@@ -4,14 +4,17 @@ import { useEffect, useState } from "react";
 
 const HomeIndex = () => {
     const { user } = useAppSelector((state) => state.auth);
+    const { ticketCount } = useAppSelector((state) => state.home)
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<string>('all');
     const me = JSON.parse(user);
 
+
     const handleTicketSelect = (id: number) => {
         console.log(me)
         console.log(id)
+        console.log(ticketCount)
     }
 
     const handleLogout = () => {
@@ -419,15 +422,15 @@ const HomeIndex = () => {
                     {/* HEADER / COUNTER */}
                     <div className="w-full h-34 flex items-center justify-center p-6 gap-x-6 text-white border-b border-[#ccc]">
                         <div className="bg-red-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">299</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.pending}</h1>
                             <p className="text-sm">Pending</p>
                         </div>
                         <div className="bg-amber-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">4</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.in_progress}</h1>
                             <p className="text-xs">In-Progress</p>
                         </div>
                         <div className="bg-emerald-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">2</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.needs_feedback}</h1>
                             <p className="text-xs">Needs Feedback</p>
                         </div>
                     </div>
