@@ -20,7 +20,7 @@ const Navigation = () => {
     return (
         <>
             {/* For Mobile */}
-            <button onClick={()=>setShowMenu(!showMenu)} className={`lg:hidden absolute w-8 h-8 top-3.5 right-3.5 text-white transition-all duration-200 z-2 ${showMenu && 'rotate-180'}`}>
+            <button onClick={()=>setShowMenu(!showMenu)} className={`lg:hidden absolute w-8 h-8 top-3.5 right-3.5 text-white transition-all duration-200 z-11 ${showMenu && 'rotate-180'}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" className={`absolute top-0 w-8 transition-all duration-200 ${showMenu && 'opacity-0' }`} viewBox="0 -960 960 960" fill="currentColor">
                     <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
                 </svg>
@@ -28,9 +28,10 @@ const Navigation = () => {
                     <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
                 </svg>
             </button>
-            <div className={`lg:hidden fixed top-0 right-0 ${showMenu ? 'h-[225%] md:h-[250%]' : 'h-0' } overflow-hidden rounded-full translate-x-1/2 -translate-y-1/2 transition-all duration-200 bg-[#353535] aspect-square z-1`}>
+            <div className={`lg:hidden fixed top-0 right-0 ${showMenu ? 'h-[225%] md:h-[250%]' : 'h-0' } overflow-hidden rounded-full translate-x-1/2 -translate-y-1/2 transition-all duration-200 bg-[#353535] aspect-square z-10`}>
                 <div className={`absolute top-1/2 left-1/2  aspect-square h-[110dvh] text-white transition-all duration-250 flex flex-col gap-y-6 items-end py-20 pr-5 ${!showMenu ? 'opacity-0' : '-translate-x-full'}`}>
-                        <Link to='/' className="text-5xl font-bold">Home</Link>
+                        <Link onClick={()=>setShowMenu(false)} to='/' className="text-5xl font-bold">My Requests</Link>
+                        <Link to='/inbox' className="text-5xl font-bold">Inbox</Link>
                         <button className="text-5xl font-bold">Ticket Report</button>
                         <button className="text-5xl font-bold">Settings</button>
                         <button onClick={handleLogout} className="text-5xl font-bold">Logout</button>
@@ -38,7 +39,7 @@ const Navigation = () => {
             </div>
 
             {/* For Desktop */}
-            <div className={`hidden lg:flex flex-col fixed top-0 left-0 bg-[#212121] h-dvh ${expandMenu?'w-52':'w-16'} p-3 transition-all duration-200 items-center justify-between z-1`}>
+            <div className={`hidden lg:flex flex-col fixed top-0 left-0 bg-[#212121] h-dvh ${expandMenu?'w-52':'w-16'} p-3 transition-all duration-200 items-center justify-between z-10`}>
                 {/* HEADER */}
                 <div className="relative w-full flex justify-center">
                     {/* Logo */}
@@ -59,11 +60,14 @@ const Navigation = () => {
                 <div className="text-neutral-100 w-full flex flex-col gap-y-2">
                     {/* HOME */}
                     <Link to='/' className={`${expandMenu ? 'w-46' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 16 16">
+                        {/* <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 16 16">
                             <path fill="currentColor" d="M8 1.4L6 2.7V1H4v3L0 6.6l.6.8L8 2.6l7.4 4.8l.6-.8z"/>
                             <path fill="currentColor" d="M8 4L2 8v7h5v-3h2v3h5V8z"/>
+                        </svg> */}
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 -960 960 960" fill="currentColor">
+                            <path d="M440-400v-166l-64 64-56-58 160-160 160 160-56 58-64-64v166h-80ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-120H640q-30 38-71.5 59T480-240q-47 0-88.5-21T320-320H200v120Zm280-120q38 0 69-22t43-58h168v-360H200v360h168q12 36 43 58t69 22ZM200-200h560-560Z"/>
                         </svg>
-                        <h1 className="absolute top-2.5 left-10 text-sm font-semibold">Home</h1>
+                        <h1 className="absolute top-2.5 left-10 text-sm font-semibold">My Requests</h1>
                     </Link>
 
                     {/* INBOX */}

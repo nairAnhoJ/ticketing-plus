@@ -144,8 +144,8 @@ const CreateTicket = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="w-full absolute bottom-6 flex items-center justify-end px-6 z-10">
-                        <button onClick={handleNext} className="w-full pb-3 pt-2.75 border border-blue-400 rounded-full flex items-center justify-center bg-blue-600 text-white">
+                    <div className="w-full absolute bottom-6 flex items-center justify-end px-6 z-1">
+                        <button onClick={handleNext} className="relative w-full pb-3 pt-2.75 border border-blue-400 rounded-full flex items-center justify-center bg-blue-600 text-white">
                             <span className="font-bold">{tab===3?'SUBMIT':'NEXT'}</span>
                         </button>
                     </div>
