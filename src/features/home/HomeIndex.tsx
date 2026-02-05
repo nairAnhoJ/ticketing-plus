@@ -246,7 +246,7 @@ const HomeIndex = () => {
                                 <div className="grid grid-cols-12">
                                     {/* Name and Status */}
                                     <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        JOHN ARIAN MALONDRAS
+                                        IT
                                         <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div>
                                     </div>
                                     {/* Date and Time */}
@@ -269,7 +269,7 @@ const HomeIndex = () => {
                                 <div className="grid grid-cols-12">
                                     {/* Name and Status */}
                                     <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        JOHN ARIAN MALONDRAS
+                                        HR
                                         <div className="w-2 h-2 ml-1 rounded-full bg-amber-500 border border-amber-600"></div>
                                     </div>
                                     {/* Date and Time */}
@@ -292,7 +292,7 @@ const HomeIndex = () => {
                                 <div className="grid grid-cols-12">
                                     {/* Name and Status */}
                                     <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        JOHN ARIAN MALONDRAS
+                                        TRANSPORT
                                         <div className="w-2 h-2 ml-1 rounded-full bg-emerald-500 border border-emerald-600"></div>
                                     </div>
                                     {/* Date and Time */}
@@ -315,7 +315,7 @@ const HomeIndex = () => {
                                 <div className="grid grid-cols-12">
                                     {/* Name and Status */}
                                     <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        JOHN ARIAN MALONDRAS
+                                        EHS
                                         {/* <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div> */}
                                     </div>
                                     {/* Date and Time */}
@@ -338,7 +338,7 @@ const HomeIndex = () => {
                                 <div className="grid grid-cols-12">
                                     {/* Name and Status */}
                                     <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        JOHN ARIAN MALONDRAS
+                                        IT
                                         {/* <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div> */}
                                     </div>
                                     {/* Date and Time */}
@@ -355,20 +355,20 @@ const HomeIndex = () => {
                                 </div>
                             </div>
                         </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
+                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer text-red-500">
                             <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
                             <div className="flex flex-col w-[calc(100%-48px)]">
                                 <div className="grid grid-cols-12">
                                     {/* Name and Status */}
                                     <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        JOHN ARIAN MALONDRAS
+                                        EHS
                                         {/* <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div> */}
                                     </div>
                                     {/* Date and Time */}
                                     <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
                                 </div>
                                 {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">COMPLETED NA TICKET</h2>
+                                <h2 className="font-medium text-xs text-left">CANCELLED NA TICKET</h2>
                                 {/* Description at Notif Count */}
                                 <div className="w-full h-6 flex items-center">
                                     <p className="text-xs truncate flex-1">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
@@ -376,42 +376,6 @@ const HomeIndex = () => {
                                         23
                                     </div> */}
                                 </div>
-                            </div>
-                        </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
-                            <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
-                            <div className="flex flex-col w-[calc(100%-48px)]">
-                                <div className="grid grid-cols-12">
-                                    {/* Name and Status */}
-                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        JOHN ARIAN MALONDRAS
-                                        {/* <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div> */}
-                                    </div>
-                                    {/* Date and Time */}
-                                    <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
-                                </div>
-                                {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">COMPLETED NA TICKET</h2>
-                                {/* Description */}
-                                <p className="text-xs truncate">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
-                            </div>
-                        </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 py-4 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
-                            <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
-                            <div className="flex flex-col w-[calc(100%-48px)]">
-                                <div className="grid grid-cols-12">
-                                    {/* Name and Status */}
-                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        JOHN ARIAN MALONDRAS
-                                        {/* <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div> */}
-                                    </div>
-                                    {/* Date and Time */}
-                                    <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
-                                </div>
-                                {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">COMPLETED NA TICKET</h2>
-                                {/* Description */}
-                                <p className="text-xs truncate">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
                             </div>
                         </button>
                     </div>
@@ -445,8 +409,8 @@ const HomeIndex = () => {
                                         <div className="h-12 w-1/2 flex">
                                             <img src="default-avatar.jpg" className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
                                             <div className="flex flex-col justify-center pl-1.5">
-                                                <h1 className="font-semibold leading-4">{me.name}</h1>
-                                                <p className="text-xs">{me.department}</p>
+                                                <h1 className="font-semibold leading-4">JASPHER CUÑADO</h1>
+                                                <p className="text-xs">IT</p>
                                             </div>
                                         </div>
                                         <div className="h-12 flex items-center gap-x-2 py-2">
@@ -482,9 +446,13 @@ const HomeIndex = () => {
                                 {/* Body */}
                                 <div className="w-full h-[calc(100%-72px)] py-6 overflow-x-hidden overflow-y-auto">
                                     <div className="w-full flex flex-col">
-                                        <h1 className="text-lg font-semibold">TICKET NUMBER</h1>
-                                        <h1 className="font-semibold">COMPLETED NA TICKET (SELECTED)</h1>
-                                        <p className="text-sm leading-4 mt-3">olor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis explicabo repellat incidunt qui recusandae optio, ea ullam reprehenderit.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis explicabo repellat incidunt qui recusandae optio, ea ullam reprehenderit.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis explicabo repellat incidunt qui recusandae optio, ea ullam reprehenderit.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis explicabo repellat incidunt qui recusandae optio, ea ullam reprehenderit.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis</p>
+                                        <div className="flex items-center justify-between">
+                                            <h1 className="text-lg font-semibold">TN-89234567</h1>
+                                            <p className="bg-emerald-500 text-white text-sm font-bold px-2 py-1 rounded tracking-wide">COMPLETED</p>
+                                        </div>
+                                        <h2 className="text-sm font-semibold mt-6">HARDWARE</h2>
+                                        <h1 className="font-semibold mt-1">MOUSE NOT WORKING</h1>
+                                        <div className="text-sm leading-4 mt-3">olor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis explicabo repellat incidunt qui recusandae optio, ea ullam reprehenderit.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis explicabo repellat incidunt qui recusandae optio, ea ullam reprehenderit.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis explicabo repellat incidunt qui recusandae optio, ea ullam reprehenderit.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis explicabo repellat incidunt qui recusandae optio, ea ullam reprehenderit.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestiae, libero ut. Modi, expedita reiciendis praesentium pariatur mollitia sit iure maiores debitis</div>
                                         <div className="w-full mt-6">
                                             <div className="flex items-center justify-between">
                                                 <h1 className="text-sm font-bold">Attachment/s</h1>
@@ -559,7 +527,7 @@ const HomeIndex = () => {
                                     </div>
                                     <div className="h-[calc(100%-80px)] w-full flex flex-col-reverse gap-y-2 py-3 text-sm overflow-x-hidden overflow-y-auto">
                                         <div className="flex flex-col justify-end items-start">
-                                            <span className="text-[11px] font-semibold ml-3.5">{me.name}</span>
+                                            <span className="text-[11px] font-semibold ml-3.5">JASPHER CUÑADO</span>
                                             <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
                                                 Test Reply 2 na sobrang haba na parang kasing haba ng building
                                                 <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
@@ -575,7 +543,7 @@ const HomeIndex = () => {
                                             <span className="text-[11px] font-semibold">01/29/2026 07:22 PM</span>
                                         </div>
                                         <div className="flex flex-col justify-end items-start">
-                                            <span className="text-[11px] font-semibold ml-3.5">{me.name}</span>
+                                            <span className="text-[11px] font-semibold ml-3.5">JASPHER CUÑADO</span>
                                             <div className="bg-neutral-300/80 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
                                                 Test Reply 1
                                                 <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
