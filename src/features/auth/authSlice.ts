@@ -43,13 +43,16 @@ export const loginUser = createAsyncThunk<LoginResponse, LoginPayload, { rejectV
         if(response.data.status === 200){
             const allowed_app = response.data.user.allowed_app?.split(';');
             if(allowed_app.includes('ticketing') || allowed_app.includes('all')){
-                res = {
+                return res = {
                     token: response.data.token,
                     user: response.data.user
                 }
-            } 
+            } else{
+                return thunkAPI.rejectWithValue([{ path: 'all', msg: 'Invalid Account.' }]);
+            }
+        }else{
+            return res;
         }
-        return res;
     } catch (err: any) {
         console.log(err)
         if(err.response?.status === 401 || err.response?.status === 400){
