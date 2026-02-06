@@ -16,7 +16,13 @@ export interface TicketUpdates {
     create_at: string;
 }
 
-export interface TicketList{
+export interface Attachment {
+    id: number;
+    file_path: string;
+    type: string;
+}
+
+export interface Ticket{
     id: number;
     assigned_user: string;
     assigned_user_avatar: string | null;
@@ -38,16 +44,17 @@ export interface SelectedTicket{
     status: string;
     subject: string;
     description: string;
-    attachments: string[] | null;
+    attachments: Attachment[] | null;
     updates: TicketUpdates[] | null;
     created_at: string;
 }
 
 interface InitialState {
     ticketCount: TicketCount;
-    ticketList: TicketList[] | null;
+    ticketList: Ticket[];
     selectedTicket: SelectedTicket;
-    loading: boolean;
+    listLoading: boolean;
+    selectLoading: boolean;
 }
 
 const initialState: InitialState = {
@@ -71,7 +78,8 @@ const initialState: InitialState = {
         updates: null,
         created_at: ''
     },
-    loading: false
+    listLoading: false,
+    selectLoading: false
 }
 
 
@@ -85,6 +93,16 @@ export const fetchMyRequests = createAsyncThunk('my-requests/fetch', async ({id,
     }
 });
 
+export const fetchSelectedRequest = createAsyncThunk('my-requests/fetch-by-id', async (id: number) => {
+    try {
+        const ticket = await config.get(`/my-requests/${id}`);
+        return ticket.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+
 
 
 const homeSlice = createSlice({
@@ -93,16 +111,25 @@ const homeSlice = createSlice({
     reducers: {
 
     },
-    extraReducers(builder) { builder
+    extraReducers(builder) { builder 
         .addCase(fetchMyRequests.pending, (state) => {
-            state.loading = true;
+            state.listLoading = true;
             state.ticketList = [];
             // state.errors = null;
         })
         .addCase(fetchMyRequests.fulfilled, (state, payload) => {
+            state.listLoading = false;
+            state.ticketList = payload.payload ?? [];
+            // state.errors = null;
+        })
+        .addCase(fetchSelectedRequest.pending, (state) => {
+            state.selectLoading = true;
+            // state.errors = null;
+        })
+        .addCase(fetchSelectedRequest.fulfilled, (state, payload) => {
             console.log(payload.payload)
-            state.loading = false;
-            state.ticketList = payload.payload;
+            state.selectLoading = false;
+            state.selectedTicket = payload.payload;
             // state.errors = null;
         })
     },
