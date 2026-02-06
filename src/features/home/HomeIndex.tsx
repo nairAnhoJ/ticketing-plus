@@ -1,20 +1,39 @@
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useEffect, useState } from "react";
+import { fetchMyRequests } from "./homeSlice";
+import Loading from "../../components/Loading";
 
 const HomeIndex = () => {
+    const appDispatch = useAppDispatch();
+
     const { user } = useAppSelector((state) => state.auth);
-    const { ticketCount } = useAppSelector((state) => state.home)
+    const { loading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.home)
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<string>('all');
     const me = JSON.parse(user);
 
+    useEffect(()=>{
+        appDispatch(fetchMyRequests({id: me.id,search: '', status: 'all'}))
+    }, [])
+
+    // Format Date to MM/DD/YY HH:MM Format
+    const formatDate = (isoString: string) => {
+        const date = new Date(isoString);
+
+        return date.toLocaleString("en-US", {
+            month: "2-digit",
+            day: "2-digit",
+            year: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+        });
+    };
 
     const handleTicketSelect = (id: number) => {
-        console.log(me)
         console.log(id)
-        console.log(ticketCount)
     }
 
     const handleLogout = () => {
@@ -238,146 +257,48 @@ const HomeIndex = () => {
                     </div>
 
                     {/* List */}
-                    <div className="w-full h-[calc(100%-148px)] overflow-y-auto mt-3 pl-1">
-                        {/* Row */}
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
-                            <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
-                            <div className="flex flex-col w-[calc(100%-48px)]">
-                                <div className="grid grid-cols-12">
-                                    {/* Name and Status */}
-                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        IT
-                                        <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div>
-                                    </div>
-                                    {/* Date and Time */}
-                                    <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
-                                </div>
-                                {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">PENDING NA TICKET</h2>
-                                {/* Description at Notif Count */}
-                                <div className="w-full h-6 flex items-center">
-                                    <p className="text-xs truncate flex-1">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
-                                    <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
-                                        23
-                                    </div>
-                                </div>
+                    <div className="w-full h-[calc(100%-148px)] overflow-y-auto mt-3 pl-1 relative">
+                        { loading && (
+                            <div className="w-full h-20">
+                                <Loading />
                             </div>
-                        </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
-                            <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
-                            <div className="flex flex-col w-[calc(100%-48px)]">
-                                <div className="grid grid-cols-12">
-                                    {/* Name and Status */}
-                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        HR
-                                        <div className="w-2 h-2 ml-1 rounded-full bg-amber-500 border border-amber-600"></div>
+                        )}
+
+                        { ticketList?.map((ticket, index) => (
+                            <>
+                                <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
+                                    <img src={(ticket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-[#707070]" alt="avatar" />
+                                    <div className="flex flex-col w-[calc(100%-48px)]">
+                                        <div className="grid grid-cols-12">
+                                            {/* Name and Status */}
+                                            <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
+                                                {ticket.assigned_department}
+                                                <div className={`w-2 h-2 ml-1 rounded-full border
+                                                    ${
+                                                        ticket.status === 'pending' ? 'bg-red-500 border-red-600' : 
+                                                        ticket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
+                                                        ticket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
+                                                    }
+                                                `}></div>
+                                            </div>
+                                            {/* Date and Time */}
+                                            <p className="text-xs text-right col-span-4">{formatDate(ticket.created_at).replace(",", "")}</p>
+                                        </div>
+                                        {/* Subject */}
+                                        <h2 className="font-medium text-xs text-left">{ticket.subject}</h2>
+                                        {/* Description at Notif Count */}
+                                        <div className="w-full h-6 flex items-center">
+                                            <p className="text-xs truncate flex-1 text-left">{ticket.description}</p>
+                                            { ticket.requester_notif_count > 0 && (
+                                                <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
+                                                    { ticket.requester_notif_count }
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    {/* Date and Time */}
-                                    <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
-                                </div>
-                                {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">IN-PROGRESS NA TICKET</h2>
-                                {/* Description at Notif Count */}
-                                <div className="w-full h-6 flex items-center">
-                                    <p className="text-xs truncate flex-1">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
-                                    <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
-                                        23
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
-                            <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
-                            <div className="flex flex-col w-[calc(100%-48px)]">
-                                <div className="grid grid-cols-12">
-                                    {/* Name and Status */}
-                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        TRANSPORT
-                                        <div className="w-2 h-2 ml-1 rounded-full bg-emerald-500 border border-emerald-600"></div>
-                                    </div>
-                                    {/* Date and Time */}
-                                    <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
-                                </div>
-                                {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">WAITING NG FEEDBACK NA TICKET</h2>
-                                {/* Description at Notif Count */}
-                                <div className="w-full h-6 flex items-center">
-                                    <p className="text-xs truncate flex-1">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
-                                    <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
-                                        23
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer">
-                            <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
-                            <div className="flex flex-col w-[calc(100%-48px)]">
-                                <div className="grid grid-cols-12">
-                                    {/* Name and Status */}
-                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        EHS
-                                        {/* <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div> */}
-                                    </div>
-                                    {/* Date and Time */}
-                                    <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
-                                </div>
-                                {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">COMPLETED NA TICKET</h2>
-                                {/* Description at Notif Count */}
-                                <div className="w-full h-6 flex items-center">
-                                    <p className="text-xs truncate flex-1">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
-                                    {/* <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
-                                        23
-                                    </div> */}
-                                </div>
-                            </div>
-                        </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full border-l-4 border-blue-500 p-2 pt-4 pb-2 flex items-center gap-x-2 bg-neutral-200/60 hover:bg-neutral-100 cursor-pointer">
-                            <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
-                            <div className="flex flex-col w-[calc(100%-48px)]">
-                                <div className="grid grid-cols-12">
-                                    {/* Name and Status */}
-                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        IT
-                                        {/* <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div> */}
-                                    </div>
-                                    {/* Date and Time */}
-                                    <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
-                                </div>
-                                {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">COMPLETED NA TICKET (SELECTED)</h2>
-                                {/* Description at Notif Count */}
-                                <div className="w-full h-6 flex items-center">
-                                    <p className="text-xs truncate flex-1">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
-                                    {/* <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
-                                        23
-                                    </div> */}
-                                </div>
-                            </div>
-                        </button>
-                        <button onClick={()=>handleTicketSelect(1)} className="w-full p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer text-red-500">
-                            <img src="default-avatar.jpg" className="w-10 h-10 rounded-full border-2 border-[#707070]" alt="avatar" />
-                            <div className="flex flex-col w-[calc(100%-48px)]">
-                                <div className="grid grid-cols-12">
-                                    {/* Name and Status */}
-                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                        EHS
-                                        {/* <div className="w-2 h-2 ml-1 rounded-full bg-red-500 border border-red-600"></div> */}
-                                    </div>
-                                    {/* Date and Time */}
-                                    <p className="text-xs text-right col-span-4">01/29/26 11:25 AM</p>
-                                </div>
-                                {/* Subject */}
-                                <h2 className="font-medium text-xs text-left">CANCELLED NA TICKET</h2>
-                                {/* Description at Notif Count */}
-                                <div className="w-full h-6 flex items-center">
-                                    <p className="text-xs truncate flex-1">Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket Ito naman yung description ng ticket </p>
-                                    {/* <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
-                                        23
-                                    </div> */}
-                                </div>
-                            </div>
-                        </button>
+                                </button>
+                            </>
+                        ))}
                     </div>
                 </div>
 
