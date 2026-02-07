@@ -12,8 +12,9 @@ export interface TicketCount {
 
 export interface TicketUpdates {
     message: string;
-    create_by: string;
-    create_at: string;
+    user_id: number;
+    created_by: string;
+    created_at: string;
 }
 
 export interface Attachment {

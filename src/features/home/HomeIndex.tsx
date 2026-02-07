@@ -38,9 +38,22 @@ const HomeIndex = () => {
         });
     };
 
+    const getFileExtension = (filename: string) => {
+        const lastDot = filename.lastIndexOf('.');
+        return filename.slice(lastDot + 1).toLowerCase();
+    }
+
     const handleTicketSelect = (id: number) => {
         console.log(id)
         appDispatch(fetchSelectedRequest(id));
+    }
+
+    const handleSingleDownload = (id: number, filename: string) => {
+        window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download/${id}/${filename}`, "_blank");
+    }
+
+    const handleDownloadAll = (id: number) => {
+        window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download-all/${id}`, "_blank");
     }
 
     const handleLogout = () => {
@@ -343,7 +356,6 @@ const HomeIndex = () => {
                                         </div>
                                         <div className="h-12 flex items-center gap-x-2 py-2">
                                             <div className="flex flex-col items-end">
-                                                {/* <h1 className="font-semibold leading-4">TICKET NUMBER</h1> */}
                                                 <p className="text-xs">{formatDate(selectedTicket.created_at).replace(",", "")}</p>
                                             </div>
                                             <div className="h-full aspect-square relative">
@@ -386,7 +398,7 @@ const HomeIndex = () => {
                                         <div className="w-full mt-6">
                                             <div className="flex items-center justify-between">
                                                 <h1 className="text-sm font-bold">Attachment/s</h1>
-                                                <button className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
+                                                <button onClick={()=>handleDownloadAll(selectedTicket.id)} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
                                             </div>
                                             <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
                                                 {/* Attachments */}
@@ -395,9 +407,16 @@ const HomeIndex = () => {
                                                     (
                                                         selectedTicket.attachments.map((att)=>(
                                                             <>
-                                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                                <button onClick={() => handleSingleDownload(selectedTicket.id, att.file_path)} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
                                                                     <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                                        <img src="/icons/pdf.png" className="w-9 h-9" alt="pdf_icon" />
+                                                                        <img src={`/icons/${
+                                                                            ['jpg', 'png'].includes(getFileExtension(att.file_path)) ?
+                                                                            'image.png' : ['pdf'].includes(getFileExtension(att.file_path)) ?
+                                                                            'pdf.png' : ['doc', 'docx'].includes(getFileExtension(att.file_path)) ?
+                                                                            'doc.png' : ['ppt', 'pptx'].includes(getFileExtension(att.file_path)) ?
+                                                                            'ppt.png' : ['xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
+                                                                            'xls.png' : ''
+                                                                        }`} className="w-9 h-9" alt="icon" />
                                                                     </div>
                                                                     <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
                                                                         <h1 className="w-full truncate text-xs text-left text-neutral-800/90">{att.file_path}</h1>
@@ -410,62 +429,6 @@ const HomeIndex = () => {
                                                         ))
                                                     )
                                                 }
-
-                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
-                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                        <img src="/icons/pdf.png" className="w-9 h-9" alt="pdf_icon" />
-                                                    </div>
-                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
-                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">File_name_na_mahabang_mahaba.pdf</h1>
-                                                    </div>
-                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                    </div>
-                                                </button>
-                                                {/* <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
-                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                        <img src="/icons/image.png" className="w-9 h-9" alt="pdf_icon" />
-                                                    </div>
-                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
-                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">Image File.png</h1>
-                                                    </div>
-                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                    </div>
-                                                </button>
-                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
-                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                        <img src="/icons/doc.png" className="w-9 h-9" alt="pdf_icon" />
-                                                    </div>
-                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
-                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">Doc File.docx</h1>
-                                                    </div>
-                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                    </div>
-                                                </button>
-                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
-                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                        <img src="/icons/xls.png" className="w-9 h-9" alt="pdf_icon" />
-                                                    </div>
-                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
-                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">Excel File.xlsx</h1>
-                                                    </div>
-                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                    </div>
-                                                </button>
-                                                <button className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
-                                                    <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                        <img src="/icons/ppt.png" className="w-9 h-9" alt="pdf_icon" />
-                                                    </div>
-                                                    <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
-                                                        <h1 className="w-full truncate text-xs text-left text-neutral-800/90">Power Point File.pptx</h1>
-                                                    </div>
-                                                    <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                    </div>
-                                                </button> */}
                                             </div>
                                         </div>
                                     </div>
@@ -477,46 +440,38 @@ const HomeIndex = () => {
                                         <h1 className="text-sm font-bold">Ticket Updates</h1>
                                     </div>
                                     <div className="h-[calc(100%-80px)] w-full flex flex-col-reverse gap-y-2 py-3 text-sm overflow-x-hidden overflow-y-auto">
-                                        <div className="flex flex-col justify-end items-start">
-                                            <span className="text-[11px] font-semibold ml-3.5">JASPHER CUÑADO</span>
-                                            <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
-                                                Test Reply 2 na sobrang haba na parang kasing haba ng building
-                                                <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
-                                            </div>
-                                            <span className="text-[11px] font-semibold">01/29/2026 07:22 PM</span>
-                                        </div>
-                                        <div className="flex flex-col justify-end items-end">
-                                            <span className="text-[11px] font-semibold mr-3.5 h-3"></span>
-                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
-                                                Test Update 2 na mahabang mahaba, yung mas mahaba pa sa catdog
-                                                <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-blue-600/85"></div>
-                                            </div>
-                                            <span className="text-[11px] font-semibold">01/29/2026 07:22 PM</span>
-                                        </div>
-                                        <div className="flex flex-col justify-end items-start">
-                                            <span className="text-[11px] font-semibold ml-3.5">JASPHER CUÑADO</span>
-                                            <div className="bg-neutral-300/80 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
-                                                Test Reply 1
-                                                <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
-                                            </div>
-                                            <span className="text-[11px] font-semibold">01/29/2026 07:22 PM</span>
-                                        </div>
-                                        <div className="flex flex-col justify-end items-end relative">
-                                            <span className="text-[11px] font-semibold mr-3.5 h-3"></span>
-                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
-                                                Test Update 1
-                                                <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-blue-600/85"></div>
-                                            </div>
-                                            <span className="text-[11px] font-semibold">
-                                                01/29/2026 07:22 PM
-                                            </span>
-                                        </div>
+                                        {
+                                            selectedTicket.updates &&
+                                                selectedTicket.updates.map(update=>(
+                                                    (update.user_id === me.id) ?
+                                                    (
+                                                        <div className="flex flex-col justify-end items-end">
+                                                            <span className="text-[11px] font-semibold mr-3.5 h-3"></span>
+                                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
+                                                                {update.message}
+                                                                <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-blue-600/85"></div>
+                                                            </div>
+                                                            <span className="text-[11px] font-semibold">{formatDate(update.created_at).replace(',', ' ')}</span>
+                                                        </div>
+                                                    ) 
+                                                    : 
+                                                    (
+                                                        <div className="flex flex-col justify-end items-start">
+                                                            <span className="text-[11px] font-semibold ml-3.5">{update.created_by}</span>
+                                                            <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
+                                                                {update.message}
+                                                                <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
+                                                            </div>
+                                                            <span className="text-[11px] font-semibold">{formatDate(update.created_at).replace(',', ' ')}</span>
+                                                        </div>
+                                                    )
+                                                ))
+                                        }
                                     </div>
                                     <div className="w-full h-12 mt-3">
                                         <div className="w-full h-full relative">
                                             <input type="text" className="w-full h-full border border-neutral-300/80 text-sm rounded-xl pl-2 pb-0.5 pr-10 focus:outline-0 shadow-inner shadow-neutral-400" placeholder="Message"/>
                                             <button className="w-9 h-9 absolute top-1.5 right-1 flex items-center justify-center cursor-pointer text-blue-600/80 hover:text-blue-600 rounded-full">
-                                                {/* <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M140-190v-580l688.46 290L140-190Zm60-90 474-200-474-200v147.69L416.92-480 200-427.69V-280Zm0 0v-400 400Z"/></svg> */}
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 -960 960 960" fill="currentColor"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg>
                                             </button>
                                         </div>
