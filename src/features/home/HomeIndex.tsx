@@ -11,18 +11,30 @@ const HomeIndex = () => {
     const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.home)
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
-    const [currentTab, setCurrentTab] = useState<string>('all');
+    const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
+    const [search, setSearch] = useState<string>('');
     const me = JSON.parse(user);
 
     useEffect(()=>{
-        appDispatch(fetchMyRequests({id: me.id,search: '', status: 'all'}))
+        const timer = setTimeout(() => {
+            fetchTickets(me.id, search, currentTab);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [search])
+
+    useEffect(()=>{
+        fetchTickets(me.id, search, currentTab);
+    }, [currentTab])
+
+    const fetchTickets = (id: number, search: string, status: 'all' | 'pending' | 'in_progress') => {
+        appDispatch(fetchMyRequests({id: id, search: search, status: status}))
         .unwrap()
         .then((tickets)=>{
             if(tickets && tickets.length > 0){
                 appDispatch(fetchSelectedRequest(tickets[0].id))
             }
         })
-    }, [])
+    }
 
     // Format Date to MM/DD/YY HH:MM Format
     const formatDate = (isoString: string) => {
@@ -249,7 +261,7 @@ const HomeIndex = () => {
 
                     {/* SEARCH */}
                     <div className="w-full px-6 relative mt-1">
-                        <input type="text" className="h-8 w-full text-sm  border border-[#777] rounded-full focus:outline-0 pl-7 pb-0.5" placeholder="Search" />
+                        <input onChange={(e)=>setSearch(e.target.value)} type="text" className="h-8 w-full text-sm  border border-[#777] rounded-full focus:outline-0 pl-7 pb-0.5" placeholder="Search" />
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 absolute top-1.5 left-7.5" viewBox="0 -960 960 960" fill="currentColor">
                             <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
                         </svg>
@@ -269,7 +281,7 @@ const HomeIndex = () => {
                                 </button>
                             </div>
                             <div className="text-xs font-bold p-2">
-                                <button onClick={()=>setCurrentTab('in-progress')} className={`flex items-center justify-center w-full h-full rounded-lg cursor-pointer ${currentTab === 'in-progress' && 'bg-[#303030] text-white'}`}>
+                                <button onClick={()=>setCurrentTab('in_progress')} className={`flex items-center justify-center w-full h-full rounded-lg cursor-pointer ${currentTab === 'in_progress' && 'bg-[#303030] text-white'}`}>
                                     In-Progress
                                 </button>
                             </div>

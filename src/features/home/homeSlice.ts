@@ -53,7 +53,7 @@ export interface SelectedTicket{
 interface InitialState {
     ticketCount: TicketCount;
     ticketList: Ticket[];
-    selectedTicket: SelectedTicket;
+    selectedTicket: SelectedTicket | null;
     listLoading: boolean;
     selectLoading: boolean;
 }
@@ -114,6 +114,20 @@ const homeSlice = createSlice({
     },
     extraReducers(builder) { builder 
         .addCase(fetchMyRequests.pending, (state) => {
+            state.selectedTicket = {
+                id: 0,
+                ticket_number: '',
+                ticket_category: '',
+                assigned_user: '',
+                assigned_user_avatar: null,
+                assigned_department: '',
+                status: '',
+                subject: '',
+                description: '',
+                attachments: null,
+                updates: null,
+                created_at: ''
+    };
             state.listLoading = true;
             state.ticketList = [];
             // state.errors = null;
