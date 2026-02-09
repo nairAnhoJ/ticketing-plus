@@ -290,47 +290,67 @@ const HomeIndex = () => {
 
                     {/* List */}
                     <div className="w-full h-[calc(100%-148px)] overflow-y-auto mt-3 pl-1 relative">
-                        { listLoading && (
+                        { listLoading ? (
                             <div className="w-full h-20">
                                 <Loading />
                             </div>
-                        )}
-
-                        { ticketList?.map((ticket, index) => (
-                            <>
-                                <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
-                                    <img src={(ticket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-[#707070]" alt="avatar" />
-                                    <div className="flex flex-col w-[calc(100%-48px)]">
-                                        <div className="grid grid-cols-12">
-                                            {/* Name and Status */}
-                                            <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                                {ticket.assigned_department}
-                                                <div className={`w-2 h-2 ml-1 rounded-full border
-                                                    ${
-                                                        ticket.status === 'pending' ? 'bg-red-500 border-red-600' : 
-                                                        ticket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
-                                                        ticket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
-                                                    }
-                                                `}></div>
-                                            </div>
-                                            {/* Date and Time */}
-                                            <p className="text-xs text-right col-span-4">{formatDate(ticket.created_at).replace(",", "")}</p>
-                                        </div>
-                                        {/* Subject */}
-                                        <h2 className="font-medium text-xs text-left">{ticket.subject}</h2>
-                                        {/* Description at Notif Count */}
-                                        <div className="w-full h-6 flex items-center">
-                                            <p className="text-xs truncate flex-1 text-left">{ticket.description}</p>
-                                            { ticket.requester_notif_count > 0 && (
-                                                <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
-                                                    { ticket.requester_notif_count }
+                            ) 
+                            : 
+                            (
+                                <>
+                                    {
+                                        ticketList.length > 0 ? (
+                                            <>
+                                                { ticketList.map((ticket, index) => (
+                                                    <>
+                                                        <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket?.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
+                                                            <img src={(ticket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-[#707070]" alt="avatar" />
+                                                            <div className="flex flex-col w-[calc(100%-48px)]">
+                                                                <div className="grid grid-cols-12">
+                                                                    {/* Name and Status */}
+                                                                    <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
+                                                                        {ticket.assigned_department}
+                                                                        <div className={`w-2 h-2 ml-1 rounded-full border
+                                                                            ${
+                                                                                ticket.status === 'pending' ? 'bg-red-500 border-red-600' : 
+                                                                                ticket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
+                                                                                ticket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
+                                                                            }
+                                                                        `}></div>
+                                                                    </div>
+                                                                    {/* Date and Time */}
+                                                                    <p className="text-xs text-right col-span-4">{formatDate(ticket.created_at).replace(",", "")}</p>
+                                                                </div>
+                                                                {/* Subject */}
+                                                                <h2 className="font-medium text-xs text-left">{ticket.subject}</h2>
+                                                                {/* Description at Notif Count */}
+                                                                <div className="w-full h-6 flex items-center">
+                                                                    <p className="text-xs truncate flex-1 text-left">{ticket.description}</p>
+                                                                    { ticket.requester_notif_count > 0 && (
+                                                                        <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
+                                                                            { ticket.requester_notif_count }
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </>
+                                                ))}
+                                            </>
+                                        )
+                                        : (
+                                            <>
+                                                <div className="w-full h-auto flex flex-col items-center pt-5">
+                                                    <h1 className="text-3xl font-bold">No Requests</h1>
+                                                    {/* <img src="/icons/empty_email.png" className="w-3/5 mt-5" alt="empty email" /> */}
                                                 </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </button>
-                            </>
-                        ))}
+                                            </>
+                                        )
+                                    }
+                                </>
+                            )
+                        }
+
                     </div>
                 </div>
 
@@ -356,110 +376,115 @@ const HomeIndex = () => {
                     <div className="w-full h-[calc(100%-136px)] text-[#454545]">
                         <div className="w-full h-full flex">
                             <div className="w-[calc(100%-360px)] h-full border-r border-[#ccc] relative">
-                                {   selectLoading && (
-                                        <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center bg-neutral-800/10 z-20">
-                                            <div className="h-16">
-                                                <Loading />
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                                <div className="w-full h-full p-6">
-                                    {/* Header */}
-                                    <div className="w-full h-18">
-                                        <div className="w-full h-full flex justify-between">
-                                            <div className="h-12 w-1/2 flex">
-                                                <img src={(selectedTicket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${selectedTicket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
-                                                <div className="flex flex-col justify-center pl-1.5">
-                                                    <h1 className="font-semibold leading-4">{selectedTicket.assigned_user}</h1>
-                                                    <p className="text-xs">{selectedTicket.assigned_department}</p>
+                                { selectedTicket && ticketList.length > 0 ? (
+                                    <>
+                                    {
+                                        selectLoading && (
+                                            <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center bg-neutral-800/10 z-20">
+                                                <div className="h-16">
+                                                    <Loading />
                                                 </div>
                                             </div>
-                                            <div className="h-12 flex items-center gap-x-2 py-2">
-                                                <div className="flex flex-col items-end">
-                                                    <p className="text-xs">{formatDate(selectedTicket.created_at).replace(",", "")}</p>
+                                        )
+                                    }
+                                    <div className="w-full h-full p-6">
+                                        {/* Header */}
+                                        <div className="w-full h-18">
+                                            <div className="w-full h-full flex justify-between">
+                                                <div className="h-12 w-1/2 flex">
+                                                    <img src={(selectedTicket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${selectedTicket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
+                                                    <div className="flex flex-col justify-center pl-1.5">
+                                                        <h1 className="font-semibold leading-4">{selectedTicket.assigned_user}</h1>
+                                                        <p className="text-xs">{selectedTicket.assigned_department}</p>
+                                                    </div>
                                                 </div>
-                                                <div className="h-full aspect-square relative">
-                                                    <button onClick={()=>setShowTicketMenu(true)} className="w-full h-full flex items-center justify-center cursor-pointer rounded-lg hover:bg-neutral-200">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                                                            <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
-                                                        </svg>
-                                                    </button>
-                                                    {
-                                                        showTicketMenu &&
-                                                        <>
-                                                            <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
-                                                            <div className="w-60 h-auto absolute right-4 bottom-1 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
-                                                                <div className="w-full flex flex-col">
-                                                                    <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Start Ticket</button>
-                                                                    <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Mark as Completed</button>
-                                                                    <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-b-lg">Cancel Ticket</button>
+                                                <div className="h-12 flex items-center gap-x-2 py-2">
+                                                    <div className="flex flex-col items-end">
+                                                        <p className="text-xs">{formatDate(selectedTicket.created_at).replace(",", "")}</p>
+                                                    </div>
+                                                    <div className="h-full aspect-square relative">
+                                                        <button onClick={()=>setShowTicketMenu(true)} className="w-full h-full flex items-center justify-center cursor-pointer rounded-lg hover:bg-neutral-200">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                                                                <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
+                                                            </svg>
+                                                        </button>
+                                                        {
+                                                            showTicketMenu &&
+                                                            <>
+                                                                <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
+                                                                <div className="w-60 h-auto absolute right-4 bottom-1 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
+                                                                    <div className="w-full flex flex-col">
+                                                                        <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Start Ticket</button>
+                                                                        <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Mark as Completed</button>
+                                                                        <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-b-lg">Cancel Ticket</button>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </>
-                                                    }
+                                                            </>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <hr className="border-[#ccc]"/>
                                         </div>
-                                        <hr className="border-[#ccc]"/>
-                                    </div>
-                                    
-                                    {/* Body */}
-                                    <div className="w-full h-[calc(100%-72px)] py-6 overflow-x-hidden overflow-y-auto">
-                                        <div className="w-full flex flex-col">
-                                            <div className="flex items-center justify-between">
-                                                <h1 className="text-lg font-semibold">{selectedTicket.ticket_number}</h1>
-                                                <p className={`bg-emerald-500 text-white text-sm font-bold px-2 py-1 rounded tracking-wide
-                                                        ${
-                                                            selectedTicket.status === 'pending' ? 'bg-red-500 border-red-600' : 
-                                                            selectedTicket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
-                                                            selectedTicket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
-                                                        }`}>
-                                                    {(selectedTicket.status).replace('_', '-').toUpperCase()}
-                                                </p>
-                                            </div>
-                                            <h2 className="text-sm font-semibold mt-6">{selectedTicket.ticket_category}</h2>
-                                            <h1 className="font-semibold mt-1">{selectedTicket.subject}</h1>
-                                            <div className="text-sm leading-4 mt-3">{selectedTicket.description}</div>
-                                            <div className="w-full mt-6">
+                                        
+                                        {/* Body */}
+                                        <div className="w-full h-[calc(100%-72px)] py-6 overflow-x-hidden overflow-y-auto">
+                                            <div className="w-full flex flex-col">
                                                 <div className="flex items-center justify-between">
-                                                    <h1 className="text-sm font-bold">Attachment/s</h1>
-                                                    <button onClick={()=>handleDownloadAll(selectedTicket.id)} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
+                                                    <h1 className="text-lg font-semibold">{selectedTicket.ticket_number}</h1>
+                                                    <p className={`bg-emerald-500 text-white text-sm font-bold px-2 py-1 rounded tracking-wide
+                                                            ${
+                                                                selectedTicket.status === 'pending' ? 'bg-red-500 border-red-600' : 
+                                                                selectedTicket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
+                                                                selectedTicket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
+                                                            }`}>
+                                                        {(selectedTicket.status).replace('_', '-').toUpperCase()}
+                                                    </p>
                                                 </div>
-                                                <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
-                                                    {/* Attachments */}
-                                                    { 
-                                                        selectedTicket.attachments &&
-                                                        (
-                                                            selectedTicket.attachments.map((att)=>(
-                                                                <>
-                                                                    <button onClick={() => handleSingleDownload(selectedTicket.id, att.file_path)} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
-                                                                        <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                                            <img src={`/icons/${
-                                                                                ['jpg', 'png'].includes(getFileExtension(att.file_path)) ?
-                                                                                'image.png' : ['pdf'].includes(getFileExtension(att.file_path)) ?
-                                                                                'pdf.png' : ['doc', 'docx'].includes(getFileExtension(att.file_path)) ?
-                                                                                'doc.png' : ['ppt', 'pptx'].includes(getFileExtension(att.file_path)) ?
-                                                                                'ppt.png' : ['xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
-                                                                                'xls.png' : ''
-                                                                            }`} className="w-9 h-9" alt="icon" />
-                                                                        </div>
-                                                                        <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
-                                                                            <h1 className="w-full truncate text-xs text-left text-neutral-800/90">{att.file_path}</h1>
-                                                                        </div>
-                                                                        <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                                        </div>
-                                                                    </button>
-                                                                </>
-                                                            ))
-                                                        )
-                                                    }
+                                                <h2 className="text-sm font-semibold mt-6">{selectedTicket.ticket_category}</h2>
+                                                <h1 className="font-semibold mt-1">{selectedTicket.subject}</h1>
+                                                <div className="text-sm leading-4 mt-3">{selectedTicket.description}</div>
+                                                <div className="w-full mt-6">
+                                                    <div className="flex items-center justify-between">
+                                                        <h1 className="text-sm font-bold">Attachment/s</h1>
+                                                        <button onClick={()=>handleDownloadAll(selectedTicket.id)} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
+                                                    </div>
+                                                    <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
+                                                        {/* Attachments */}
+                                                        { 
+                                                            selectedTicket.attachments &&
+                                                            (
+                                                                selectedTicket.attachments.map((att, index)=>(
+                                                                    <>
+                                                                        <button key={index} onClick={() => handleSingleDownload(selectedTicket.id, att.file_path)} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                                            <div className="h-full aspect-square flex items-center justify-center rounded text-white">
+                                                                                <img src={`/icons/${
+                                                                                    ['jpg', 'png'].includes(getFileExtension(att.file_path)) ?
+                                                                                    'image.png' : ['pdf'].includes(getFileExtension(att.file_path)) ?
+                                                                                    'pdf.png' : ['doc', 'docx'].includes(getFileExtension(att.file_path)) ?
+                                                                                    'doc.png' : ['ppt', 'pptx'].includes(getFileExtension(att.file_path)) ?
+                                                                                    'ppt.png' : ['xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
+                                                                                    'xls.png' : ''
+                                                                                }`} className="w-9 h-9" alt="icon" />
+                                                                            </div>
+                                                                            <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
+                                                                                <h1 className="w-full truncate text-xs text-left text-neutral-800/90">{att.file_path}</h1>
+                                                                            </div>
+                                                                            <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                                                                            </div>
+                                                                        </button>
+                                                                    </>
+                                                                ))
+                                                            )
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    </>
+                                ) : ''}
                             </div>
                             {/* Ticket Updates */}
                             <div className="w-90 h-full relative">
@@ -477,11 +502,11 @@ const HomeIndex = () => {
                                     </div>
                                     <div className="h-[calc(100%-80px)] w-full flex flex-col-reverse gap-y-2 py-3 text-sm overflow-x-hidden overflow-y-auto">
                                         {
-                                            selectedTicket.updates &&
-                                                selectedTicket.updates.map(update=>(
+                                            selectedTicket?.updates &&
+                                                selectedTicket.updates.map((update, index)=>(
                                                     (update.user_id === me.id) ?
                                                     (
-                                                        <div className="flex flex-col justify-end items-end">
+                                                        <div key={index} className="flex flex-col justify-end items-end">
                                                             <span className="text-[11px] font-semibold mr-3.5 h-3"></span>
                                                             <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
                                                                 {update.message}
@@ -492,7 +517,7 @@ const HomeIndex = () => {
                                                     ) 
                                                     : 
                                                     (
-                                                        <div className="flex flex-col justify-end items-start">
+                                                        <div key={index} className="flex flex-col justify-end items-start">
                                                             <span className="text-[11px] font-semibold ml-3.5">{update.created_by}</span>
                                                             <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
                                                                 {update.message}

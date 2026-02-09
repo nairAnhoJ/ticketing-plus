@@ -65,20 +65,7 @@ const initialState: InitialState = {
         needs_feedback: 0
     },
     ticketList: [],
-    selectedTicket: {
-        id: 4,
-        ticket_number: '',
-        ticket_category: '',
-        assigned_user: '',
-        assigned_user_avatar: null,
-        assigned_department: '',
-        status: '',
-        subject: '',
-        description: '',
-        attachments: null,
-        updates: null,
-        created_at: ''
-    },
+    selectedTicket: null,
     listLoading: false,
     selectLoading: false
 }
@@ -114,20 +101,7 @@ const homeSlice = createSlice({
     },
     extraReducers(builder) { builder 
         .addCase(fetchMyRequests.pending, (state) => {
-            state.selectedTicket = {
-                id: 0,
-                ticket_number: '',
-                ticket_category: '',
-                assigned_user: '',
-                assigned_user_avatar: null,
-                assigned_department: '',
-                status: '',
-                subject: '',
-                description: '',
-                attachments: null,
-                updates: null,
-                created_at: ''
-    };
+            state.selectedTicket = null;
             state.listLoading = true;
             state.ticketList = [];
             // state.errors = null;
