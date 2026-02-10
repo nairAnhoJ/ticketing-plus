@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchInChargeDepartments } from "./createTicketSlice";
+import { fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories } from "./createTicketSlice";
 
 
 const CreateTicket = () => {
     const dispatch = useAppDispatch();
 
-    const { inchargeDepatments } = useAppSelector((state) => state.createTicket);
+    const { inchargeDepatments, ticketCategories, inchargeUsers } = useAppSelector((state) => state.createTicket);
     const [tab, setTab] = useState<number>(1);
+    const [description, setDescription] = useState<string | null>(null)
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -16,7 +17,11 @@ const CreateTicket = () => {
     }, [])
 
     const handleDepartmentInchargeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log(e.target.value)
+        dispatch(fetchTicketCategories(Number(e.target.value)));
+    }
+
+    const handleTicketCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        dispatch(fetchInchargeUser(Number(e.target.value)));
     }
 
     const handleTextArea = (e: React.FormEvent<HTMLTextAreaElement>) => {
@@ -198,18 +203,64 @@ const CreateTicket = () => {
                                         </div>
                                         <div className="flex flex-col mt-3">
                                             <label className="text-sm">Ticket Category</label>
-                                            <select name="assigned_user_id" className="border border-neutral-400 px-1 py-1 rounded focus:outline-0">
-                                                <option value="">Hardware</option>
+                                            <select onChange={(e)=>handleTicketCategoryChange(e)} disabled={!(ticketCategories.length > 0)} name="assigned_user_id" className="border border-neutral-400 px-1 py-1 rounded focus:outline-0 disabled:opacity-60">
+                                                {
+                                                    (ticketCategories.length > 0) ?
+                                                        ticketCategories.map((category, index)=>(
+                                                            <>
+                                                                <option key={index} value={category.id} className="first:hidden">{category.name}</option>
+                                                            </>
+                                                        ))
+                                                    :
+                                                    <option>Select an option</option>
+                                                }
                                             </select>
                                         </div>
                                         <div className="flex flex-col mt-3">
                                             <label className="text-sm">User In-Charge</label>
-                                            <h1 className="leading-4 font-semibold">John Arian Malondras</h1>
+                                            <div className="leading-4 font-semibold">
+                                                {   
+                                                    (inchargeUsers.length > 0) ?
+                                                        <>
+                                                            {
+                                                                inchargeUsers.find(user => (user.is_primary === 1)) && (
+                                                                    <>
+                                                                        <h1>{inchargeUsers.find(user => (user.is_primary === 1))?.user_name} •</h1>
+                                                                    </>
+                                                                )
+                                                            }
+                                                            {
+                                                                inchargeUsers.map((user, index)=>(
+                                                                    <>
+                                                                        {   
+                                                                            (user.is_primary !== 1) && (
+                                                                                <p key={index}>{user.user_name}</p>
+                                                                            )
+                                                                        }
+                                                                    </>
+                                                                ))
+                                                            }
+                                                        </>
+                                                    :
+                                                    (
+                                                        <>
+                                                            -
+                                                        </>
+                                                    )
+                                                }
+                                            </div>
                                         </div>
-                                        <div className="flex flex-col mt-3">
+                                        {
+                                            description && 
+                                            <div className="flex flex-col mt-3">
+                                                <label className="text-sm">Ticket Category Remarks</label>
+                                                <h1 className="text-sm leading-3.5">{description}</h1>
+                                            </div>
+                                        }
+                                        {/* <div className="flex flex-col mt-3">
                                             <label className="text-sm">Ticket Category Remarks</label>
                                             <h1 className="text-sm leading-3.5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed nemo mollitia voluptatum eos corrupti laudantium ea, similique iusto possimus neque eaque, delec</h1>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="w-full flex py-6 border-b border-neutral-400">
