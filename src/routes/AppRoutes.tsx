@@ -6,7 +6,7 @@ import LoginPage from '../features/auth/LoginPage'
 
 
 import HomeIndex from '../features/home/HomeIndex'
-import CreateTicket from '../features/home/createTicket'
+import CreateTicket from '../features/create/createTicket'
 
 
 import Inbox from '../features/inbox/InboxIndex'

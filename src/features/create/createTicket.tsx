@@ -1,10 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { fetchInChargeDepartments } from "./createTicketSlice";
 
 
 const CreateTicket = () => {
+    const dispatch = useAppDispatch();
+
+    const { inchargeDepatments } = useAppSelector((state) => state.createTicket);
     const [tab, setTab] = useState<number>(1);
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        dispatch(fetchInChargeDepartments());
+    }, [])
+
+    const handleDepartmentInchargeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log(e.target.value)
+    }
 
     const handleTextArea = (e: React.FormEvent<HTMLTextAreaElement>) => {
         const el = e.currentTarget;
@@ -44,7 +57,7 @@ const CreateTicket = () => {
                                     <div className="flex flex-col relative">
                                         <label className="text-sm">Department In-Charge</label>
                                         <select name="assigned_department_id" className="border border-neutral-400 px-3 py-2 rounded-lg outline-blue-500 appearance-none z-2">
-                                            <option value="">IT</option>
+                                            <option value="0">- - -</option>
                                         </select>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 absolute right-3 bottom-2.5 z-1" viewBox="0 -960 960 960" fill="currentColor">
                                             <path d="M480-344 240-584l47.33-47.33L480-438.67l192.67-192.66L720-584 480-344Z"/>
@@ -172,8 +185,15 @@ const CreateTicket = () => {
                                     <div className="w-3/5">
                                         <div className="flex flex-col">
                                             <label className="text-sm">Department In-Charge</label>
-                                            <select name="assigned_department_id" className="border border-neutral-400 px-1 py-1 rounded focus:outline-0">
-                                                <option value="">IT</option>
+                                            <select onChange={(e) => handleDepartmentInchargeChange(e)} name="assigned_department_id" className="border border-neutral-400 px-1 py-1 rounded focus:outline-0">
+                                                <option value="0" className="hidden">Select an option</option>
+                                                {
+                                                    inchargeDepatments?.map((dept, index)=>(
+                                                        <>
+                                                            <option key={index} value={dept.department_id}>{dept.department_name}</option>
+                                                        </>
+                                                    ))
+                                                }
                                             </select>
                                         </div>
                                         <div className="flex flex-col mt-3">
