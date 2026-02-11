@@ -1,10 +1,30 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories } from "./createTicketSlice";
 
 
 const CreateTicket = () => {
+    const dispatch = useAppDispatch();
+
+    const { inchargeDepatments, ticketCategories, inchargeUsers } = useAppSelector((state) => state.createTicket);
     const [tab, setTab] = useState<number>(1);
+    const [description, setDescription] = useState<string | null>(null)
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        dispatch(fetchInChargeDepartments());
+    }, [])
+
+    const handleDepartmentInchargeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        dispatch(fetchTicketCategories(Number(e.target.value)));
+    }
+
+    const handleTicketCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const cat = ticketCategories.find(cat => cat.id === Number(e.target.value));
+        setDescription(cat?.description || null);
+        dispatch(fetchInchargeUser(Number(e.target.value)));
+    }
 
     const handleTextArea = (e: React.FormEvent<HTMLTextAreaElement>) => {
         const el = e.currentTarget;
@@ -22,6 +42,10 @@ const CreateTicket = () => {
         }else{
             navigate('/')
         }
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
     }
 
     return (
@@ -44,7 +68,7 @@ const CreateTicket = () => {
                                     <div className="flex flex-col relative">
                                         <label className="text-sm">Department In-Charge</label>
                                         <select name="assigned_department_id" className="border border-neutral-400 px-3 py-2 rounded-lg outline-blue-500 appearance-none z-2">
-                                            <option value="">IT</option>
+                                            <option value="0">- - -</option>
                                         </select>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 absolute right-3 bottom-2.5 z-1" viewBox="0 -960 960 960" fill="currentColor">
                                             <path d="M480-344 240-584l47.33-47.33L480-438.67l192.67-192.66L720-584 480-344Z"/>
@@ -155,11 +179,11 @@ const CreateTicket = () => {
             {/* For Desktop */}
             <div className="hidden lg:flex w-screen h-dvh overflow-hidden text-neutral-600">
                 <div className="w-full h-full pl-16">
-                    <div className="w-full xl:w-250 h-full p-6">
+                    <form onSubmit={handleSubmit} className="w-full xl:w-250 h-full p-6">
                         <div className="w-full pb-6 flex items-center justify-between border-b border-neutral-300">
                             <h1 className="text-2xl font-bold">Write a Ticket</h1>
                             <div className="flex gap-x-3">
-                                <button className="bg-neutral-600 shadow shadow-neutral-700 rounded text-sm w-24 py-1.5 font-bold text-white cursor-pointer">Cancel</button>
+                                <Link to={'/'} className="bg-neutral-600 shadow shadow-neutral-700 rounded text-sm w-24 py-1.5 font-bold text-white cursor-pointer text-center">Cancel</Link>
                                 <button className="bg-blue-500 shadow shadow-blue-700 rounded text-sm w-24 py-1.5 font-bold text-white cursor-pointer">Submit</button>
                             </div>
                         </div>
@@ -172,24 +196,77 @@ const CreateTicket = () => {
                                     <div className="w-3/5">
                                         <div className="flex flex-col">
                                             <label className="text-sm">Department In-Charge</label>
-                                            <select name="assigned_department_id" className="border border-neutral-400 px-1 py-1 rounded focus:outline-0">
-                                                <option value="">IT</option>
+                                            <select onChange={(e) => handleDepartmentInchargeChange(e)} name="assigned_department_id" className="border border-neutral-400 px-1 py-1 rounded focus:outline-0">
+                                                <option value="0" className="hidden">Select an option</option>
+                                                {
+                                                    inchargeDepatments?.map((dept, index)=>(
+                                                        <>
+                                                            <option key={index} value={dept.department_id}>{dept.department_name}</option>
+                                                        </>
+                                                    ))
+                                                }
                                             </select>
                                         </div>
                                         <div className="flex flex-col mt-3">
                                             <label className="text-sm">Ticket Category</label>
-                                            <select name="assigned_user_id" className="border border-neutral-400 px-1 py-1 rounded focus:outline-0">
-                                                <option value="">Hardware</option>
+                                            <select onChange={(e)=>handleTicketCategoryChange(e)} disabled={!(ticketCategories.length > 0)} name="assigned_user_id" className="border border-neutral-400 px-1 py-1 rounded focus:outline-0 disabled:opacity-60">
+                                                {
+                                                    (ticketCategories.length > 0) ?
+                                                        ticketCategories.map((category, index)=>(
+                                                            <>
+                                                                <option key={index} value={category.id} className="first:hidden">{category.name}</option>
+                                                            </>
+                                                        ))
+                                                    :
+                                                    <option>Select an option</option>
+                                                }
                                             </select>
                                         </div>
                                         <div className="flex flex-col mt-3">
                                             <label className="text-sm">User In-Charge</label>
-                                            <h1 className="leading-4 font-semibold">John Arian Malondras</h1>
+                                            <div className="leading-4 font-semibold">
+                                                {   
+                                                    (inchargeUsers.length > 0) ?
+                                                        <>
+                                                            {
+                                                                inchargeUsers.find(user => (user.is_primary === 1)) && (
+                                                                    <>
+                                                                        <h1><span className="text-sm">★ </span>{inchargeUsers.find(user => (user.is_primary === 1))?.user_name}</h1>
+                                                                    </>
+                                                                )
+                                                            }
+                                                            {
+                                                                inchargeUsers.map((user, index)=>(
+                                                                    <>
+                                                                        {   
+                                                                            (user.is_primary !== 1) && (
+                                                                                <p key={index} className="ml-3.75">{user.user_name}</p>
+                                                                            )
+                                                                        }
+                                                                    </>
+                                                                ))
+                                                            }
+                                                        </>
+                                                    :
+                                                    (
+                                                        <>
+                                                            -
+                                                        </>
+                                                    )
+                                                }
+                                            </div>
                                         </div>
-                                        <div className="flex flex-col mt-3">
+                                        {
+                                            description && 
+                                            <div className="flex flex-col mt-3">
+                                                <label className="text-sm">Ticket Category Remarks</label>
+                                                <h1 className="text-sm leading-3.5">{description}</h1>
+                                            </div>
+                                        }
+                                        {/* <div className="flex flex-col mt-3">
                                             <label className="text-sm">Ticket Category Remarks</label>
                                             <h1 className="text-sm leading-3.5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed nemo mollitia voluptatum eos corrupti laudantium ea, similique iusto possimus neque eaque, delec</h1>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="w-full flex py-6 border-b border-neutral-400">
@@ -290,7 +367,7 @@ const CreateTicket = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </>
