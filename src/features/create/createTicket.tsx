@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories } from "./createTicketSlice";
 
@@ -21,6 +21,8 @@ const CreateTicket = () => {
     }
 
     const handleTicketCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const cat = ticketCategories.find(cat => cat.id === Number(e.target.value));
+        setDescription(cat?.description || null);
         dispatch(fetchInchargeUser(Number(e.target.value)));
     }
 
@@ -40,6 +42,10 @@ const CreateTicket = () => {
         }else{
             navigate('/')
         }
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
     }
 
     return (
@@ -173,11 +179,11 @@ const CreateTicket = () => {
             {/* For Desktop */}
             <div className="hidden lg:flex w-screen h-dvh overflow-hidden text-neutral-600">
                 <div className="w-full h-full pl-16">
-                    <div className="w-full xl:w-250 h-full p-6">
+                    <form onSubmit={handleSubmit} className="w-full xl:w-250 h-full p-6">
                         <div className="w-full pb-6 flex items-center justify-between border-b border-neutral-300">
                             <h1 className="text-2xl font-bold">Write a Ticket</h1>
                             <div className="flex gap-x-3">
-                                <button className="bg-neutral-600 shadow shadow-neutral-700 rounded text-sm w-24 py-1.5 font-bold text-white cursor-pointer">Cancel</button>
+                                <Link to={'/'} className="bg-neutral-600 shadow shadow-neutral-700 rounded text-sm w-24 py-1.5 font-bold text-white cursor-pointer text-center">Cancel</Link>
                                 <button className="bg-blue-500 shadow shadow-blue-700 rounded text-sm w-24 py-1.5 font-bold text-white cursor-pointer">Submit</button>
                             </div>
                         </div>
@@ -225,7 +231,7 @@ const CreateTicket = () => {
                                                             {
                                                                 inchargeUsers.find(user => (user.is_primary === 1)) && (
                                                                     <>
-                                                                        <h1>{inchargeUsers.find(user => (user.is_primary === 1))?.user_name} •</h1>
+                                                                        <h1><span className="text-sm">★ </span>{inchargeUsers.find(user => (user.is_primary === 1))?.user_name}</h1>
                                                                     </>
                                                                 )
                                                             }
@@ -234,7 +240,7 @@ const CreateTicket = () => {
                                                                     <>
                                                                         {   
                                                                             (user.is_primary !== 1) && (
-                                                                                <p key={index}>{user.user_name}</p>
+                                                                                <p key={index} className="ml-3.75">{user.user_name}</p>
                                                                             )
                                                                         }
                                                                     </>
@@ -361,7 +367,7 @@ const CreateTicket = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </>
