@@ -463,7 +463,7 @@ const HomeIndex = () => {
                                                                                     'image.png' : ['pdf'].includes(getFileExtension(att.file_path)) ?
                                                                                     'pdf.png' : ['doc', 'docx'].includes(getFileExtension(att.file_path)) ?
                                                                                     'doc.png' : ['ppt', 'pptx'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'ppt.png' : ['xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
+                                                                                    'ppt.png' : ['csv', 'xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
                                                                                     'xls.png' : ''
                                                                                 }`} className="w-9 h-9" alt="icon" />
                                                                             </div>
