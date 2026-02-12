@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { useEffect, useState } from "react";
-import { fetchMyRequests, fetchSelectedRequest } from "./homeSlice";
+import React, { useEffect, useRef, useState, type ReactEventHandler } from "react";
+import { fetchMyRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./homeSlice";
 import Loading from "../../components/Loading";
 
 const HomeIndex = () => {
@@ -13,9 +13,20 @@ const HomeIndex = () => {
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
     const [search, setSearch] = useState<string>('');
+    const [inputUpdate, setInputUpdate] = useState<string>('');
+    const isFirstRender = useRef(true);
     const me = JSON.parse(user);
 
     useEffect(()=>{
+        appDispatch(fetchTicketCounts(me.id));
+    }, [])
+
+    useEffect(()=>{
+        if(isFirstRender){
+            isFirstRender.current = false;
+            return;
+        }
+
         const timer = setTimeout(() => {
             fetchTickets(me.id, search, currentTab);
         }, 1000);
@@ -68,6 +79,18 @@ const HomeIndex = () => {
         window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download-all/${id}`, "_blank");
     }
 
+    const handleUpdateKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const key = e.key;
+        if(key === "Enter"){
+            handleSubmitUpdate();
+        }
+    }
+
+    const handleSubmitUpdate = () => {
+        appDispatch(sendUpdate({id: selectedTicket!.id, user_id: me.id,  message: inputUpdate}))
+        setInputUpdate('');
+    }
+
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -118,15 +141,15 @@ const HomeIndex = () => {
                 </div>
                 <div className="w-full sm:w-112.5 h-15 flex gap-x-2 pb-2 px-2.5 mb-2 mx-auto">
                     <div className="bg-red-400 w-full rounded-xl flex flex-col justify-center items-center">
-                        <p className="font-bold text-lg leading-5">99</p>
+                        <p className="font-bold text-lg leading-5">{ticketCount.pending}</p>
                         <p className="text-xs leading-3.5">Pending</p>
                     </div>
                     <div className="bg-amber-400 w-full rounded-xl flex flex-col justify-center items-center">
-                        <p className="font-bold text-lg leading-5">99</p>
+                        <p className="font-bold text-lg leading-5">{ticketCount.in_progress}</p>
                         <p className="text-xs leading-3.5">In-Progress</p>
                     </div>
                     <div className="bg-emerald-400 w-full rounded-xl flex flex-col justify-center items-center">
-                        <p className="font-bold text-lg leading-5">99</p>
+                        <p className="font-bold text-lg leading-5">{ticketCount.needs_feedback}</p>
                         <p className="text-xs leading-3.5">Needs Feedback</p>
                     </div>
                 </div>
@@ -375,6 +398,7 @@ const HomeIndex = () => {
                     {/* Ticket Details */}
                     <div className="w-full h-[calc(100%-136px)] text-[#454545]">
                         <div className="w-full h-full flex">
+                            {/* Ticket Details */}
                             <div className="w-[calc(100%-360px)] h-full border-r border-[#ccc] relative">
                                 { selectedTicket && ticketList.length > 0 ? (
                                     <>
@@ -432,7 +456,7 @@ const HomeIndex = () => {
                                             <div className="w-full flex flex-col">
                                                 <div className="flex items-center justify-between">
                                                     <h1 className="text-lg font-semibold">{selectedTicket.ticket_number}</h1>
-                                                    <p className={`bg-emerald-500 text-white text-sm font-bold px-2 py-1 rounded tracking-wide
+                                                    <p className={`text-white text-sm font-bold px-2 py-1 rounded tracking-wide
                                                             ${
                                                                 selectedTicket.status === 'pending' ? 'bg-red-500 border-red-600' : 
                                                                 selectedTicket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
@@ -531,8 +555,8 @@ const HomeIndex = () => {
                                     </div>
                                     <div className="w-full h-12 mt-3">
                                         <div className="w-full h-full relative">
-                                            <input type="text" className="w-full h-full border border-neutral-300/80 text-sm rounded-xl pl-2 pb-0.5 pr-10 focus:outline-0 shadow-inner shadow-neutral-400" placeholder="Message"/>
-                                            <button className="w-9 h-9 absolute top-1.5 right-1 flex items-center justify-center cursor-pointer text-blue-600/80 hover:text-blue-600 rounded-full">
+                                            <input onKeyDown={(e)=>handleUpdateKeydown(e)} onChange={(e)=>setInputUpdate(e.target.value)} value={inputUpdate} type="text" className="w-full h-full border border-neutral-300/80 text-sm rounded-xl pl-2 pb-0.5 pr-10 focus:outline-0 shadow-inner shadow-neutral-400" placeholder="Message"/>
+                                            <button onClick={handleSubmitUpdate} className="w-9 h-9 absolute top-1.5 right-1 flex items-center justify-center cursor-pointer text-blue-600/80 hover:text-blue-600 rounded-full">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 -960 960 960" fill="currentColor"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg>
                                             </button>
                                         </div>

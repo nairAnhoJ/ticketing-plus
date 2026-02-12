@@ -81,10 +81,31 @@ export const fetchMyRequests = createAsyncThunk('my-requests/fetch', async ({id,
     }
 });
 
+export const fetchTicketCounts = createAsyncThunk('my-requests/ticket-counts', async (id: number) => {
+    try {
+        console.log(id)
+        const res = await config.get(`/my-requests/ticket-counts/${id}`);
+        console.log(res.data)
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 export const fetchSelectedRequest = createAsyncThunk('my-requests/fetch-by-id', async (id: number) => {
     try {
         const ticket = await config.get(`/my-requests/${id}`);
         return ticket.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+export const sendUpdate = createAsyncThunk('my-requests/send-update', async ({id, user_id, message}: {id: number, user_id: number, message: string}) => {
+    try {
+        const res = await config.post(`/my-requests/${id}/send-update`, {user_id, message});
+        console.log(res.data)
+        return res.data;
     } catch (error) {
         console.log(error)
     }
@@ -111,6 +132,14 @@ const homeSlice = createSlice({
             state.ticketList = payload.payload ?? [];
             // state.errors = null;
         })
+
+        
+        .addCase(fetchTicketCounts.fulfilled, (state, payload) => {
+            state.ticketCount = payload.payload;
+        })
+
+
+
         .addCase(fetchSelectedRequest.pending, (state) => {
             state.selectLoading = true;
             // state.errors = null;
@@ -119,7 +148,15 @@ const homeSlice = createSlice({
             console.log(payload.payload)
             state.selectLoading = false;
             state.selectedTicket = payload.payload;
+            state.ticketList.find(t=>t.id === payload.payload.id)!.requester_notif_count = 0;
             // state.errors = null;
+        })
+
+        
+        .addCase(sendUpdate.fulfilled, (state, payload) => {
+            if(state.selectedTicket){
+                state.selectedTicket.updates = payload.payload;
+            }
         })
     },
 })
