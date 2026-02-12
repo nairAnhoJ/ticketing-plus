@@ -38,7 +38,6 @@ const initialState: InitialState = {
 export const fetchInChargeDepartments = createAsyncThunk('create-ticket/incharge-departments', async () => {
     try {
         const res = await config.get(`/incharge-departments`);
-        console.log(res.data)
         return res.data;
     } catch (error) {
         console.log(error)
@@ -48,7 +47,6 @@ export const fetchInChargeDepartments = createAsyncThunk('create-ticket/incharge
 export const fetchTicketCategories = createAsyncThunk('create-ticket/ticket-categories', async (id: number) => {
     try {
         const res = await config.get(`/ticket-categories/${id}`);
-        console.log(res.data)
         return res.data;
     } catch (error) {
         console.log(error)
@@ -57,8 +55,19 @@ export const fetchTicketCategories = createAsyncThunk('create-ticket/ticket-cate
 
 export const fetchInchargeUser = createAsyncThunk('create-ticket/incharge-user', async (id: number) => {
     try {
-        console.log(id)
         const res = await config.get(`/incharge-users/${id}`);
+        console.log(res.data)
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+export const storeTicket = createAsyncThunk('create-ticket/store-ticket', async (data: any) => {
+    try {
+        const res = await config.post(`/my-requests/store`, data, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
         console.log(res.data)
         return res.data;
     } catch (error) {
