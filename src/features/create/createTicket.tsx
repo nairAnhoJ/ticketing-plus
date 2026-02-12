@@ -17,6 +17,7 @@ type FormFields = z.infer<typeof schema>;
 
 const CreateTicket = () => {
     const dispatch = useAppDispatch();
+
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormFields>({ resolver: zodResolver(schema) });
     const [files, setFiles] = useState<any>([]);
     const { inchargeDepatments, ticketCategories, inchargeUsers } = useAppSelector((state) => state.createTicket);
@@ -84,7 +85,8 @@ const CreateTicket = () => {
         console.log((inchargeUsers.length > 0) ? inchargeUsers.find(user => (user.is_primary === 1))?.user_id || '' : '');
         console.log(data.assigned_department_id);
         dispatch(storeTicket(formData));
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        navigate("/");
+        // await new Promise((resolve) => setTimeout(resolve, 1000))
     }
 
     return (

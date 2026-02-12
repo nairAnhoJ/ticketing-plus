@@ -68,7 +68,6 @@ export const storeTicket = createAsyncThunk('create-ticket/store-ticket', async 
         const res = await config.post(`/my-requests/store`, data, {
             headers: { "Content-Type": "multipart/form-data" },
         });
-        console.log(res.data)
         return res.data;
     } catch (error) {
         console.log(error)
