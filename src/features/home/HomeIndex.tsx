@@ -495,20 +495,35 @@ const HomeIndex = () => {
                                                         <p className="text-xs">{formatDate(selectedTicket.created_at).replace(",", "")}</p>
                                                     </div>
                                                     <div className="h-full aspect-square relative">
-                                                        <button onClick={()=>setShowTicketMenu(true)} className="w-full h-full flex items-center justify-center cursor-pointer rounded-lg hover:bg-neutral-200">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                                                                <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
-                                                            </svg>
-                                                        </button>
+                                                        {
+                                                             selectedTicket.status === 'pending' && me.id === selectedTicket.created_by && (
+                                                                <button onClick={()=>setShowTicketMenu(true)} className="w-full h-full flex items-center justify-center cursor-pointer rounded-lg hover:bg-neutral-200">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                                                                        <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
+                                                                    </svg>
+                                                                </button>
+                                                            )
+                                                        }
                                                         {
                                                             showTicketMenu &&
                                                             <>
                                                                 <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
                                                                 <div className="w-40 h-auto absolute right-0 -bottom-0.5 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
                                                                     <div className="w-full flex flex-col">
+                                                                        <button
+                                                                            onClick={() => handleShowConfirmationModal({
+                                                                                type: 'cancel',
+                                                                                title: 'Cancel Ticket?',
+                                                                                msg: 'If you cancel the ticket, you cannot revert it. Are you sure you want to proceed?',
+                                                                                confirmText: 'Yes',
+                                                                                cancelText: 'Cancel'
+                                                                            })}
+                                                                            className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                            Cancel Ticket
+                                                                        </button>
                                                                         {/* <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Start Ticket</button>
                                                                         <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Mark as Completed</button> */}
-                                                                        {
+                                                                        {/* {
                                                                             selectedTicket.status === 'pending' && me.id === selectedTicket.created_by && (
                                                                                 <button
                                                                                     onClick={() => handleShowConfirmationModal({
@@ -522,7 +537,7 @@ const HomeIndex = () => {
                                                                                     Cancel Ticket
                                                                                 </button>
                                                                             )
-                                                                        }
+                                                                        } */}
                                                                     </div>
                                                                 </div>
                                                             </>
@@ -540,9 +555,9 @@ const HomeIndex = () => {
                                                     <h1 className="text-lg font-semibold">{selectedTicket.ticket_number}</h1>
                                                     <p className={`text-white text-sm font-bold px-2 py-1 rounded tracking-wide
                                                             ${
-                                                                selectedTicket.status === 'pending' ? 'bg-red-500 border-red-600' : 
+                                                                selectedTicket.status === 'pending' || selectedTicket.status === 'cancelled' ? 'bg-red-500 border-red-600' : 
                                                                 selectedTicket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
-                                                                selectedTicket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
+                                                                selectedTicket.status === 'needs_feedback' || selectedTicket.status === 'completed' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
                                                             }`}>
                                                         {(selectedTicket.status).replace('_', '-').toUpperCase()}
                                                     </p>
