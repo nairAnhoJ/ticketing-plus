@@ -47,7 +47,7 @@ const Navigation = () => {
                     {/* Expand Menu Button */}
                     <button onClick={()=>setExpandMenu(!expandMenu)} className={`absolute top-10 -right-5 h-10 rounded-full flex items-center justify-center bg-[#252525] border border-[#505050] text-white cursor-pointer ${expandMenu && 'rotate-180'}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 0 24 24" fill="currentColor">
-                            <g id="feArrowRight0" fill="none" fill-rule="evenodd" stroke="none" stroke-width="1">
+                            <g id="feArrowRight0" fill="none" fillRule="evenodd" stroke="none" strokeWidth="1">
                                 <g id="feArrowRight1" fill="currentColor">
                                     <path id="feArrowRight2" d="m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z"/>
                                 </g>
@@ -108,7 +108,7 @@ const Navigation = () => {
                                     <p className="text-xs leading-3">{JSON.parse(user).department}</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <g id="feArrowRight0" fill="none" fill-rule="evenodd" stroke="none" stroke-width="1">
+                                    <g id="feArrowRight0" fill="none" fillRule="evenodd" stroke="none" strokeWidth="1">
                                         <g id="feArrowRight1" fill="currentColor">
                                             <path id="feArrowRight2" d="m9.005 4l8 8l-8 8L7 18l6.005-6L7 6z"/>
                                         </g>
