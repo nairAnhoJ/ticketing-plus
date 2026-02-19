@@ -26,7 +26,11 @@ export interface Attachment {
 export interface Ticket{
     id: number;
     assigned_user: string;
+    assigned_user_first_name: string;
+    assigned_user_last_name: string;
     assigned_user_avatar: string | null;
+    assigned_user_bg_color: string;
+    assigned_user_text_color: string;
     assigned_department: string;
     status: string;
     subject: string;
@@ -40,7 +44,11 @@ export interface SelectedTicket{
     ticket_number: string;
     ticket_category: string;
     assigned_user: string;
+    assigned_user_first_name: string;
+    assigned_user_last_name: string;
     assigned_user_avatar: string | null;
+    assigned_user_bg_color: string;
+    assigned_user_text_color: string;
     assigned_department: string;
     status: string;
     subject: string;
@@ -94,6 +102,7 @@ export const fetchTicketCounts = createAsyncThunk('my-requests/ticket-counts', a
 export const fetchSelectedRequest = createAsyncThunk('my-requests/fetch-by-id', async (id: number) => {
     try {
         const ticket = await config.get(`/my-requests/${id}`);
+        console.log(ticket.data)
         return ticket.data;
     } catch (error) {
         console.log(error)

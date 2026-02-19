@@ -396,7 +396,22 @@ const HomeIndex = () => {
                                             <>
                                                 { ticketList.map((ticket, index) => (
                                                     <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket?.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
-                                                        <img src={(ticket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-[#707070]" alt="avatar" />
+                                                        {
+                                                            ticket.assigned_user_avatar ? (
+                                                                <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}`} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
+                                                            )
+                                                            :
+                                                            (
+
+                                                                <div style={{backgroundColor: ticket.assigned_user_bg_color, color: ticket.assigned_user_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                                                    <span>{ticket.assigned_user_first_name[0].toUpperCase()}</span>
+                                                                    <span>{ticket.assigned_user_last_name[0].toUpperCase()}</span>
+                                                                </div>
+                                                            )
+                                                        }
+                                                        
+                                                        
+                                                        {/* <img src={(ticket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-[#707070]" alt="avatar" /> */}
                                                         <div className="flex flex-col w-[calc(100%-48px)]">
                                                             <div className="grid grid-cols-12">
                                                                 {/* Name and Status */}
@@ -450,15 +465,15 @@ const HomeIndex = () => {
                     {/* HEADER / COUNTER */}
                     <div className="w-full h-34 flex items-center justify-center p-6 gap-x-6 text-white border-b border-[#ccc]">
                         <div className="bg-red-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.pending}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.pending > 0 ? ticketCount.pending : 0}</h1>
                             <p className="text-sm">Pending</p>
                         </div>
                         <div className="bg-amber-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.in_progress}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.in_progress > 0 ? ticketCount.pending : 0}</h1>
                             <p className="text-xs">In-Progress</p>
                         </div>
                         <div className="bg-emerald-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.needs_feedback}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.needs_feedback > 0 ? ticketCount.pending : 0}</h1>
                             <p className="text-xs">Needs Feedback</p>
                         </div>
                     </div>
@@ -484,7 +499,19 @@ const HomeIndex = () => {
                                         <div className="w-full h-18">
                                             <div className="w-full h-full flex justify-between">
                                                 <div className="h-12 w-1/2 flex">
-                                                    <img src={(selectedTicket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${selectedTicket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
+                                                    {
+                                                        selectedTicket.assigned_user_avatar ? (
+                                                            <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${selectedTicket.assigned_user_avatar}`} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
+                                                        )
+                                                        :
+                                                        (
+
+                                                            <div style={{backgroundColor: selectedTicket.assigned_user_bg_color, color: selectedTicket.assigned_user_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                                                <span>{selectedTicket.assigned_user_first_name[0].toUpperCase()}</span>
+                                                                <span>{selectedTicket.assigned_user_last_name[0].toUpperCase()}</span>
+                                                            </div>
+                                                        )
+                                                    }
                                                     <div className="flex flex-col justify-center pl-1.5">
                                                         <h1 className="font-semibold leading-4">{selectedTicket.assigned_user}</h1>
                                                         <p className="text-xs">{selectedTicket.assigned_department}</p>
