@@ -26,22 +26,35 @@ export interface Attachment {
 export interface Ticket{
     id: number;
     assigned_user: string;
-    assigned_user_avatar: string | null;
     assigned_department: string;
+    requester: string;
+    requester_first_name: string;
+    requester_last_name: string;
+    requester_avatar: string;
+    requester_text_color: string;
+    requester_bg_color: string;
     status: string;
     subject: string;
     description: string;
     created_at: string;
-    requester_notif_count: number;
+    assigned_notif_count: number;
 }
 
 export interface SelectedTicket{
     id: number;
     ticket_number: string;
     ticket_category: string;
+
+    requester: string;
+    requester_first_name: string;
+    requester_last_name: string;
+    requester_avatar: string;
+    requester_text_color: string;
+    requester_bg_color: string;
+
     assigned_user: string;
-    assigned_user_avatar: string | null;
-    assigned_department: string;
+    requester_department: string;
+
     status: string;
     subject: string;
     description: string;
@@ -95,6 +108,7 @@ export const fetchTicketCounts = createAsyncThunk('inbox/ticket-counts', async (
 export const fetchSelectedRequest = createAsyncThunk('inbox/fetch-by-id', async (id: number) => {
     try {
         const ticket = await config.get(`/inbox/${id}`);
+        console.log(ticket.data)
         return ticket.data;
     } catch (error) {
         console.log(error)
@@ -110,14 +124,14 @@ export const sendUpdate = createAsyncThunk('inbox/send-update', async ({id, user
     }
 });
 
-// export const cancelTicket = createAsyncThunk('my-requests/cancel-ticket', async ({id, user_id}: {id: number, user_id: number}) => {
-//     try {
-//         const res = await config.put(`/my-requests/${id}/cancel-ticket`, {user_id});
-//         return res.data;
-//     } catch (error) {
-//         console.log(error)
-//     }
-// });
+export const changeTicketStatus = createAsyncThunk('inbox/change-status', async ({id, type, user_id}: {id: number, type: 'start' | 'complete', user_id: number}) => {
+    try {
+        const res = await config.put(`/inbox/${id}/change-status`, {type, user_id});
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
 
 
 
@@ -155,23 +169,23 @@ const inboxSlice = createSlice({
         .addCase(fetchSelectedRequest.fulfilled, (state, payload) => {
             state.selectLoading = false;
             state.selectedTicket = payload.payload;
-            state.ticketList.find(t=>t.id === payload.payload.id)!.requester_notif_count = 0;
+            state.ticketList.find(t=>t.id === payload.payload.id)!.assigned_notif_count = 0;
             // state.errors = null;
         })
 
         
-        // .addCase(sendUpdate.fulfilled, (state, payload) => {
-        //     if(state.selectedTicket){
-        //         state.selectedTicket.updates = payload.payload;
-        //     }
-        // })
+        .addCase(sendUpdate.fulfilled, (state, payload) => {
+            if(state.selectedTicket){
+                state.selectedTicket.updates = payload.payload;
+            }
+        })
 
         
-        // .addCase(cancelTicket.fulfilled, (state, payload) => {
-        //     if(state.selectedTicket){
-        //         state.selectedTicket.status = payload.payload;
-        //     }
-        // })
+        .addCase(changeTicketStatus.fulfilled, (state, payload) => {
+            if(state.selectedTicket){
+                state.selectedTicket.status = payload.payload;
+            }
+        })
     },
 })
 

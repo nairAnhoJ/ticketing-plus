@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
 // import { cancelTicket, fetchMyRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./inboxSlice";
-import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate } from "./inboxSlice";
+import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, changeTicketStatus } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 
 interface ConfirmationDetails {
-    type: string;
+    type: "start" | "complete";
     title: string;
     msg: string;
     confirmText: string;
@@ -51,7 +51,7 @@ const HomeIndex = () => {
     const [inputUpdate, setInputUpdate] = useState<string>('');
     const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
     const [confirmationDetails, setConfirmationDetails] = useState<ConfirmationDetails>({
-        type: '',
+        type: 'start',
         title: '',
         msg: '',
         confirmText: '',
@@ -122,9 +122,22 @@ const HomeIndex = () => {
         window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download-all/${id}`, "_blank");
     }
 
-    const handleUpdateKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleUpdateKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         const key = e.key;
-        if(key === "Enter"){
+        if(e.key === "Enter" && e.shiftKey){
+            const textarea = e.currentTarget;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+
+            const newValue = inputUpdate.substring(0, start) + "\n" + inputUpdate.substring(end);
+
+            setInputUpdate(newValue);
+            setTimeout(() => {
+                textarea.selectionStart = textarea.selectionEnd = start + 1;
+            }, 0);
+
+            e.preventDefault();
+        }else if(key === "Enter"){
             handleSubmitUpdate();
         }
     }
@@ -135,23 +148,25 @@ const HomeIndex = () => {
         setShowTicketMenu(false);
     }
 
-    // const handleConfirmCancel = async() => {
-    //     if(selectedTicket){
-    //         await appDispatch(cancelTicket({id: selectedTicket.id, user_id: me.id}))
-    //         await appDispatch(fetchInbox({id: me.id, search: search, status: currentTab}))
-    //         .unwrap()
-    //         .then((tickets)=>{
-    //             if(tickets && tickets.length > 0){
-    //                 appDispatch(fetchSelectedRequest(selectedTicket.id))
-    //             }
-    //         })
-    //     }
-    //     setShowConfirmationModal(false);
-    // }
+    const handleConfirmClick = async() => {
+        if(selectedTicket){
+            await appDispatch(changeTicketStatus({id: selectedTicket.id, type: confirmationDetails.type, user_id: me.id}))
+            await appDispatch(fetchInbox({department_id: me.department_id, search: search, status: currentTab}))
+            .unwrap()
+            .then((tickets)=>{
+                if(tickets && tickets.length > 0){
+                    appDispatch(fetchSelectedRequest(selectedTicket.id))
+                }
+            })
+        }
+        setShowConfirmationModal(false);
+    }
 
     const handleSubmitUpdate = () => {
-        appDispatch(sendUpdate({id: selectedTicket!.id, user_id: me.id,  message: inputUpdate}))
-        setInputUpdate('');
+        if(inputUpdate !== ''){
+            appDispatch(sendUpdate({id: selectedTicket!.id, user_id: me.id,  message: inputUpdate}))
+            setInputUpdate('');
+        }
     }
 
     const handleLogout = () => {
@@ -162,10 +177,10 @@ const HomeIndex = () => {
 
     return (
         <>
-            {/* Confirmation Modal */}
-            {/* {
-                showConfirmationModal && <ConfirmationModal details={confirmationDetails} confirmClick={handleConfirmCancel} cancelClick={()=>setShowConfirmationModal(false)}/>
-            } */}
+            {/* Start Confirmation Modal */}
+            {
+                showConfirmationModal && <ConfirmationModal details={confirmationDetails} confirmClick={handleConfirmClick} cancelClick={()=>setShowConfirmationModal(false)}/>
+            }
             
 
             {/* FOR MOBILE */}
@@ -395,15 +410,15 @@ const HomeIndex = () => {
                                                 { ticketList.map((ticket, index) => (
                                                     <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket?.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
                                                         {
-                                                            ticket.assigned_user_avatar ? (
-                                                                <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}`} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
+                                                            ticket.requester_avatar ? (
+                                                                <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${ticket.requester_avatar}`} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
                                                             )
                                                             :
                                                             (
 
-                                                                <div style={{backgroundColor: ticket.assigned_user_bg_color, color: ticket.assigned_user_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
-                                                                    <span>{ticket.assigned_user_first_name[0].toUpperCase()}</span>
-                                                                    <span>{ticket.assigned_user_last_name[0].toUpperCase()}</span>
+                                                                <div style={{backgroundColor: ticket.requester_bg_color, color: ticket.requester_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                                                    <span>{ticket.requester_first_name[0].toUpperCase()}</span>
+                                                                    <span>{ticket.requester_last_name[0].toUpperCase()}</span>
                                                                 </div>
                                                             )
                                                         }
@@ -414,7 +429,7 @@ const HomeIndex = () => {
                                                             <div className="grid grid-cols-12">
                                                                 {/* Name and Status */}
                                                                 <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
-                                                                    {ticket.assigned_department}
+                                                                    {ticket.requester}
                                                                     <div className={`w-2 h-2 ml-1 rounded-full border
                                                                         ${
                                                                             ticket.status === 'pending' ? 'bg-red-500 border-red-600' : 
@@ -431,9 +446,9 @@ const HomeIndex = () => {
                                                             {/* Description at Notif Count */}
                                                             <div className="w-full h-6 flex items-center">
                                                                 <p className="text-xs truncate flex-1 text-left">{ticket.description}</p>
-                                                                { ticket.requester_notif_count > 0 && (
+                                                                { ticket.assigned_notif_count > 0 && (
                                                                     <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
-                                                                        { ticket.requester_notif_count }
+                                                                        { ticket.assigned_notif_count }
                                                                     </div>
                                                                 )}
                                                             </div>
@@ -498,21 +513,21 @@ const HomeIndex = () => {
                                             <div className="w-full h-full flex justify-between">
                                                 <div className="h-12 w-1/2 flex">
                                                     {
-                                                        selectedTicket.assigned_user_avatar ? (
-                                                            <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${selectedTicket.assigned_user_avatar}`} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
+                                                        selectedTicket.requester_avatar ? (
+                                                            <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${selectedTicket.requester_avatar}`} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
                                                         )
                                                         :
                                                         (
 
-                                                            <div style={{backgroundColor: selectedTicket.assigned_user_bg_color, color: selectedTicket.assigned_user_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
-                                                                <span>{selectedTicket.assigned_user_first_name[0].toUpperCase()}</span>
-                                                                <span>{selectedTicket.assigned_user_last_name[0].toUpperCase()}</span>
+                                                            <div style={{backgroundColor: selectedTicket.requester_bg_color, color: selectedTicket.requester_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                                                <span>{selectedTicket.requester_first_name[0].toUpperCase()}</span>
+                                                                <span>{selectedTicket.requester_last_name[0].toUpperCase()}</span>
                                                             </div>
                                                         )
                                                     }
                                                     <div className="flex flex-col justify-center pl-1.5">
-                                                        <h1 className="font-semibold leading-4">{selectedTicket.assigned_user}</h1>
-                                                        <p className="text-xs">{selectedTicket.assigned_department}</p>
+                                                        <h1 className="font-semibold leading-4">{selectedTicket.requester}</h1>
+                                                        <p className="text-xs">{selectedTicket.requester_department}</p>
                                                     </div>
                                                 </div>
                                                 <div className="h-12 flex items-center gap-x-2 py-2">
@@ -521,7 +536,7 @@ const HomeIndex = () => {
                                                     </div>
                                                     <div className="h-full aspect-square relative">
                                                         {
-                                                             selectedTicket.status === 'pending' && me.id === selectedTicket.created_by && (
+                                                             selectedTicket.status !== 'completed' && selectedTicket.status !== 'cancelled' && (
                                                                 <button onClick={()=>setShowTicketMenu(true)} className="w-full h-full flex items-center justify-center cursor-pointer rounded-lg hover:bg-neutral-200">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
                                                                         <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
@@ -535,7 +550,7 @@ const HomeIndex = () => {
                                                                 <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
                                                                 <div className="w-40 h-auto absolute right-0 -bottom-0.5 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
                                                                     <div className="w-full flex flex-col">
-                                                                        <button
+                                                                        {/* <button
                                                                             onClick={() => handleShowConfirmationModal({
                                                                                 type: 'cancel',
                                                                                 title: 'Cancel Ticket?',
@@ -545,24 +560,18 @@ const HomeIndex = () => {
                                                                             })}
                                                                             className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                             Cancel Ticket
+                                                                        </button> */}
+                                                                        <button
+                                                                            onClick={() => handleShowConfirmationModal({
+                                                                                type: 'start',
+                                                                                title: 'Start Ticket?',
+                                                                                msg: 'If you start the ticket, you cannot revert it. Are you sure you want to proceed?',
+                                                                                confirmText: 'Yes',
+                                                                                cancelText: 'Cancel'
+                                                                            })}
+                                                                            className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                            Start Ticket
                                                                         </button>
-                                                                        {/* <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Start Ticket</button>
-                                                                        <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Mark as Completed</button> */}
-                                                                        {/* {
-                                                                            selectedTicket.status === 'pending' && me.id === selectedTicket.created_by && (
-                                                                                <button
-                                                                                    onClick={() => handleShowConfirmationModal({
-                                                                                        type: 'cancel',
-                                                                                        title: 'Cancel Ticket?',
-                                                                                        msg: 'If you cancel the ticket, you cannot revert it. Are you sure you want to proceed?',
-                                                                                        confirmText: 'Yes',
-                                                                                        cancelText: 'Cancel'
-                                                                                    })}
-                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                    Cancel Ticket
-                                                                                </button>
-                                                                            )
-                                                                        } */}
                                                                     </div>
                                                                 </div>
                                                             </>
@@ -654,7 +663,7 @@ const HomeIndex = () => {
                                                     (
                                                         <div key={index} className="flex flex-col justify-end items-end">
                                                             <span className="text-[11px] font-semibold mr-3.5 h-3"></span>
-                                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
+                                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative whitespace-pre-wrap">
                                                                 {update.message}
                                                                 <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-blue-600/85"></div>
                                                             </div>
@@ -677,8 +686,10 @@ const HomeIndex = () => {
                                     </div>
                                     <div className="w-full h-12 mt-3">
                                         <div className="w-full h-full relative">
-                                            <input onKeyDown={(e)=>handleUpdateKeydown(e)} onChange={(e)=>setInputUpdate(e.target.value)} value={inputUpdate} type="text" className="w-full h-full border border-neutral-300/80 text-sm rounded-xl pl-2 pb-0.5 pr-10 focus:outline-0 shadow-inner shadow-neutral-400" placeholder="Message"/>
-                                            <button onClick={handleSubmitUpdate} className="w-9 h-9 absolute top-1.5 right-1 flex items-center justify-center cursor-pointer text-blue-600/80 hover:text-blue-600 rounded-full">
+
+                                            <textarea style={{scrollbarWidth: 'none'}} disabled={selectedTicket?.status === 'cancelled'} onKeyDown={(e)=>handleUpdateKeydown(e)} onChange={(e)=>setInputUpdate(e.target.value)} value={inputUpdate} className="w-full h-full border border-neutral-300/80 text-sm rounded-xl pl-2 pr-10 pt-3.5 focus:outline-0 shadow-inner shadow-neutral-400 resize-none disabled:cursor-not-allowed" placeholder="Message"/>
+
+                                            <button disabled={selectedTicket?.status === 'cancelled'} onClick={handleSubmitUpdate} className="w-9 h-9 absolute top-1.5 right-1 flex items-center justify-center cursor-pointer text-blue-600/80 hover:text-blue-600 rounded-full disabled:cursor-not-allowed">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 -960 960 960" fill="currentColor"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg>
                                             </button>
                                         </div>
