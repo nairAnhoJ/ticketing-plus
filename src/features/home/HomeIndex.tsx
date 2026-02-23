@@ -123,13 +123,25 @@ const HomeIndex = () => {
     const handleDownloadAll = (id: number) => {
         window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download-all/${id}`, "_blank");
     }
-
-    const handleUpdateKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        const key = e.key;
-        if(key === "Enter"){
-            handleSubmitUpdate();
+        const handleUpdateKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            const key = e.key;
+            if(e.key === "Enter" && e.shiftKey){
+                const textarea = e.currentTarget;
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+    
+                const newValue = inputUpdate.substring(0, start) + "\n" + inputUpdate.substring(end);
+    
+                setInputUpdate(newValue);
+                setTimeout(() => {
+                    textarea.selectionStart = textarea.selectionEnd = start + 1;
+                }, 0);
+    
+                e.preventDefault();
+            }else if(key === "Enter"){
+                handleSubmitUpdate();
+            }
         }
-    }
 
     const handleShowConfirmationModal = (details: ConfirmationDetails) => {
         setConfirmationDetails(details);
@@ -656,7 +668,7 @@ const HomeIndex = () => {
                                                     (
                                                         <div key={index} className="flex flex-col justify-end items-end">
                                                             <span className="text-[11px] font-semibold mr-3.5 h-3"></span>
-                                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative">
+                                                            <div className="bg-blue-600/85 px-3 py-2 rounded-t-lg rounded-bl-lg text-white max-w-[calc(100%-60px)] mr-3 relative whitespace-pre-wrap">
                                                                 {update.message}
                                                                 <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-blue-600/85"></div>
                                                             </div>
@@ -667,7 +679,7 @@ const HomeIndex = () => {
                                                     (
                                                         <div key={index} className="flex flex-col justify-end items-start">
                                                             <span className="text-[11px] font-semibold ml-3.5">{update.created_by}</span>
-                                                            <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
+                                                            <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative whitespace-pre-wrap">
                                                                 {update.message}
                                                                 <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
                                                             </div>
@@ -679,7 +691,9 @@ const HomeIndex = () => {
                                     </div>
                                     <div className="w-full h-12 mt-3">
                                         <div className="w-full h-full relative">
-                                            <input onKeyDown={(e)=>handleUpdateKeydown(e)} onChange={(e)=>setInputUpdate(e.target.value)} value={inputUpdate} type="text" className="w-full h-full border border-neutral-300/80 text-sm rounded-xl pl-2 pb-0.5 pr-10 focus:outline-0 shadow-inner shadow-neutral-400" placeholder="Message"/>
+
+                                            <textarea style={{scrollbarWidth: 'none'}} disabled={selectedTicket?.status === 'cancelled'} onKeyDown={(e)=>handleUpdateKeydown(e)} onChange={(e)=>setInputUpdate(e.target.value)} value={inputUpdate} className="w-full h-full border border-neutral-300/80 text-sm rounded-xl pl-2 pr-10 pt-3.5 focus:outline-0 shadow-inner shadow-neutral-400 resize-none disabled:cursor-not-allowed" placeholder="Message"/>
+
                                             <button onClick={handleSubmitUpdate} className="w-9 h-9 absolute top-1.5 right-1 flex items-center justify-center cursor-pointer text-blue-600/80 hover:text-blue-600 rounded-full">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 -960 960 960" fill="currentColor"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg>
                                             </button>
