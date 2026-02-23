@@ -422,8 +422,6 @@ const HomeIndex = () => {
                                                             )
                                                         }
                                                         
-                                                        
-                                                        {/* <img src={(ticket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-[#707070]" alt="avatar" /> */}
                                                         <div className="flex flex-col w-[calc(100%-48px)]">
                                                             <div className="grid grid-cols-12">
                                                                 {/* Name and Status */}
@@ -560,23 +558,6 @@ const HomeIndex = () => {
                                                                             className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                             Cancel Ticket
                                                                         </button>
-                                                                        {/* <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Start Ticket</button>
-                                                                        <button className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-t-lg">Mark as Completed</button> */}
-                                                                        {/* {
-                                                                            selectedTicket.status === 'pending' && me.id === selectedTicket.created_by && (
-                                                                                <button
-                                                                                    onClick={() => handleShowConfirmationModal({
-                                                                                        type: 'cancel',
-                                                                                        title: 'Cancel Ticket?',
-                                                                                        msg: 'If you cancel the ticket, you cannot revert it. Are you sure you want to proceed?',
-                                                                                        confirmText: 'Yes',
-                                                                                        cancelText: 'Cancel'
-                                                                                    })}
-                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                    Cancel Ticket
-                                                                                </button>
-                                                                            )
-                                                                        } */}
                                                                     </div>
                                                                 </div>
                                                             </>
