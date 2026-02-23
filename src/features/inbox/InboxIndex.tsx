@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, changeTicketStatus } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
+import CompleteModal from "./_components/completeModal";
 
 interface ConfirmationDetails {
     type: "start" | "complete";
@@ -58,6 +59,7 @@ const HomeIndex = () => {
         confirmText: '',
         cancelText: '',
     })
+    const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
     const isFirstRender = useRef(true);
     const me: Me = JSON.parse(user);
 
@@ -213,6 +215,10 @@ const HomeIndex = () => {
             {/* Start Confirmation Modal */}
             {
                 showConfirmationModal && <ConfirmationModal details={confirmationDetails} confirmClick={handleConfirmClick} cancelClick={()=>setShowConfirmationModal(false)}/>
+            }
+
+            {
+                showCompleteModal && <CompleteModal close={()=>setShowCompleteModal(false)} />
             }
             
 
@@ -575,17 +581,27 @@ const HomeIndex = () => {
                                                                 <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
                                                                 <div className="w-40 h-auto absolute right-0 -bottom-0.5 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
                                                                     <div className="w-full flex flex-col">
-                                                                        <button
-                                                                            onClick={() => handleShowConfirmationModal({
-                                                                                type: 'start',
-                                                                                title: 'Start Ticket?',
-                                                                                msg: 'If you start the ticket, you cannot revert it. Are you sure you want to proceed?',
-                                                                                confirmText: 'Yes',
-                                                                                cancelText: 'Cancel'
-                                                                            })}
-                                                                            className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                            Start Ticket
-                                                                        </button>
+                                                                        {
+                                                                            (selectedTicket.status === 'pending') ? (
+                                                                                <button
+                                                                                    onClick={() => handleShowConfirmationModal({
+                                                                                        type: 'start',
+                                                                                        title: 'Start Ticket?',
+                                                                                        msg: 'If you start the ticket, you cannot revert it. Are you sure you want to proceed?',
+                                                                                        confirmText: 'Yes',
+                                                                                        cancelText: 'Cancel'
+                                                                                    })}
+                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                    Start Ticket
+                                                                                </button>
+                                                                            ) : (selectedTicket.status === 'in_progress') ? (
+                                                                                <button
+                                                                                    onClick={() => setShowCompleteModal(true)}
+                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                    Complete Ticket
+                                                                                </button>
+                                                                            ) : ''
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                             </>
