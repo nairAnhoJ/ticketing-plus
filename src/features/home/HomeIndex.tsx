@@ -82,6 +82,38 @@ const HomeIndex = () => {
     useEffect(()=>{
         fetchTickets(me.id, search, currentTab);
     }, [currentTab])
+    
+    const useCountAnimation = (end: number) => {
+        const start: number = 0;
+        const duration: number = 500;
+        const [count, setCount] = useState(start);
+
+        useEffect(() => {
+            let animationFrame: number;
+            const startTime = performance.now();
+
+            const animate = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const value = Math.floor(start + (end - start) * progress);
+            setCount(value);
+
+            if (progress < 1) {
+                animationFrame = requestAnimationFrame(animate);
+            }
+            };
+
+            animationFrame = requestAnimationFrame(animate);
+
+            return () => cancelAnimationFrame(animationFrame);
+        }, [start, end, duration]);
+
+        return count > 0 ? count : 0;
+    }
+    const pendingCount = useCountAnimation(ticketCount.pending);
+    const inProgressCount = useCountAnimation(ticketCount.in_progress);
+    const feedbackCount = useCountAnimation(ticketCount.needs_feedback);
 
     const fetchTickets = (id: number, search: string, status: 'all' | 'pending' | 'in_progress') => {
         appDispatch(fetchMyRequests({id: id, search: search, status: status}))
@@ -475,15 +507,15 @@ const HomeIndex = () => {
                     {/* HEADER / COUNTER */}
                     <div className="w-full h-34 flex items-center justify-center p-6 gap-x-6 text-white border-b border-[#ccc]">
                         <div className="bg-red-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.pending > 0 ? ticketCount.pending : 0}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.pending > 0 ? pendingCount : 0}</h1>
                             <p className="text-sm">Pending</p>
                         </div>
                         <div className="bg-amber-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.in_progress > 0 ? ticketCount.pending : 0}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.in_progress > 0 ? inProgressCount : 0}</h1>
                             <p className="text-xs">In-Progress</p>
                         </div>
                         <div className="bg-emerald-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.needs_feedback > 0 ? ticketCount.pending : 0}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.needs_feedback > 0 ? feedbackCount : 0}</h1>
                             <p className="text-xs">Needs Feedback</p>
                         </div>
                     </div>
