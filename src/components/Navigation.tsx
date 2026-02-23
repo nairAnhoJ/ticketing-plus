@@ -1,13 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 
+interface Me {
+    id: number;
+    department: string;
+    department_id: number;
+    name: string;
+    first_name: string;
+    last_name: string;
+    text_color: string;
+    bg_color: string;
+    avatar: string | null;
+}
 
 const Navigation = () => {
+    const location = useLocation();
     const { user } = useAppSelector((state) => state.auth);
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [expandMenu, setExpandMenu] = useState<boolean>(false);
     const [expandProfileMenu, setExpandProfileMenu] = useState<boolean>(false);
+    const me: Me = JSON.parse(user);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -15,9 +28,8 @@ const Navigation = () => {
         window.location.href = "/login";
     }
 
-
-
     return (
+
         <>
             {/* For Mobile */}
             <button onClick={()=>setShowMenu(!showMenu)} className={`lg:hidden absolute w-8 h-8 top-3.5 right-3.5 text-white transition-all duration-200 z-11 ${showMenu && 'rotate-180'}`}>
@@ -59,31 +71,27 @@ const Navigation = () => {
                 {/* MIDDLE SECTION */}
                 <div className="text-neutral-100 w-full flex flex-col gap-y-2">
                     {/* HOME */}
-                    <Link to='/' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
-                        {/* <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 16 16">
-                            <path fill="currentColor" d="M8 1.4L6 2.7V1H4v3L0 6.6l.6.8L8 2.6l7.4 4.8l.6-.8z"/>
-                            <path fill="currentColor" d="M8 4L2 8v7h5v-3h2v3h5V8z"/>
-                        </svg> */}
+                    <Link to='/' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/' || location.pathname == '/create-ticket' ? 'bg-[#353535]' : '' }`}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 -960 960 960" fill="currentColor">
                             <path d="M440-400v-166l-64 64-56-58 160-160 160 160-56 58-64-64v166h-80ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-120H640q-30 38-71.5 59T480-240q-47 0-88.5-21T320-320H200v120Zm280-120q38 0 69-22t43-58h168v-360H200v360h168q12 36 43 58t69 22ZM200-200h560-560Z"/>
                         </svg>
-                        <h1 className="absolute top-2.5 left-10 text-sm font-semibold">My Requests</h1>
+                        <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">My Requests</h1>
                     </Link>
 
                     {/* INBOX */}
-                    <Link to='/inbox' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
+                    <Link to='/inbox' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/inbox' && 'bg-[#353535]' }`}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M212.31-140Q182-140 161-161q-21-21-21-51.31v-535.38Q140-778 161-799q21-21 51.31-21h535.38Q778-820 799-799q21 21 21 51.31v535.38Q820-182 799-161q-21 21-51.31 21H212.31Zm0-60h535.38q5.39 0 8.85-3.46t3.46-8.85v-115.38H628.46q-26.15 38-64.96 59-38.81 21-83.5 21t-83.5-21q-38.81-21-64.96-59H200v115.38q0 5.39 3.46 8.85t8.85 3.46ZM480-307.69q38 0 69-22t43-58h168v-360q0-5.39-3.46-8.85t-8.85-3.46H212.31q-5.39 0-8.85 3.46t-3.46 8.85v360h168q12 36 43 58t69 22ZM212.31-200H200h560H212.31Z"/></svg>
                         <h1 className="absolute top-2.5 left-10 text-sm font-semibold">Inbox</h1>
                     </Link>
 
                     {/* TICKET REPORT */}
-                    <Link to='/' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
+                    {/* <Link to='/' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 32 32">
                             <path fill="currentColor" d="M10 18h8v2h-8zm0-5h12v2H10zm0 10h5v2h-5z"/>
                             <path fill="currentColor" d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2ZM12 4h8v4h-8Zm13 24H7V7h3v3h12V7h3Z"/>
                         </svg>
                         <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">Ticket Report</h1>
-                    </Link>
+                    </Link> */}
 
                     {/* SETTINGS */}
                     {/* <Link to='/' className={`${expandMenu ? 'w-46' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
@@ -100,9 +108,22 @@ const Navigation = () => {
                 <div className="text-neutral-100 w-full flex flex-col gap-y-5">
                     <div className="relative">
                         {/* PROFILE DETAILS */}
-                        <button onClick={()=>setExpandProfileMenu(true)} className={`${expandMenu ? 'w-66' : 'w-10'} h-12 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] px-1 py-1.5 rounded-lg`}>
-                            <img src="default-avatar.jpg" className="w-8 h-8 rounded-full" alt="avatar" />
-                            <div className="absolute flex justify-between w-54 top-2.5 left-11 text-sm text-left">
+                        <button onClick={()=>setExpandProfileMenu(true)} className={`${expandMenu ? 'w-66 hover:bg-[#353535]' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 rounded-lg pl-0.75`}>
+                            {
+                                me.avatar ? (
+                                    <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${me.avatar}`} className="w-9 h-9 rounded-full border-2 border-[#808080]" alt="avatar" />
+                                )
+                                :
+                                (
+
+                                    <div style={{backgroundColor: me.bg_color, color: me.text_color}} className={`w-9 h-9 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                        <span>{me.first_name[0].toUpperCase()}</span>
+                                        <span>{me.last_name[0].toUpperCase()}</span>
+                                    </div>
+                                )
+                            }
+                            {/* <img src="default-avatar.jpg" className="w-8 h-8 rounded-full" alt="avatar" /> */}
+                            <div className="absolute flex justify-between w-54 top-1.5 left-11 text-sm text-left">
                                 <div>
                                     <h1 className="font-semibold leading-4 whitespace-nowrap">{JSON.parse(user).name}</h1>
                                     <p className="text-xs leading-3">{JSON.parse(user).department}</p>
