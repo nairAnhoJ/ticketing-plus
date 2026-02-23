@@ -674,7 +674,7 @@ const HomeIndex = () => {
                                                     (
                                                         <div key={index} className="flex flex-col justify-end items-start">
                                                             <span className="text-[11px] font-semibold ml-3.5">{update.created_by}</span>
-                                                            <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative">
+                                                            <div className="bg-neutral-300 px-3 py-2 rounded-t-lg rounded-br-lg text-neutral-800 max-w-[calc(100%-60px)] ml-3 relative whitespace-pre-wrap">
                                                                 {update.message}
                                                                 <div className="absolute -left-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-l-neutral-300"></div>
                                                             </div>
