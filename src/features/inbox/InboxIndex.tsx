@@ -44,6 +44,7 @@ const HomeIndex = () => {
 
     const { user } = useAppSelector((state) => state.auth);
     const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.inbox)
+    // const pendingCount = useCountAnimation(number(ticketCount.pending));
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
@@ -80,6 +81,38 @@ const HomeIndex = () => {
     useEffect(()=>{
         fetchInboxTickets(me.department_id, search, currentTab);
     }, [currentTab])
+
+    const useCountAnimation = (end: number) => {
+        const start: number = 0;
+        const duration: number = 500;
+        const [count, setCount] = useState(start);
+
+        useEffect(() => {
+            let animationFrame: number;
+            const startTime = performance.now();
+
+            const animate = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const value = Math.floor(start + (end - start) * progress);
+            setCount(value);
+
+            if (progress < 1) {
+                animationFrame = requestAnimationFrame(animate);
+            }
+            };
+
+            animationFrame = requestAnimationFrame(animate);
+
+            return () => cancelAnimationFrame(animationFrame);
+        }, [start, end, duration]);
+
+        return count > 0 ? count : 0;
+    }
+    const pendingCount = useCountAnimation(ticketCount.pending);
+    const inProgressCount = useCountAnimation(ticketCount.in_progress);
+    const feedbackCount = useCountAnimation(ticketCount.needs_feedback);
 
     const fetchInboxTickets = (department_id: number, search: string, status: 'all' | 'pending' | 'in_progress') => {
         appDispatch(fetchInbox({department_id: department_id, search: search, status: status}))
@@ -357,12 +390,6 @@ const HomeIndex = () => {
                     {/* Header */}
                     <div className="flex items-center justify-between w-full h-10 px-6">
                         <h1 className="text-2xl font-bold">Inbox</h1>
-                        {/* <Link to='create-ticket' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
-                            <h1 className="whitespace-nowrap text-xs">Write Ticket</h1>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
-                                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
-                            </svg>
-                        </Link> */}
                     </div>
 
                     {/* SEARCH */}
@@ -423,8 +450,6 @@ const HomeIndex = () => {
                                                             )
                                                         }
                                                         
-                                                        
-                                                        {/* <img src={(ticket.assigned_user_avatar) ? `${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}` : 'default-avatar.jpg'} className="w-12 h-12 rounded-full border-[#707070]" alt="avatar" /> */}
                                                         <div className="flex flex-col w-[calc(100%-48px)]">
                                                             <div className="grid grid-cols-12">
                                                                 {/* Name and Status */}
@@ -478,15 +503,15 @@ const HomeIndex = () => {
                     {/* HEADER / COUNTER */}
                     <div className="w-full h-34 flex items-center justify-center p-6 gap-x-6 text-white border-b border-[#ccc]">
                         <div className="bg-red-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.pending > 0 ? ticketCount.pending : 0}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ ticketCount.pending > 0 ? pendingCount : 0 }</h1>
                             <p className="text-sm">Pending</p>
                         </div>
                         <div className="bg-amber-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.in_progress > 0 ? ticketCount.pending : 0}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.in_progress > 0 ? inProgressCount : 0}</h1>
                             <p className="text-xs">In-Progress</p>
                         </div>
                         <div className="bg-emerald-500 shadow-lg shadow-neutral-400/60 h-full w-56 rounded-lg flex items-center justify-center gap-x-2">
-                            <h1 className="text-5xl font-bold pb-1">{ticketCount.needs_feedback > 0 ? ticketCount.pending : 0}</h1>
+                            <h1 className="text-5xl font-bold pb-1">{ticketCount.needs_feedback > 0 ? feedbackCount : 0}</h1>
                             <p className="text-xs">Needs Feedback</p>
                         </div>
                     </div>
@@ -550,17 +575,6 @@ const HomeIndex = () => {
                                                                 <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
                                                                 <div className="w-40 h-auto absolute right-0 -bottom-0.5 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
                                                                     <div className="w-full flex flex-col">
-                                                                        {/* <button
-                                                                            onClick={() => handleShowConfirmationModal({
-                                                                                type: 'cancel',
-                                                                                title: 'Cancel Ticket?',
-                                                                                msg: 'If you cancel the ticket, you cannot revert it. Are you sure you want to proceed?',
-                                                                                confirmText: 'Yes',
-                                                                                cancelText: 'Cancel'
-                                                                            })}
-                                                                            className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                            Cancel Ticket
-                                                                        </button> */}
                                                                         <button
                                                                             onClick={() => handleShowConfirmationModal({
                                                                                 type: 'start',
