@@ -1,14 +1,42 @@
+import { useState } from "react";
+import { completeTicket } from "../inboxSlice";
+import { useAppDispatch } from "../../../app/hooks";
 
 
-const CompleteModal = ({close}: {close: () => void}) => {
+const CompleteModal = ({id, close}: {id: number | undefined, close: () => void}) => {
+    const dispatch = useAppDispatch();
 
-
-    const handleFileChange = () => {
-
+    const [res, setRes] = useState<string>('');
+    const [files, setFiles] = useState<any>([]);
+    const [resError, setResError] = useState<boolean>(false)
+    
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const uploadedFiles = Array.from(e.target.files || []);
+        setFiles([...files, ...uploadedFiles]);
+        console.log(uploadedFiles)
     }
 
-    const handleSubmit = () => {
-        close();
+    const removeFile = (index: number) => {
+        const newFiles = [...files];
+        newFiles.splice(index, 1);
+        setFiles(newFiles);
+    }
+
+    const handleSubmit = async () => {
+        if(res){
+            const formData = new FormData();
+            formData.append('resolution', res);
+            files.forEach((file: any) => {
+                formData.append(`files`, file);
+            });
+            if(id){
+                formData.append('id', id.toString());
+                await dispatch(completeTicket(formData))
+            }
+            close();
+        }else{
+            setResError(true)
+        }
     }
 
     return (
@@ -24,11 +52,13 @@ const CompleteModal = ({close}: {close: () => void}) => {
                 <div className="w-140 px-6">
                     <div>
                         <label className="text-xs">Resolution <span className="italic text-red-500 font-bold">*</span></label>
-                        <textarea className="w-full h-34 p-1.5 text-sm border rounded-lg resize-none"></textarea>
+                        <textarea onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRes(e.target.value)} className="w-full h-34 p-1.5 text-sm border rounded-lg resize-none"></textarea>
+                        { resError && <p className="text-red-500 text-xs leading-1 italic">Please enter a valid resolution</p> }
+                        
                     </div>
-                    <div>
+                    <div className="mt-6">
                         <p className="text-xs block mb-2">Attachments</p>
-                        <label htmlFor="file-upload" className="w-36 text-white bg-blue-500 hover:bg-blue-600 border border-blue-400 px-5 py-1 rounded text-sm font-semibold cursor-pointer flex items-center justify-center gap-x-1">
+                        <label htmlFor="file-upload" className="w-36 text-white bg-blue-500 hover:bg-blue-600 border border-blue-400 px-5 py-1 rounded text-sm font-semibold flex items-center justify-center gap-x-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-upload-icon lucide-upload">
                                 <path d="M12 3v12"/>
                                 <path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -38,48 +68,28 @@ const CompleteModal = ({close}: {close: () => void}) => {
                         <input onChange={handleFileChange} type="file" id="file-upload" multiple className="hidden" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx" />
                         <div className="flex flex-col mt-1 max-h-24 overflow-y-auto">
 
-                            <div className="flex items-center gap-x-1">
-                                <h1 className="text-xs">File 1.pdf</h1>
-                                <button className="text-neutral-400 hover:text-red-500 w-4 hover:w-15 h-4 overflow-hidden relative cursor-pointer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x-icon lucide-x">
-                                        <path d="M18 6 6 18"/>
-                                        <path d="m6 6 12 12"/>
-                                    </svg>
-                                    <p className="absolute top-px left-4 text-xs leading-3 underline">Remove</p>
-                                </button>
-                            </div>
-
-
-                            
-                            <div className="flex items-center gap-x-1">
-                                <h1 className="text-xs">File 1.pdf</h1>
-                                <button className="text-neutral-400 hover:text-red-500 w-4 hover:w-15 h-4 overflow-hidden relative cursor-pointer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x-icon lucide-x">
-                                        <path d="M18 6 6 18"/>
-                                        <path d="m6 6 12 12"/>
-                                    </svg>
-                                    <p className="absolute top-px left-4 text-xs leading-3 underline">Remove</p>
-                                </button>
-                            </div>
-                            <div className="flex items-center gap-x-1">
-                                <h1 className="text-xs">File 1.pdf</h1>
-                                <button className="text-neutral-400 hover:text-red-500 w-4 hover:w-15 h-4 overflow-hidden relative cursor-pointer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x-icon lucide-x">
-                                        <path d="M18 6 6 18"/>
-                                        <path d="m6 6 12 12"/>
-                                    </svg>
-                                    <p className="absolute top-px left-4 text-xs leading-3 underline">Remove</p>
-                                </button>
-                            </div>
-
+                            {
+                                files.map((file: any, index: number) => (
+                                    <div key={index} className="flex items-center gap-x-1">
+                                        <h1 className="text-xs">{file.name}</h1>
+                                        <button onClick={() => removeFile(index)} className="text-neutral-400 hover:text-red-500 w-4 hover:w-15 h-4 overflow-hidden relative cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x-icon lucide-x">
+                                                <path d="M18 6 6 18"/>
+                                                <path d="m6 6 12 12"/>
+                                            </svg>
+                                            <p className="absolute top-px left-4 text-xs leading-3 underline">Remove</p>
+                                        </button>
+                                    </div>
+                                ))
+                            }
                         </div>
                     </div>
 
                     <div className="text-sm mt-6">Once you complete this ticket, it cannot be reopened. Are you sure you want to proceed?</div>
                 </div>
                 <div className="p-6 flex items-center justify-end gap-x-3">
-                    <button onClick={close} className="w-20 h-9 border border-neutral-400 hover:border-neutral-500 rounded text-sm font-semibold cursor-pointer">Cancel</button>
-                    <button onClick={handleSubmit} className="w-20 h-9 border border-emerald-400 bg-emerald-500 hover:bg-emerald-600 text-white rounded text-sm font-semibold cursor-pointer">Yes</button>
+                    <button onClick={close} className="w-20 h-9 border border-neutral-400 hover:border-neutral-500 rounded text-sm font-semibold">Cancel</button>
+                    <button onClick={handleSubmit} className="w-20 h-9 border border-emerald-400 bg-emerald-500 hover:bg-emerald-600 text-white rounded text-sm font-semibold">Yes</button>
                 </div>
             </div>
         </div>

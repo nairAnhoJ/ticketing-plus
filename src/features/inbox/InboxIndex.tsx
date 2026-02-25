@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, changeTicketStatus } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
-import CompleteModal from "./_components/completeModal";
+import CompleteModal from "./_components/CompleteModal";
 
 interface ConfirmationDetails {
     type: "start" | "complete";
@@ -153,8 +153,8 @@ const HomeIndex = () => {
         window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download/${id}/${filename}`, "_blank");
     }
 
-    const handleDownloadAll = (id: number) => {
-        window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download-all/${id}`, "_blank");
+    const handleDownloadAll = (id: number, type: string) => {
+        window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download-all/${id}/${type}`, "_blank");
     }
 
     const handleUpdateKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -218,9 +218,8 @@ const HomeIndex = () => {
             }
 
             {
-                showCompleteModal && <CompleteModal close={()=>setShowCompleteModal(false)} />
+                showCompleteModal && <CompleteModal close={()=>{setShowCompleteModal(false)}} id={selectedTicket?.id}/>
             }
-            
 
             {/* FOR MOBILE */}
             <div className="lg:hidden w-screen h-dvh overflow-hidden flex flex-col bg-[#212121]">
@@ -584,19 +583,19 @@ const HomeIndex = () => {
                                                                         {
                                                                             (selectedTicket.status === 'pending') ? (
                                                                                 <button
-                                                                                    onClick={() => handleShowConfirmationModal({
+                                                                                    onClick={() => {handleShowConfirmationModal({
                                                                                         type: 'start',
                                                                                         title: 'Start Ticket?',
                                                                                         msg: 'If you start the ticket, you cannot revert it. Are you sure you want to proceed?',
                                                                                         confirmText: 'Yes',
                                                                                         cancelText: 'Cancel'
-                                                                                    })}
+                                                                                    }); setShowTicketMenu(false)}}
                                                                                     className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                     Start Ticket
                                                                                 </button>
                                                                             ) : (selectedTicket.status === 'in_progress') ? (
                                                                                 <button
-                                                                                    onClick={() => setShowCompleteModal(true)}
+                                                                                    onClick={() => {setShowCompleteModal(true); setShowTicketMenu(false)}}
                                                                                     className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                     Complete Ticket
                                                                                 </button>
@@ -634,12 +633,18 @@ const HomeIndex = () => {
                                                     (
                                                         <div className="w-full mt-6">
                                                             <div className="flex items-center justify-between">
-                                                                <h1 className="text-sm font-bold">Attachment/s</h1>
-                                                                <button onClick={()=>handleDownloadAll(selectedTicket.id)} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
+                                                                <h1 className="font-bold">Attachments</h1>
+                                                                {/* <button onClick={()=>handleDownloadAll(selectedTicket.id)} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button> */}
                                                             </div>
-                                                            <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
-                                                                {/* Attachments */}
-                                                                { 
+                                                            
+                                                            {/* Request Attachments */}
+                                                            <div>
+                                                                <div className="flex items-center justify-between">
+                                                                    <h1 className="text-sm font-semibold">Request Attachments</h1>
+                                                                    <button onClick={()=>handleDownloadAll(selectedTicket.id, 'request')} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
+                                                                </div>
+                                                                <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
+                                                                    { 
                                                                         selectedTicket.attachments.map((att, index)=>(
                                                                             <button key={index} onClick={() => handleSingleDownload(selectedTicket.id, att.file_path)} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
                                                                                 <div className="h-full aspect-square flex items-center justify-center rounded text-white">
@@ -660,11 +665,15 @@ const HomeIndex = () => {
                                                                                 </div>
                                                                             </button>
                                                                         ))
-                                                                }
+                                                                    }
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     )
                                                 }
+                                                <div>
+                                                    <h1 className="text-sm">Assigned To: <span className="font-semibold text-base">{selectedTicket.assigned_user}</span></h1>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

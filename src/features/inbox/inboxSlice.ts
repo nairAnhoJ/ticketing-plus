@@ -133,6 +133,17 @@ export const changeTicketStatus = createAsyncThunk('inbox/change-status', async 
     }
 });
 
+export const completeTicket = createAsyncThunk('inbox/complete-ticket', async (data: any) => {
+    try {
+        const res = await config.post(`/inbox/complete-ticket`, data, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 
 
 
@@ -182,6 +193,14 @@ const inboxSlice = createSlice({
 
         
         .addCase(changeTicketStatus.fulfilled, (state, payload) => {
+            console.log(payload.payload);
+            if(state.selectedTicket){
+                state.selectedTicket.status = payload.payload;
+            }
+        })
+
+        
+        .addCase(completeTicket.fulfilled, (state, payload) => {
             if(state.selectedTicket){
                 state.selectedTicket.status = payload.payload;
             }
