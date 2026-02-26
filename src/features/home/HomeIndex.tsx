@@ -655,53 +655,49 @@ const HomeIndex = () => {
                                                     )
                                                 }
 
-                                                <hr className="border-neutral-500/40 my-6"/>
-
-                                                <label className="font-semibold">Resolution</label>
-                                                <div className="text-sm leading-4 mt-3 whitespace-pre-wrap">{selectedTicket.resolution}</div>
-
-                                                {/* Resolution Attachments */}
-                                                {
-                                                    (selectedTicket.resAttachments && selectedTicket.resAttachments.length > 0) && (
-                                                        <div className="w-full mt-6">
-                                                            <div className="flex items-center justify-between">
-                                                                <h1 className="text-sm font-semibold">Resolution Attachments</h1>
-                                                                <button onClick={()=>handleDownloadAll(selectedTicket.id, 'resolution')} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
-                                                            </div>
-                                                            <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
-                                                                { 
-                                                                    selectedTicket.resAttachments.map((att, index)=>(
-                                                                        <button key={index} onClick={() => handleSingleDownload(selectedTicket.id, att.file_path)} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
-                                                                            <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                                                <img src={`/icons/${
-                                                                                    ['jpg', 'png'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'image.png' : ['pdf'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'pdf.png' : ['doc', 'docx'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'doc.png' : ['ppt', 'pptx'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'ppt.png' : ['csv', 'xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'xls.png' : ''
-                                                                                }`} className="w-9 h-9" alt="icon" />
-                                                                            </div>
-                                                                            <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
-                                                                                <h1 className="w-full truncate text-xs text-left text-neutral-800/90">{att.file_path}</h1>
-                                                                            </div>
-                                                                            <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                                            </div>
-                                                                        </button>
-                                                                    ))
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                }
-                                                {/* <h2 className="text-xs mt-6">Ticket Category: <span className="text-sm font-semibold">{selectedTicket.ticket_category}</span></h2> */}
-                                                {/* <h2 className="text-xs mt-6">Creation Date: <span className="text-sm font-semibold">{formatDate(selectedTicket.created_at).replace(",", "")}</span></h2> */}
-                                                {/* <h2 className="text-xs">Assigned To: <span className="text-sm font-semibold">{selectedTicket.assigned_user}</span></h2> */}
-                                                {/* <h2 className="text-xs">Started Date: <span className="text-sm font-semibold">{formatDate(selectedTicket.started_at).replace(",", "")}</span></h2> */}
                                                 {
                                                     (selectedTicket.completed_by) && (
                                                         <>
+                                                            <hr className="border-neutral-500/40 my-6"/>
+
+                                                            <label className="font-semibold">Resolution</label>
+                                                            <div className="text-sm leading-4 mt-3 whitespace-pre-wrap">{selectedTicket.resolution}</div>
+
+                                                            {/* Resolution Attachments */}
+                                                            {
+                                                                (selectedTicket.resAttachments && selectedTicket.resAttachments.length > 0) && (
+                                                                    <div className="w-full mt-6">
+                                                                        <div className="flex items-center justify-between">
+                                                                            <h1 className="text-sm font-semibold">Resolution Attachments</h1>
+                                                                            <button onClick={()=>handleDownloadAll(selectedTicket.id, 'resolution')} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium">Download All</button>
+                                                                        </div>
+                                                                        <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
+                                                                            { 
+                                                                                selectedTicket.resAttachments.map((att, index)=>(
+                                                                                    <button key={index} onClick={() => handleSingleDownload(selectedTicket.id, att.file_path)} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                                                        <div className="h-full aspect-square flex items-center justify-center rounded text-white">
+                                                                                            <img src={`/icons/${
+                                                                                                ['jpg', 'png'].includes(getFileExtension(att.file_path)) ?
+                                                                                                'image.png' : ['pdf'].includes(getFileExtension(att.file_path)) ?
+                                                                                                'pdf.png' : ['doc', 'docx'].includes(getFileExtension(att.file_path)) ?
+                                                                                                'doc.png' : ['ppt', 'pptx'].includes(getFileExtension(att.file_path)) ?
+                                                                                                'ppt.png' : ['csv', 'xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
+                                                                                                'xls.png' : ''
+                                                                                            }`} className="w-9 h-9" alt="icon" />
+                                                                                        </div>
+                                                                                        <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
+                                                                                            <h1 className="w-full truncate text-xs text-left text-neutral-800/90">{att.file_path}</h1>
+                                                                                        </div>
+                                                                                        <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                                                                                        </div>
+                                                                                    </button>
+                                                                                ))
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            }
                                                             <h2 className="text-xs mt-6">Resolved By: <span className="text-sm font-semibold">{selectedTicket.completed_by}</span></h2>
                                                             <h2 className="text-xs">Resolution Date: <span className="text-sm font-semibold">{formatDate(selectedTicket.completed_at).replace(",", "")}</span></h2>
                                                         </>
