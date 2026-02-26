@@ -218,7 +218,7 @@ const HomeIndex = () => {
             }
 
             {
-                showCompleteModal && <CompleteModal close={()=>{setShowCompleteModal(false)}} id={selectedTicket?.id}/>
+                showCompleteModal && <CompleteModal close={()=>setShowCompleteModal(false)} id={selectedTicket?.id}/>
             }
 
             {/* FOR MOBILE */}

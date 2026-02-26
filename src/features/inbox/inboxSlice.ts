@@ -133,14 +133,13 @@ export const changeTicketStatus = createAsyncThunk('inbox/change-status', async 
     }
 });
 
-export const completeTicket = createAsyncThunk('inbox/complete-ticket', async (data: any) => {
+export const completeTicket = createAsyncThunk('inbox/complete-ticket', async (data: any, { rejectWithValue }) => {
     try {
-        const res = await config.post(`/inbox/complete-ticket`, data, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await config.post(`/inbox/complete-ticket`, data);
         return res.data;
-    } catch (error) {
+    } catch (error: any) {
         console.log(error)
+        // return rejectWithValue(error.response?.data || "Server Error");
     }
 });
 
@@ -193,7 +192,6 @@ const inboxSlice = createSlice({
 
         
         .addCase(changeTicketStatus.fulfilled, (state, payload) => {
-            console.log(payload.payload);
             if(state.selectedTicket){
                 state.selectedTicket.status = payload.payload;
             }
@@ -201,8 +199,13 @@ const inboxSlice = createSlice({
 
         
         .addCase(completeTicket.fulfilled, (state, payload) => {
+            const ticket = state.ticketList.find((ticket) => ticket.id == payload.payload.id);
+            if(ticket){
+                ticket.status = payload.payload.status
+            }
+                
             if(state.selectedTicket){
-                state.selectedTicket.status = payload.payload;
+                state.selectedTicket.status = payload.payload.status;
             }
         })
     },

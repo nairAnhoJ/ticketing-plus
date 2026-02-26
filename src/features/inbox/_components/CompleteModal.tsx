@@ -24,6 +24,7 @@ const CompleteModal = ({id, close}: {id: number | undefined, close: () => void})
 
     const handleSubmit = async () => {
         if(res){
+            setResError(false)
             const formData = new FormData();
             formData.append('resolution', res);
             files.forEach((file: any) => {
@@ -31,9 +32,13 @@ const CompleteModal = ({id, close}: {id: number | undefined, close: () => void})
             });
             if(id){
                 formData.append('id', id.toString());
-                await dispatch(completeTicket(formData))
+                try {
+                    await dispatch(completeTicket(formData));
+                    close();
+                } catch (error) {
+                    console.log(error)
+                }
             }
-            close();
         }else{
             setResError(true)
         }
