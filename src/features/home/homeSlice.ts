@@ -53,10 +53,15 @@ export interface SelectedTicket{
     status: string;
     subject: string;
     description: string;
-    attachments: Attachment[] | null;
+    reqAttachments: Attachment[] | null;
+    resAttachments: Attachment[] | null;
     updates: TicketUpdates[] | null;
     created_by: number;
     created_at: string;
+    started_at: string;
+    resolution: string;
+    completed_by: string;
+    completed_at: string;
 }
 
 interface InitialState {
