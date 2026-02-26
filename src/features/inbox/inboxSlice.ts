@@ -58,7 +58,8 @@ export interface SelectedTicket{
     status: string;
     subject: string;
     description: string;
-    attachments: Attachment[] | null;
+    reqAttachments: Attachment[] | null;
+    resAttachments: Attachment[] | null;
     updates: TicketUpdates[] | null;
     created_by: number;
     created_at: string;
@@ -139,7 +140,7 @@ export const completeTicket = createAsyncThunk('inbox/complete-ticket', async (d
         return res.data;
     } catch (error: any) {
         console.log(error)
-        // return rejectWithValue(error.response?.data || "Server Error");
+        return rejectWithValue(error.response?.data || "Server Error");
     }
 });
 
