@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { cancelTicket, fetchMyRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./homeSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
+import FeedbackModal from "./_components/FeedbackModal";
 
 interface ConfirmationDetails {
     type: string;
@@ -60,6 +61,7 @@ const HomeIndex = () => {
         confirmText: '',
         cancelText: '',
     })
+    const [showFeedbackModal, setShowFeedbackModal] = useState<boolean>(false);
     const isFirstRender = useRef(true);
     const me: Me = JSON.parse(user);
 
@@ -213,7 +215,11 @@ const HomeIndex = () => {
             {
                 showConfirmationModal && <ConfirmationModal details={confirmationDetails} confirmClick={handleConfirmCancel} cancelClick={()=>setShowConfirmationModal(false)}/>
             }
-            
+
+            {/* Feedback Modal */}
+            {
+                showFeedbackModal && <FeedbackModal close={()=>setShowFeedbackModal(false)} id={selectedTicket?.id}/>
+            }
 
             {/* FOR MOBILE */}
             <div className="lg:hidden w-screen h-dvh overflow-hidden flex flex-col bg-[#212121]">
@@ -440,7 +446,7 @@ const HomeIndex = () => {
                                         ticketList.length > 0 ? (
                                             <>
                                                 { ticketList.map((ticket, index) => (
-                                                    <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket?.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
+                                                    <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 pl-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket?.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
                                                         {
                                                             ticket.assigned_user_avatar ? (
                                                                 <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${ticket.assigned_user_avatar}`} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
@@ -455,7 +461,7 @@ const HomeIndex = () => {
                                                             )
                                                         }
                                                         
-                                                        <div className="flex flex-col w-[calc(100%-48px)]">
+                                                        <div className="flex flex-col w-[calc(100%-68px)]">
                                                             <div className="grid grid-cols-12">
                                                                 {/* Name and Status */}
                                                                 <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
@@ -594,15 +600,7 @@ const HomeIndex = () => {
                                                                                     Cancel Ticket
                                                                                 </button>
                                                                             ) : (selectedTicket.status === 'needs_feedback') ? (
-                                                                                <button
-                                                                                    onClick={() => handleShowConfirmationModal({
-                                                                                        type: 'cancel',
-                                                                                        title: 'Cancel Ticket?',
-                                                                                        msg: 'If you cancel the ticket, you cannot revert it. Are you sure you want to proceed?',
-                                                                                        confirmText: 'Yes',
-                                                                                        cancelText: 'Cancel'
-                                                                                    })}
-                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                <button onClick={() => {setShowFeedbackModal(true); setShowTicketMenu(false)}} className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                     Give Feedback
                                                                                 </button>
                                                                             ) : ''
@@ -626,7 +624,7 @@ const HomeIndex = () => {
                                                             ${
                                                                 selectedTicket.status === 'pending' || selectedTicket.status === 'cancelled' ? 'bg-red-500 border-red-600' : 
                                                                 selectedTicket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
-                                                                selectedTicket.status === 'needs_feedback' || selectedTicket.status === 'completed' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
+                                                                selectedTicket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-neutral-500 border-neutral-600'
                                                             }`}>
                                                         {(selectedTicket.status).replace('_', ' ').toUpperCase()}
                                                     </p>

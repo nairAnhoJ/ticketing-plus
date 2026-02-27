@@ -107,7 +107,6 @@ export const fetchTicketCounts = createAsyncThunk('my-requests/ticket-counts', a
 export const fetchSelectedRequest = createAsyncThunk('my-requests/fetch-by-id', async (id: number) => {
     try {
         const ticket = await config.get(`/my-requests/${id}`);
-        console.log(ticket.data)
         return ticket.data;
     } catch (error) {
         console.log(error)
@@ -126,6 +125,15 @@ export const sendUpdate = createAsyncThunk('my-requests/send-update', async ({id
 export const cancelTicket = createAsyncThunk('my-requests/cancel-ticket', async ({id, user_id}: {id: number, user_id: number}) => {
     try {
         const res = await config.put(`/my-requests/${id}/cancel-ticket`, {user_id});
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+export const submitFeedback = createAsyncThunk('my-requests/submit-feedback', async (data: { ticket_id: number | undefined, rating: number; comment: string; }) => {
+    try {
+        const res = await config.post(`/my-requests/submit-feedback`, data);
         return res.data;
     } catch (error) {
         console.log(error)
@@ -183,6 +191,18 @@ const homeSlice = createSlice({
         .addCase(cancelTicket.fulfilled, (state, payload) => {
             if(state.selectedTicket){
                 state.selectedTicket.status = payload.payload;
+            }
+        })
+
+        
+        .addCase(submitFeedback.fulfilled, (state, payload) => {
+            const ticket = state.ticketList.find((ticket) => ticket.id == payload.payload.id);
+            if(ticket){
+                ticket.status = payload.payload.status
+            }
+
+            if(state.selectedTicket){
+                state.selectedTicket.status = payload.payload.status;
             }
         })
     },

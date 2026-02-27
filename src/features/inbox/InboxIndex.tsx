@@ -440,7 +440,7 @@ const HomeIndex = () => {
                                         ticketList.length > 0 ? (
                                             <>
                                                 { ticketList.map((ticket, index) => (
-                                                    <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 p-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket?.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
+                                                    <button onClick={()=>handleTicketSelect(ticket.id)} key={index} className={`w-full border-l-4 pl-2 pt-4 pb-2 flex items-center gap-x-2 hover:bg-neutral-100 cursor-pointer ${ticket.id === selectedTicket?.id ? 'border-blue-500 bg-neutral-200/40' : 'border-transparent'}`}>
                                                         {
                                                             ticket.requester_avatar ? (
                                                                 <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${ticket.requester_avatar}`} className="w-12 h-12 rounded-full border-2 border-[#808080]" alt="avatar" />
@@ -455,7 +455,7 @@ const HomeIndex = () => {
                                                             )
                                                         }
                                                         
-                                                        <div className="flex flex-col w-[calc(100%-48px)]">
+                                                        <div className="flex flex-col w-[calc(100%-68px)]">
                                                             <div className="grid grid-cols-12">
                                                                 {/* Name and Status */}
                                                                 <div className="flex items-center text-xs font-bold whitespace-nowrap overflow-hidden col-span-8 text-left">
@@ -475,7 +475,7 @@ const HomeIndex = () => {
                                                             <h2 className="font-medium text-xs text-left">{ticket.subject}</h2>
                                                             {/* Description at Notif Count */}
                                                             <div className="w-full h-6 flex items-center">
-                                                                <p className="text-xs truncate flex-1 text-left">{ticket.description}</p>
+                                                                <p className="w-full text-xs truncate text-left">{ticket.description}</p>
                                                                 { ticket.assigned_notif_count > 0 && (
                                                                     <div className="w-6 h-6 rounded-full bg-red-600/75 text-xs tracking-wide text-white ml-2 flex items-center justify-center">
                                                                         { ticket.assigned_notif_count }
