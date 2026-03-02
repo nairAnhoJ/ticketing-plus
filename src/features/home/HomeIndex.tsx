@@ -199,8 +199,10 @@ const HomeIndex = () => {
     }
 
     const handleSubmitUpdate = () => {
-        appDispatch(sendUpdate({id: selectedTicket!.id, user_id: me.id,  message: inputUpdate}))
-        setInputUpdate('');
+        if(inputUpdate.trim()){
+            appDispatch(sendUpdate({id: selectedTicket!.id, user_id: me.id,  message: inputUpdate}))
+            setInputUpdate('');
+        }
     }
 
     const handleLogout = () => {
