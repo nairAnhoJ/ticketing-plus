@@ -63,6 +63,11 @@ export interface SelectedTicket{
     updates: TicketUpdates[] | null;
     created_by: number;
     created_at: string;
+    
+    started_at: string;
+    resolution: string;
+    completed_by: string;
+    completed_at: string;
 }
 
 interface InitialState {
