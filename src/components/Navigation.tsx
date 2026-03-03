@@ -111,7 +111,7 @@ const Navigation = () => {
                         <button onClick={()=>setExpandProfileMenu(true)} className={`${expandMenu ? 'w-66 hover:bg-[#353535]' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 rounded-lg pl-0.75`}>
                             {
                                 me.avatar ? (
-                                    <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${me.avatar}`} className="w-9 h-9 rounded-full border-2 border-[#808080]" alt="avatar" />
+                                    <img src={`${import.meta.env.VITE_BASE_URL}/avatar/${me.avatar}`} className="w-9 h-9 rounded-full" alt="avatar" />
                                 )
                                 :
                                 (
@@ -125,8 +125,8 @@ const Navigation = () => {
                             {/* <img src="default-avatar.jpg" className="w-8 h-8 rounded-full" alt="avatar" /> */}
                             <div className="absolute flex justify-between w-54 top-1.5 left-11 text-sm text-left">
                                 <div>
-                                    <h1 className="font-semibold leading-4 whitespace-nowrap">{JSON.parse(user).name}</h1>
-                                    <p className="text-xs leading-3">{JSON.parse(user).department}</p>
+                                    <h1 className="font-semibold leading-4 whitespace-nowrap">{me.name}</h1>
+                                    <p className="text-xs leading-3">{me.department}</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 0 24 24" fill="currentColor">
                                     <g id="feArrowRight0" fill="none" fillRule="evenodd" stroke="none" strokeWidth="1">
@@ -148,9 +148,9 @@ const Navigation = () => {
 
 
                                         {/* SETTINGS */}
-                                        <Link to={'/account-settings'} className={`w-50 h-10 flex items-center transition-all duration-200 relative cursor-pointer gap-x-5.5 hover:bg-[#424242] p-2 rounded-t-lg]`}>
+                                        <Link to={'/settings'} className={`w-50 h-10 flex items-center transition-all duration-200 relative cursor-pointer gap-x-5.5 hover:bg-[#424242] p-2 rounded-t-lg]`}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-settings-icon lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
-                                            <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">Account Settings</h1>
+                                            <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">Settings</h1>
                                         </Link>
 
 
