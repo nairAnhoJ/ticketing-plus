@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
+import config from "../config/config";
 
 interface Me {
     id: number;
@@ -22,10 +23,10 @@ const Navigation = () => {
     const [expandProfileMenu, setExpandProfileMenu] = useState<boolean>(false);
     const me: Me = JSON.parse(user);
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
+    const handleLogout = async () => {
+        await config.post('/auth/logout');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
     }
 
     return (

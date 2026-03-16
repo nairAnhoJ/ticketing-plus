@@ -10,6 +10,7 @@ import CreateTicket from '../features/create/createTicket'
 import Inbox from '../features/inbox/InboxIndex'
 
 import Settings from '../features/settings/Settings'
+import SetPassword from '../features/SetPassword'
 
 function AppRoutes() {
 	return (
@@ -24,6 +25,7 @@ function AppRoutes() {
 							<Route path='/inbox' element={<Inbox />}></Route>
 
 							
+							<Route path='/set-password' element={<SetPassword />}></Route>
 							<Route path='/settings' element={<Settings />}></Route>
 						</Route>
 					</Route>

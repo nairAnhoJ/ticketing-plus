@@ -13,6 +13,7 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     const { errors, token } = useAppSelector((state) => state.auth)
+    const user = localStorage.getItem('user');
 
     const [data, setData] = useState<Data>({
         id_number: '',
@@ -20,7 +21,7 @@ const LoginPage = () => {
     })
 
     useEffect(() => {
-        if(token){
+        if(user){
             navigate('/');
         }
     },[token])

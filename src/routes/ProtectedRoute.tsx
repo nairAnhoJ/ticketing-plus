@@ -1,36 +1,41 @@
-import { useSelector } from "react-redux"
-import type { RootState } from "../app/store"
-import { Navigate, Outlet } from "react-router-dom"
-import config from "../config/config"
+import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
+import config from '../config/config';
+import { useEffect, useState } from 'react';
 
+function ProtectedRoutes() {
+    const { event_id } = useParams<{ event_id: string }>();
+    const location = useLocation();
+    const [isVerified, setIsVerified] = useState<boolean>(false)
+    const [isFirstTimeLogin, setIsFirstTimeLogin] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
 
-const ProtectedRoute = () => {
-    const token = useSelector((state: RootState) => state.auth.token)
+    useEffect(()=>{
+        config.get('/auth/is-valid')
+            .then((res)=>{
+                if(res.data.user.first_time_login === 1){
+                    setIsFirstTimeLogin(true)
+                }
+                setIsVerified(true)
+            })
+            .catch(()=>{
+                setIsVerified(false)
+            })
+            .finally(() => setLoading(false))
+    }, [])
 
-    const isValid = async () => {
-        try {
-            const valid = await config.get('/auth/is-valid');
-            return valid.data;
-        } catch (error: any) {
-            return error.response;
-        }
+    if (loading) return <p>Loading...</p>
+    if (!isVerified){
+        localStorage.removeItem('user')
+        return <Navigate to={event_id ? `/login/${event_id}` : `/login`} replace />
+    } 
+    if (isFirstTimeLogin && !location.pathname.includes("set-password")){
+        return <Navigate to={event_id ? `/set-password/${event_id}` : `/set-password`} replace />
     }
-
-    isValid().then((res) => {
-        if(res.status === 401 && res.data.message === "Unauthorized"){
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            window.location.href = "/login";
-        }
-    })
-
-    if(!token){
-        return <Navigate to="/login" replace />
+    if (!isFirstTimeLogin && location.pathname.includes("set-password")){
+        return <Navigate to={`/`} replace />
     }
-
-
 
     return <Outlet />
 }
 
-export default ProtectedRoute
+export default ProtectedRoutes
