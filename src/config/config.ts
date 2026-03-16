@@ -2,15 +2,16 @@ import axios from "axios";
 
 const config = axios.create({
     baseURL: `${import.meta.env.VITE_BASE_URL}/api`,
+    withCredentials: true,
 })
 
-config.interceptors.request.use((cnfg) => {
-    const token = localStorage.getItem("token");
-    if(token){
-        cnfg.headers.Authorization = `Bearer ${token}`;
-    }
-    return cnfg;
-})
+// config.interceptors.request.use((cnfg) => {
+//     const token = localStorage.getItem("token");
+//     if(token){
+//         cnfg.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return cnfg;
+// })
 
 config.interceptors.request.use(
     (response) => response,

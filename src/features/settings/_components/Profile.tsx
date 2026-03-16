@@ -12,9 +12,7 @@ interface Me {
     avatar: string | null;
 }
 
-function Profile() {
-    const { user } = useAppSelector((state) => state.auth);
-    const me: Me = JSON.parse(user);
+function Profile({me}: {me: Me}) {
     return (
         <>
             <div className="flex items-start gap-6 mb-8 pb-8 border-b border-zinc-800">
