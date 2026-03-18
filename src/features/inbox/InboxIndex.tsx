@@ -64,7 +64,6 @@ const HomeIndex = () => {
     const me: Me = JSON.parse(user);
 
     useEffect(()=>{
-        console.log(me)
         appDispatch(fetchTicketCounts(me.department_id));
     }, [])
 

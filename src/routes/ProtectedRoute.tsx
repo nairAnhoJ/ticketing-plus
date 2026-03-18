@@ -9,6 +9,7 @@ function ProtectedRoutes() {
     const [isFirstTimeLogin, setIsFirstTimeLogin] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
 
+
     useEffect(()=>{
         config.get('/auth/is-valid')
             .then((res)=>{
@@ -17,7 +18,8 @@ function ProtectedRoutes() {
                 }
                 setIsVerified(true)
             })
-            .catch(()=>{
+            .catch((err)=>{
+                console.log(err);
                 setIsVerified(false)
             })
             .finally(() => setLoading(false))

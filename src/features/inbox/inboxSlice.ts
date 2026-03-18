@@ -95,7 +95,6 @@ const initialState: InitialState = {
 export const fetchInbox = createAsyncThunk('inbox/fetch-all', async ({department_id, search = "", status}: {department_id: number, search: string, status: 'all' | 'pending' | 'in_progress'}) => {
     try {
         const res = await config.get(`/inbox?department_id=${department_id}&search=${search}&status=${status}`);
-        console.log(res.data)
         return res.data;
     } catch (error) {
         console.log(error)
@@ -114,7 +113,6 @@ export const fetchTicketCounts = createAsyncThunk('inbox/ticket-counts', async (
 export const fetchSelectedRequest = createAsyncThunk('inbox/fetch-by-id', async (id: number) => {
     try {
         const ticket = await config.get(`/inbox/${id}`);
-        console.log(ticket.data)
         return ticket.data;
     } catch (error) {
         console.log(error)
@@ -201,6 +199,10 @@ const inboxSlice = createSlice({
             if(state.selectedTicket){
                 state.selectedTicket.status = payload.payload;
             }
+            if(payload.payload === 'in_progress'){
+                state.ticketCount.pending--;
+                state.ticketCount.in_progress++;
+            }
         })
 
         
@@ -213,6 +215,9 @@ const inboxSlice = createSlice({
             if(state.selectedTicket){
                 state.selectedTicket.status = payload.payload.status;
             }
+
+            state.ticketCount.in_progress--;
+            state.ticketCount.needs_feedback++;
         })
     },
 })

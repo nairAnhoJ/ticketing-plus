@@ -204,6 +204,8 @@ const homeSlice = createSlice({
             if(state.selectedTicket){
                 state.selectedTicket.status = payload.payload.status;
             }
+
+            state.ticketCount.needs_feedback--;
         })
     },
 })
