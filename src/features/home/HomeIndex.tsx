@@ -48,7 +48,6 @@ const HomeIndex = () => {
 
     const { user } = useAppSelector((state) => state.auth);
     const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.home)
-    const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
     const [search, setSearch] = useState<string>('');
@@ -205,12 +204,6 @@ const HomeIndex = () => {
         }
     }
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
-    }
-
     return (
         <>
             {/* Confirmation Modal */}
@@ -224,8 +217,10 @@ const HomeIndex = () => {
             }
 
             {/* FOR MOBILE */}
-            <div className="lg:hidden w-screen h-dvh overflow-hidden flex flex-col bg-[#212121]">
-                {/* Create new ticket button */}
+            <div className="lg:hidden">
+                Under Construction
+            </div>
+            {/* <div className="lg:hidden w-screen h-dvh overflow-hidden flex flex-col bg-[#212121]">
                 <Link to='/ticket/create' className="bg-[#303030] absolute right-5 bottom-5 flex items-center justify-center pl-3.5 pr-2 py-3.5 rounded-full text-neutral-200">
                     <h1 className="whitespace-nowrap">Write Ticket</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-6" viewBox="0 -960 960 960" fill="currentColor">
@@ -255,12 +250,6 @@ const HomeIndex = () => {
                             }
                         </div>
                     </div>
-                    {/* <Link to='/ticket/create' className=" whitespace-nowrap flex gap-x-1 bg-[#404040] px-3 py-1 pt-1.5 rounded-full text-neutral-300">
-                        <h1 className="text-sm">Write Ticket</h1>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
-                            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
-                        </svg>
-                    </Link> */}
                 </div>
                 <div className="w-full sm:w-112.5 h-15 flex gap-x-2 pb-2 px-2.5 mb-2 mx-auto">
                     <div className="bg-red-400 w-full rounded-xl flex flex-col justify-center items-center">
@@ -277,7 +266,6 @@ const HomeIndex = () => {
                     </div>
                 </div>
                 <div className="flex-1 h-[calc(100%-132px)] w-full bg-neutral-100 rounded-t-xl pt-3 text-neutral-600">
-                    {/* Search */}
                     <div className="w-full h-10 relative px-3">
                         <input type="text" className="w-full h-10 border border-neutral-600 rounded-xl bg-white pl-8.5 focus:outline-0"/>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-7 absolute top-1.5 left-4.5" viewBox="0 -960 960 960" fill="currentColor">
@@ -288,7 +276,7 @@ const HomeIndex = () => {
                     
                     <h1 className="text-xs font-bold text-[#808080] px-3 pt-3 pb-1">TICKETS</h1>
 
-                    {/* List */}
+
                     <div className="w-full h-[calc(100%-72px)] overflow-x-hidden border-t overflow-y-auto border-neutral-400">
                         <Link to="/tickets/id" className="w-full border-b border-neutral-400 p-2 flex flex-col">
                             <div className="flex justify-between items-center">
@@ -388,7 +376,7 @@ const HomeIndex = () => {
                         </Link>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* FOR DESKTOP */}
             <div className="hidden lg:flex w-screen bg-white h-dvh pl-16 overflow-hidden">
@@ -499,7 +487,6 @@ const HomeIndex = () => {
                                             <>
                                                 <div className="w-full h-auto flex flex-col items-center pt-5">
                                                     <h1 className="text-3xl font-bold">No Requests</h1>
-                                                    {/* <img src="/icons/empty_email.png" className="w-3/5 mt-5" alt="empty email" /> */}
                                                 </div>
                                             </>
                                         )

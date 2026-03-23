@@ -82,8 +82,8 @@ const CreateTicket = () => {
         files.forEach((file: any) => {
             formData.append(`files`, file);
         });
-        console.log((inchargeUsers.length > 0) ? inchargeUsers.find(user => (user.is_primary === 1))?.user_id || '' : '');
-        console.log(data.assigned_department_id);
+        // console.log((inchargeUsers.length > 0) ? inchargeUsers.find(user => (user.is_primary === 1))?.user_id || '' : '');
+        // console.log(data.assigned_department_id);
         dispatch(storeTicket(formData));
         navigate("/");
         // await new Promise((resolve) => setTimeout(resolve, 1000))

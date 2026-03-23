@@ -63,6 +63,16 @@ export const loginUser = createAsyncThunk<LoginResponse, LoginPayload, { rejectV
     }
 })
 
+export const fetchUser = createAsyncThunk('users/fetch', async (id: number) => {
+    try {
+        const res = await config.get(`/users/${id}`);
+        console.log(res)
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -96,6 +106,11 @@ const authSlice = createSlice({
             }else{
                 state.errors = [{ path: "unknown", msg: "Unexpected error" }];
             }
+        })
+        
+        .addCase(fetchUser.fulfilled, (state, action) => {
+            state.user = JSON.stringify(action.payload);
+            localStorage.setItem("user", JSON.stringify(action.payload));
         })
     },
 })
