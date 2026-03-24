@@ -116,8 +116,11 @@ const Navigation = () => {
                                 )
                                 :
                                 (
-
-                                    <div style={{backgroundColor: me.bg_color, color: me.text_color}} className={`w-9 h-9 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                    // <div style={{backgroundColor: me.bg_color, color: me.text_color}} className={`w-9 h-9 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                    //     <span>{me.first_name[0].toUpperCase()}</span>
+                                    //     <span>{me.last_name[0].toUpperCase()}</span>
+                                    // </div>
+                                    <div className={`w-9 h-9 bg-white text-[#212121] rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
                                         <span>{me.first_name[0].toUpperCase()}</span>
                                         <span>{me.last_name[0].toUpperCase()}</span>
                                     </div>

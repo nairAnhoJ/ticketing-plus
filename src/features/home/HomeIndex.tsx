@@ -443,8 +443,11 @@ const HomeIndex = () => {
                                                             )
                                                             :
                                                             (
-
-                                                                <div style={{backgroundColor: ticket.assigned_user_bg_color, color: ticket.assigned_user_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                                                // <div style={{backgroundColor: ticket.assigned_user_bg_color, color: ticket.assigned_user_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                                                //     <span>{ticket.assigned_user_first_name[0].toUpperCase()}</span>
+                                                                //     <span>{ticket.assigned_user_last_name[0].toUpperCase()}</span>
+                                                                // </div>
+                                                                <div className={`w-12 h-12 bg-[#212121] text-white rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
                                                                     <span>{ticket.assigned_user_first_name[0].toUpperCase()}</span>
                                                                     <span>{ticket.assigned_user_last_name[0].toUpperCase()}</span>
                                                                 </div>
@@ -543,8 +546,11 @@ const HomeIndex = () => {
                                                         )
                                                         :
                                                         (
-
-                                                            <div style={{backgroundColor: selectedTicket.assigned_user_bg_color, color: selectedTicket.assigned_user_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                                            // <div style={{backgroundColor: selectedTicket.assigned_user_bg_color, color: selectedTicket.assigned_user_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
+                                                            //     <span>{selectedTicket.assigned_user_first_name[0].toUpperCase()}</span>
+                                                            //     <span>{selectedTicket.assigned_user_last_name[0].toUpperCase()}</span>
+                                                            // </div>
+                                                            <div className={`w-12 h-12 bg-[#212121] text-white rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
                                                                 <span>{selectedTicket.assigned_user_first_name[0].toUpperCase()}</span>
                                                                 <span>{selectedTicket.assigned_user_last_name[0].toUpperCase()}</span>
                                                             </div>

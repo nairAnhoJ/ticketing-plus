@@ -58,8 +58,11 @@ function Profile({me}: {me: Me}) {
                         )
                         :
                         (
-
-                            <div style={{backgroundColor: me.bg_color, color: me.text_color}} className={`w-16 h-16 rounded-2xl flex items-center justify-center gap-x-px text-2xl font-bold`}>
+                            // <div style={{backgroundColor: me.bg_color, color: me.text_color}} className={`w-16 h-16 rounded-2xl flex items-center justify-center gap-x-px text-2xl font-bold`}>
+                            //     <span>{me.first_name[0].toUpperCase()}</span>
+                            //     <span>{me.last_name[0].toUpperCase()}</span>
+                            // </div>
+                            <div className={`w-16 h-16 bg-[#212121] text-white rounded-2xl flex items-center justify-center gap-x-px text-2xl font-bold`}>
                                 <span>{me.first_name[0].toUpperCase()}</span>
                                 <span>{me.last_name[0].toUpperCase()}</span>
                             </div>
