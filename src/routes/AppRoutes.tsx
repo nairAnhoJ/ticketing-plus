@@ -11,6 +11,7 @@ import Inbox from '../features/inbox/InboxIndex'
 
 import Settings from '../features/settings/Settings'
 import SetPassword from '../features/SetPassword'
+import ReportIndex from '../features/report/ReportIndex'
 
 function AppRoutes() {
 	return (
@@ -23,6 +24,9 @@ function AppRoutes() {
 
 
 							<Route path='/inbox' element={<Inbox />}></Route>
+
+
+							<Route path='/ticket-report' element={<ReportIndex />}></Route>
 
 							
 							<Route path='/set-password' element={<SetPassword />}></Route>

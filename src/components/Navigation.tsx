@@ -86,13 +86,13 @@ const Navigation = () => {
                     </Link>
 
                     {/* TICKET REPORT */}
-                    {/* <Link to='/' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
+                    <Link to='/ticket-report' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/ticket-report' && 'bg-[#353535]' }`}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 32 32">
                             <path fill="currentColor" d="M10 18h8v2h-8zm0-5h12v2H10zm0 10h5v2h-5z"/>
                             <path fill="currentColor" d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2ZM12 4h8v4h-8Zm13 24H7V7h3v3h12V7h3Z"/>
                         </svg>
                         <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">Ticket Report</h1>
-                    </Link> */}
+                    </Link>
 
                     {/* SETTINGS */}
                     {/* <Link to='/' className={`${expandMenu ? 'w-46' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
