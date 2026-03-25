@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const config = axios.create({
-    baseURL: `${import.meta.env.VITE_BASE_URL}/api`,
+    baseURL: `${window.location.protocol}//${window.location.hostname}:${import.meta.env.VITE_API_PORT}/api`,
+    // baseURL: `${import.meta.env.VITE_BASE_URL}/api`,
     withCredentials: true,
 })
 

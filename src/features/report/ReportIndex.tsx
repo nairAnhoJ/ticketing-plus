@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import config from "../../config/config";
+import { useSearchParams } from "react-router-dom";
 
 interface Counts {
     all: number;
@@ -29,6 +31,10 @@ interface SelectedTicket {
     created_at: string;
     completed_by: string;
     completed_at: string;
+}
+interface Option {
+    id: string;
+    name: string;
 }
 type Status = "pending" | "in_progress" | "needs_feedback" | "closed";
 
@@ -74,18 +80,17 @@ const formatStatus = (status: string) => {
     .join(" ");
 };
 
-function FilterSelect({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) {
+function FilterSelect({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: Option[] }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="rounded-xl border border-slate-200 bg-white text-slate-700 text-sm px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent appearance-none cursor-pointer shadow-sm"
-      >
-        <option value="">All</option>
-        {options.map((o) => <option key={o} value={o}>{formatStatus(o)}</option>)}
-      </select>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</label>
+        <select
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="rounded-xl border border-slate-200 bg-white text-slate-700 text-sm px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent appearance-none cursor-pointer shadow-sm">
+                <option value="">All</option>
+                {options.map((o) => <option key={o.id} value={o.id}>{(o.name)}</option>)}
+        </select>
     </div>
   );
 }
@@ -106,6 +111,8 @@ function DateInput({ label, value, onChange }: { label: string; value: string; o
 
 
 function ReportIndex() {
+    const searchParams = useSearchParams()
+
     const today = new Date().toISOString().split("T")[0];
     const [counts, setCounts] = useState<Counts>({
         all: 0,
@@ -114,6 +121,8 @@ function ReportIndex() {
         needs_feedback: 0,
         closed: 0
     })
+    const [loading, setLoading] = useState<boolean>(false);
+
     const [tickets, setTickets] = useState<Ticket[]>([])
     const [selectedTicket, setSelectedTicket] = useState<SelectedTicket | null>(null)
 
@@ -133,8 +142,25 @@ function ReportIndex() {
 
     // Options
     const statuses: string[] = ['pending', 'in_progress', 'needs_feedback', 'closed']
-    const [categories, setCategories] = useState([])
+    const [categories, setCategories] = useState<Option[]>([])
     const [resolvers, setResolvers] = useState([])
+
+    useEffect(()=>{
+        setLoading(true)
+        config.get('/ticket-report')
+            .then((res)=>{
+                console.log(res);
+                setTickets(res.data.tickets);
+                const newCategories = res.data.categories.map((cat: any) => ({
+                    id: cat.id,
+                    name: cat.name
+                }));
+
+                setCategories(newCategories);
+            })
+            .catch((err)=>console.log(err))
+            .finally(()=>setLoading(false))
+    }, [])
 
     const handleSelectTicket = (id: number) => {
 
@@ -239,8 +265,8 @@ function ReportIndex() {
                                     <tr className="bg-slate-50 border-b border-slate-100">
                                         <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Ticket ID</th>
                                         <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider">Subject</th>
-                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider">Category</th>
-                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Status</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider pl-6">Category</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap pl-6">Status</th>
                                         <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Submitted By</th>
                                         <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Date</th>
                                         <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Resolved By</th>
@@ -266,7 +292,7 @@ function ReportIndex() {
                                                     <span className="bg-slate-100 text-slate-600 text-xs font-semibold px-2 py-1 rounded-lg">{ticket.category}</span>
                                                 </td>
                                                 <td className="px-4 py-3 whitespace-nowrap">
-                                                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${statusColors[ticket.status]}`}>{ticket.status}</span>
+                                                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${statusColors[ticket.status]}`}>{formatStatus(ticket.status)}</span>
                                                 </td>
                                                 <td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.requester}</td>
                                                 <td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{fmtDate(ticket.created_at)}</td>
