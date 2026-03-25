@@ -48,15 +48,15 @@ const statusDotColors: Record<Status, string> = {
 };
 
 function StatCard({ label, count, colorClass, dotColor }: { label: string; count: number; colorClass: string; dotColor: string }) {
-  return (
-    <div className={`rounded-2xl p-5 flex flex-col gap-1 shadow-sm border ${colorClass}`}>
-      <div className="flex items-center gap-2">
-        <span className={`w-2.5 h-2.5 rounded-full ${dotColor}`} />
-        <span className="text-sm font-semibold tracking-wide uppercase opacity-80">{label}</span>
-      </div>
-      <span className="text-4xl font-extrabold tracking-tight">{count}</span>
-    </div>
-  );
+    return (
+        <div className={`rounded-2xl p-5 flex flex-col gap-1 shadow-sm border ${colorClass}`}>
+            <div className="flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${dotColor}`} />
+                <span className="text-sm font-semibold tracking-wide uppercase opacity-80">{label}</span>
+            </div>
+            <span className="text-4xl font-extrabold tracking-tight">{count}</span>
+        </div>
+    );
 }
  
 function fmt(dateStr: string) {
@@ -66,6 +66,13 @@ function fmt(dateStr: string) {
 function fmtDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "2-digit" });
 }
+
+const formatStatus = (status: string) => {
+  return status
+    .split("_")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 
 function FilterSelect({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) {
   return (
@@ -77,7 +84,7 @@ function FilterSelect({ label, value, onChange, options }: { label: string; valu
         className="rounded-xl border border-slate-200 bg-white text-slate-700 text-sm px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent appearance-none cursor-pointer shadow-sm"
       >
         <option value="">All</option>
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+        {options.map((o) => <option key={o} value={o}>{formatStatus(o)}</option>)}
       </select>
     </div>
   );
@@ -147,7 +154,7 @@ function ReportIndex() {
                 </div>
                 <div className="flex items-center gap-3">
                     <span className="text-slate-500 text-sm pt-1">Last updated: {fmt(new Date().toISOString())}</span>
-                    <button className="bg-[#212121] text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-slate-100 transition-colors">
+                    <button className="bg-[#212121] text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-[#181818] transition-colors cursor-pointer">
                         Export CSV
                     </button>
                 </div>
@@ -193,6 +200,7 @@ function ReportIndex() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
                         <DateInput label="From Date" value={filterDateFrom} onChange={v => { setFilterDateFrom(v); setPage(1); }} />
                         <DateInput label="To Date" value={filterDateTo} onChange={v => { setFilterDateTo(v); setPage(1); }} />
+                        <button className=" h-9.5 bg-[#212121] hover:bg-[#181818] text-white rounded-xl self-end text-sm font-semibold cursor-pointer">Generate</button>
                     </div>
                 </div>
         
@@ -205,7 +213,7 @@ function ReportIndex() {
                                     tab !== "All" && <span className={`w-2 h-2 rounded-full ${statusDotColors[tab]}`} />
                                     // tab !== "All" && <span className={`w-2 h-2 rounded-full ${activeTab === tab ? "bg-white/60" : statusDotColors[tab]}`} />
                                 }
-                                    {tab}
+                                    {formatStatus(tab)}
                                 <span className={`text-xs rounded-full px-1.5 py-0.5 font-bold ${activeTab === tab ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"}`}>
                                     {tab === "All" ? counts.all : counts[tab]}
                                 </span>
@@ -217,163 +225,163 @@ function ReportIndex() {
                 {/* Table + Detail Panel */}
                 <div className="flex gap-4 items-start">
         
-                {/* Table */}
-                <div className="flex-1 min-w-0 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    {/* <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-                        <span className="text-sm font-semibold text-slate-700">
-                            Showing <span className="text-slate-900">{filtered.length}</span> ticket{filtered.length !== 1 ? "s" : ""}
-                        </span>
-                    </div> */}
-        
-                    <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="bg-slate-50 border-b border-slate-100">
-                                <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider cursor-pointer hover:text-slate-800 whitespace-nowrap">Ticket ID</th>
-                                <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider">Subject</th>
-                                <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider">Category</th>
-                                <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider cursor-pointer hover:text-slate-800 whitespace-nowrap">Status</th>
-                                <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Submitted By</th>
-                                <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider cursor-pointer hover:text-slate-800 whitespace-nowrap">Date</th>
-                                <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Resolved By</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                            {
-                                tickets.length === 0 && (
-                                    <tr>
-                                        <td colSpan={7} className="text-center py-16 text-slate-400 text-sm">
-                                            No data.
-                                        </td>
+                    {/* Table */}
+                    <div className="flex-1 min-w-0 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        {/* <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                            <span className="text-sm font-semibold text-slate-700">
+                                Showing <span className="text-slate-900">{filtered.length}</span> ticket{filtered.length !== 1 ? "s" : ""}
+                            </span>
+                        </div> */}
+            
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="bg-slate-50 border-b border-slate-100">
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Ticket ID</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider">Subject</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider">Category</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Status</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Submitted By</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Date</th>
+                                        <th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Resolved By</th>
                                     </tr>
-                                )
-                            }
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    {
+                                        tickets.length === 0 && (
+                                            <tr>
+                                                <td colSpan={7} className="text-center py-10 text-slate-400 text-sm">
+                                                    No data.
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
 
-                            {
-                                tickets.map(ticket => (
-                                    <tr key={ticket.id} onClick={() => handleSelectTicket(ticket.id)} className={`cursor-pointer transition-colors hover:bg-slate-50 ${selectedTicket?.id === ticket.id ? "bg-slate-50 border-l-4 border-l-slate-900" : "border-l-4 border-l-transparent"}`}>
-                                        <td className="px-4 py-3 font-mono text-xs text-slate-500 whitespace-nowrap">{ticket.ticket_number}</td>
-                                        <td className="px-4 py-3 text-slate-800 font-medium max-w-xs truncate">{ticket.subject}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            <span className="bg-slate-100 text-slate-600 text-xs font-semibold px-2 py-1 rounded-lg">{ticket.category}</span>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${statusColors[ticket.status]}`}>{ticket.status}</span>
-                                        </td>
-                                        <td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.requester}</td>
-                                        <td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{fmtDate(ticket.created_at)}</td>
-                                        <td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{ticket.completed_by ?? <span className="text-slate-300">—</span>}</td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                    </div>
-        
-                    {/* Pagination */}
-                    {/* {totalPages > 1 && (
-                    <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100">
-                        <span className="text-xs text-slate-400">Page {page} of {totalPages}</span>
-                        <div className="flex gap-1">
-                        <button
-                            onClick={() => setPage(p => Math.max(1, p - 1))}
-                            disabled={page === 1}
-                            className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                        >
-                            ← Prev
-                        </button>
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                                    {
+                                        tickets.map(ticket => (
+                                            <tr key={ticket.id} onClick={() => handleSelectTicket(ticket.id)} className={`cursor-pointer transition-colors hover:bg-slate-50 ${selectedTicket?.id === ticket.id ? "bg-slate-50 border-l-4 border-l-slate-900" : "border-l-4 border-l-transparent"}`}>
+                                                <td className="px-4 py-3 font-mono text-xs text-slate-500 whitespace-nowrap">{ticket.ticket_number}</td>
+                                                <td className="px-4 py-3 text-slate-800 font-medium max-w-xs truncate">{ticket.subject}</td>
+                                                <td className="px-4 py-3 whitespace-nowrap">
+                                                    <span className="bg-slate-100 text-slate-600 text-xs font-semibold px-2 py-1 rounded-lg">{ticket.category}</span>
+                                                </td>
+                                                <td className="px-4 py-3 whitespace-nowrap">
+                                                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${statusColors[ticket.status]}`}>{ticket.status}</span>
+                                                </td>
+                                                <td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.requester}</td>
+                                                <td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{fmtDate(ticket.created_at)}</td>
+                                                <td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{ticket.completed_by ?? <span className="text-slate-300">—</span>}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+            
+                        {/* Pagination */}
+                        {/* {totalPages > 1 && (
+                        <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100">
+                            <span className="text-xs text-slate-400">Page {page} of {totalPages}</span>
+                            <div className="flex gap-1">
                             <button
-                            key={p}
-                            onClick={() => setPage(p)}
-                            className={`w-8 h-8 rounded-lg text-xs font-semibold transition-colors ${page === p ? "bg-slate-900 text-white" : "text-slate-600 border border-slate-200 hover:bg-slate-50"}`}
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                             >
-                            {p}
+                                ← Prev
                             </button>
-                        ))}
-                        <button
-                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                            disabled={page === totalPages}
-                            className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                        >
-                            Next →
-                        </button>
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                                <button
+                                key={p}
+                                onClick={() => setPage(p)}
+                                className={`w-8 h-8 rounded-lg text-xs font-semibold transition-colors ${page === p ? "bg-slate-900 text-white" : "text-slate-600 border border-slate-200 hover:bg-slate-50"}`}
+                                >
+                                {p}
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                disabled={page === totalPages}
+                                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                            >
+                                Next →
+                            </button>
+                            </div>
                         </div>
+                        )} */}
                     </div>
-                    )} */}
-                </div>
-        
-                {/* Detail Panel */}
-                {
-                    selectedTicket && (
-                    <div className="w-80 shrink-0 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden sticky top-4">
-                        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                            <span className="font-bold text-slate-800 text-sm">Ticket Details</span>
-                            <button onClick={() => setSelectedTicket(null)} className="text-slate-400 hover:text-slate-700 text-lg leading-none transition-colors">×</button>
-                        </div>
-        
-                        <div className="p-5 space-y-4">
-                            {/* ID + Status */}
-                            <div className="flex items-center justify-between gap-2">
-                                <span className="font-mono text-xs text-slate-500">{selectedTicket.id}</span>
-                                <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${statusColors[selectedTicket.status]}`}>{selectedTicket.status}</span>
+            
+                    {/* Detail Panel */}
+                    {
+                        selectedTicket && (
+                        <div className="w-80 shrink-0 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden sticky top-4">
+                            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                                <span className="font-bold text-slate-800 text-sm">Ticket Details</span>
+                                <button onClick={() => setSelectedTicket(null)} className="text-slate-400 hover:text-slate-700 text-lg leading-none transition-colors">×</button>
                             </div>
             
-                            {/* Title */}
-                            <div>
-                                <h3 className="font-bold text-slate-900 leading-snug">{selectedTicket.status}</h3>
-                                <p className="text-slate-500 text-xs mt-2 leading-relaxed">{selectedTicket.description}</p>
-                            </div>
-            
-                            {/* Badges */}
-                            <div className="flex flex-wrap gap-2">
-                                <span className="bg-slate-100 text-slate-600 text-xs font-semibold px-2.5 py-1 rounded-lg">{selectedTicket.category}</span>
-                            </div>
-            
-                            <div className="border-t border-slate-100 pt-4 space-y-3">
-                            <div className="flex flex-col gap-0.5">
-                                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted By</span>
-                                <span className="text-sm text-slate-800 font-medium">{selectedTicket.requester}</span>
-                            </div>
-                            <div className="flex flex-col gap-0.5">
-                                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted At</span>
-                                <span className="text-sm text-slate-700">{fmt(selectedTicket.requested_at)}</span>
-                            </div>
-                            {selectedTicket.completed_by && (
-                                <>
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolved By</span>
-                                        <span className="text-sm text-slate-800 font-medium">{selectedTicket.completed_by}</span>
-                                    </div>
-                                    {selectedTicket.completed_at && (
+                            <div className="p-5 space-y-4">
+                                {/* ID + Status */}
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="font-mono text-xs text-slate-500">{selectedTicket.id}</span>
+                                    <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${statusColors[selectedTicket.status]}`}>{selectedTicket.status}</span>
+                                </div>
+                
+                                {/* Title */}
+                                <div>
+                                    <h3 className="font-bold text-slate-900 leading-snug">{selectedTicket.status}</h3>
+                                    <p className="text-slate-500 text-xs mt-2 leading-relaxed">{selectedTicket.description}</p>
+                                </div>
+                
+                                {/* Badges */}
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="bg-slate-100 text-slate-600 text-xs font-semibold px-2.5 py-1 rounded-lg">{selectedTicket.category}</span>
+                                </div>
+                
+                                <div className="border-t border-slate-100 pt-4 space-y-3">
+                                <div className="flex flex-col gap-0.5">
+                                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted By</span>
+                                    <span className="text-sm text-slate-800 font-medium">{selectedTicket.requester}</span>
+                                </div>
+                                <div className="flex flex-col gap-0.5">
+                                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted At</span>
+                                    <span className="text-sm text-slate-700">{fmt(selectedTicket.requested_at)}</span>
+                                </div>
+                                {selectedTicket.completed_by && (
+                                    <>
                                         <div className="flex flex-col gap-0.5">
-                                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolved At</span>
-                                        <span className="text-sm text-slate-700">{fmt(selectedTicket.completed_at)}</span>
+                                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolved By</span>
+                                            <span className="text-sm text-slate-800 font-medium">{selectedTicket.completed_by}</span>
                                         </div>
-                                    )}
-                                </>
-                            )}
+                                        {selectedTicket.completed_at && (
+                                            <div className="flex flex-col gap-0.5">
+                                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolved At</span>
+                                            <span className="text-sm text-slate-700">{fmt(selectedTicket.completed_at)}</span>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                                </div>
+                
+                                {/* Resolution time */}
+                                {
+                                    selectedTicket.completed_at && (
+                                        <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+                                            <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Resolution Time</span>
+                                            <p className="text-sm font-bold text-emerald-800 mt-1">
+                                                {(() => {
+                                                    const diff = new Date(selectedTicket.completed_at).getTime() - new Date(selectedTicket.requested_at).getTime();
+                                                    const hrs = Math.floor(diff / 3600000);
+                                                    const mins = Math.floor((diff % 3600000) / 60000);
+                                                    return hrs > 24 ? `${Math.floor(hrs / 24)}d ${hrs % 24}h` : `${hrs}h ${mins}m`;
+                                                })()}
+                                            </p>
+                                        </div>
+                                    )
+                                }
                             </div>
-            
-                            {/* Resolution time */}
-                            {
-                                selectedTicket.completed_at && (
-                                    <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
-                                        <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Resolution Time</span>
-                                        <p className="text-sm font-bold text-emerald-800 mt-1">
-                                            {(() => {
-                                                const diff = new Date(selectedTicket.completed_at).getTime() - new Date(selectedTicket.requested_at).getTime();
-                                                const hrs = Math.floor(diff / 3600000);
-                                                const mins = Math.floor((diff % 3600000) / 60000);
-                                                return hrs > 24 ? `${Math.floor(hrs / 24)}d ${hrs % 24}h` : `${hrs}h ${mins}m`;
-                                            })()}
-                                        </p>
-                                    </div>
-                                )
-                            }
                         </div>
-                    </div>
-                )}
+                    )}
                 </div>
             </main>
         </div>
