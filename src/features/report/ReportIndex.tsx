@@ -195,6 +195,8 @@ function ReportIndex() {
                 //     console.log(res.data.tickets.length);
                 //     setSelectedTicketId(res.data.tickets[0].id)
                 // }
+                setSelectedTicketId(null)
+                setSelectedTicket(null)
             })
             .catch((err)=>console.log(err))
             .finally(()=>setLoading(false))
