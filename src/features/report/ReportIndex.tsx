@@ -191,21 +191,25 @@ function ReportIndex() {
                 setResolvers(res.data.resolvers);
 
                 // Select
-                setSelectedTicketId(res.data.tickets[0].id)
+                // if(res.data.tickets.length > 0){
+                //     console.log(res.data.tickets.length);
+                //     setSelectedTicketId(res.data.tickets[0].id)
+                // }
             })
             .catch((err)=>console.log(err))
             .finally(()=>setLoading(false))
     }, [searchParams])
 
     useEffect(()=>{
-        fetchTicket();
+        if(tickets.length > 0){
+            fetchTicket();
+        }
     }, [selectedTicketId])
 
     const fetchTicket = () => {
         try {
             config.get(`inbox/${selectedTicketId}`)
                 .then((res)=>{
-                    console.log(res.data)
                     setSelectedTicket({
                         id: res.data.id,
                         ticket_number: res.data.ticket_number,
