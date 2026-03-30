@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import config from "../../config/config";
 import { useSearchParams } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
+import Analytics from "./_components/Analytics";
 
 interface Counts {
     all: number;
@@ -262,9 +263,52 @@ function ReportIndex() {
         setFilterDateTo(today);
     }
 
+    const convertToCSV = () => {
+        if (!tickets.length) return "";
+        const headers = Object.keys(tickets[0]) as (keyof Ticket)[];
+
+        const rows = tickets.map(obj =>
+            headers.map(header => JSON.stringify(obj[header] ?? "")).join(",")
+        );
+
+        return [headers.join(","), ...rows].join("\n");
+    };
+
+    const downloadCSV = (csv: any, filename = "data.csv") => {
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const handleDownload = () => {
+        const now = new Date();
+
+        const pad = (n: number) => n.toString().padStart(2, "0");
+
+        const month = pad(now.getMonth() + 1);
+        const day = pad(now.getDate());
+        const year = now.getFullYear();
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+        const seconds = pad(now.getSeconds());
+
+        const csv = convertToCSV();
+        downloadCSV(csv, `ticket_report_${month}-${day}-${year}_${hours}-${minutes}-${seconds}.csv`);
+    };
+
+
     return (
         <div className="min-h-screen bg-slate-50 font-sans pl-16">
             {loading && <LoadingPage />}
+            {/* {<Analytics />  } */}
+
             {/* Header */}
             <header className="text-[#212121] px-8 py-5 flex items-center justify-between">
                 <div>
@@ -273,9 +317,12 @@ function ReportIndex() {
                 </div>
                 <div className="flex items-center gap-3">
                     <span className="text-slate-500 text-sm pt-1">Last updated: {fmt(new Date().toISOString())}</span>
-                    <button className="bg-[#212121] text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-[#181818] transition-colors cursor-pointer">
+                    <button onClick={handleDownload} className="bg-[#212121] text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-[#181818] transition-colors cursor-pointer">
                         Export CSV
-                    </button>
+                    </button> 
+                    {/* <button className="bg-[#212121] text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-[#181818] transition-colors cursor-pointer">
+                        View Analytics and Charts
+                    </button> */}
                 </div>
             </header>
         
