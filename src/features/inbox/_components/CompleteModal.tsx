@@ -48,7 +48,7 @@ const CompleteModal = ({id, close}: {id: number | undefined, close: () => void})
         <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-neutral-900/25 z-50">
             <div className="w-auto h-auto bg-white text-neutral-600 rounded">
                 <div className="p-6 flex items-center gap-x-2">
-                    <div className="w-7 h-7 p-1.75 bg-emerald-300/80 rounded-full text-emerald-600">
+                    <div className="w-9 h-9 p-2 bg-emerald-300/80 rounded-full text-emerald-600">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
                     </div>
 

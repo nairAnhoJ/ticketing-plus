@@ -6,6 +6,7 @@ import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, change
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import CompleteModal from "./_components/CompleteModal";
+import ReassignModal from "./_components/ReassignModal";
 
 interface ConfirmationDetails {
     type: "start" | "complete";
@@ -60,6 +61,7 @@ const HomeIndex = () => {
         cancelText: '',
     })
     const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
+    const [showReassignModal, setShowReassignModal] = useState<boolean>(false);
     const isFirstRender = useRef(true);
     const me: Me = JSON.parse(user);
 
@@ -218,6 +220,10 @@ const HomeIndex = () => {
 
             {
                 showCompleteModal && <CompleteModal close={()=>setShowCompleteModal(false)} id={selectedTicket?.id}/>
+            }
+
+            {
+                showReassignModal && <ReassignModal close={()=>setShowReassignModal(false)} id={selectedTicket?.id} assigned_user_id={selectedTicket ? selectedTicket.assigned_user_id : 0}/>
             }
 
             {/* FOR MOBILE */}
@@ -550,10 +556,6 @@ const HomeIndex = () => {
                                                         )
                                                         :
                                                         (
-                                                            // <div style={{backgroundColor: selectedTicket.requester_bg_color, color: selectedTicket.requester_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
-                                                            //     <span>{selectedTicket.requester_first_name[0].toUpperCase()}</span>
-                                                            //     <span>{selectedTicket.requester_last_name[0].toUpperCase()}</span>
-                                                            // </div>
                                                             <div className={`w-12 h-12 bg-[#212121] text-white rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
                                                                 <span>{selectedTicket.requester_first_name[0].toUpperCase()}</span>
                                                                 <span>{selectedTicket.requester_last_name[0].toUpperCase()}</span>
@@ -605,6 +607,15 @@ const HomeIndex = () => {
                                                                                     Complete Ticket
                                                                                 </button>
                                                                             ) : ''
+                                                                        }
+                                                                        {
+                                                                            (selectedTicket.status !== 'closed' && selectedTicket.status !== 'cancelled' && selectedTicket.status !== 'needs_feedback') && (
+                                                                                <button
+                                                                                    onClick={() => {setShowReassignModal(true); setShowTicketMenu(false)}}
+                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                    Reassign Ticket
+                                                                                </button>
+                                                                            )
                                                                         }
                                                                     </div>
                                                                 </div>

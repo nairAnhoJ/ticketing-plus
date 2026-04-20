@@ -52,6 +52,7 @@ export interface SelectedTicket{
     requester_text_color: string;
     requester_bg_color: string;
 
+    assigned_user_id: number;
     assigned_user: string;
     requester_department: string;
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, Legend, AreaChart, Area,
@@ -21,7 +21,7 @@ interface Ticket {
   resolvedBy: string | null;
   submittedAt: string;
   resolvedAt: string | null;
-  rating: number | null; // 1–5
+  rating: number | null; // 0, 1
 }
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
@@ -143,14 +143,109 @@ function KpiCard({ label, value, sub, accent }: { label: string; value: string |
   );
 }
 
-// ─── Star Rating ──────────────────────────────────────────────────────────────
+// ─── Satisfaction Gauge ───────────────────────────────────────────────────────
 
-function Stars({ rating }: { rating: number }) {
+const useCountAnimation = (end: number) => {
+        const start: number = 0;
+        const duration: number = 800;
+        const [count, setCount] = useState(start);
+
+        useEffect(() => {
+            let animationFrame: number;
+            const startTime = performance.now();
+
+            const animate = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const value = Math.floor(start + (end - start) * progress);
+            setCount(value);
+
+            if (progress < 1) {
+                animationFrame = requestAnimationFrame(animate);
+            }
+            };
+
+            animationFrame = requestAnimationFrame(animate);
+
+            return () => cancelAnimationFrame(animationFrame);
+        }, [start, end, duration]);
+
+        return count > 0 ? count : 0;
+    }
+
+function SatisfactionGauge({ pct, likeCount, dislikeCount, total }: {
+  pct: number; likeCount: number; dislikeCount: number; total: number;
+}) {
+  const value = useCountAnimation(pct);
+  const radius = 90;
+  const stroke = 15;
+  const normalizedRadius = radius - stroke * 0.5;
+
+  const fullCircumference = 2 * Math.PI * normalizedRadius;
+  const arcLength = fullCircumference * 0.75; // 3/4 circle
+
+  const strokeDasharray = `${arcLength} ${fullCircumference}`;
+  const strokeDashoffset = arcLength - (value / 100) * arcLength;
+ 
+  const labelColor = pct >= 85 ? "#16a34a" : pct >= 40 ? "#d97706" : "#dc2626";
+  const label      = pct >= 85 ? "Great"   : pct >= 40 ? "Fair"    : "Poor";
+  const badgeCls   = pct >= 85
+    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+    : pct >= 40
+    ? "bg-amber-50 text-amber-700 border-amber-200"
+    : "bg-red-50 text-red-700 border-red-200";
+ 
   return (
-    <div className="flex gap-0.5">
-      {[1,2,3,4,5].map(i => (
-        <span key={i} className={`text-base ${i <= Math.round(rating) ? "text-amber-400" : "text-slate-200"}`}>★</span>
-      ))}
+    <div className="flex flex-col items-center gap-y-4">
+      <div className="flex items-center justify-center">
+        <svg height={radius * 2} width={radius * 2} viewBox={`0 0 ${radius * 2} ${radius * 2}`} className="rotate-135">
+          <defs>
+            <linearGradient id="gaugeGradient" className="rotate-45" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="180" y2="0">
+              <stop offset="0%" stopColor="#00C950" /> {/* red */}
+              <stop offset="75%" stopColor="#facc15" /> {/* yellow */}
+              <stop offset="100%" stopColor="#ef4444" /> {/* green */}
+            </linearGradient>
+          </defs>
+
+          {/* Background Arc */}
+          <circle cx={radius} cy={radius} r={normalizedRadius} fill="transparent" stroke="#e5e7eb" strokeWidth={stroke} strokeDasharray={strokeDasharray} strokeLinecap="round" />
+
+          {/* Progress Arc with Gradient */}
+          <circle cx={radius} cy={radius} r={normalizedRadius} fill="transparent" stroke="url(#gaugeGradient)" strokeWidth={stroke} strokeDasharray={strokeDasharray} strokeDashoffset={strokeDashoffset}  strokeLinecap="round" style={{ transition: "stroke-dashoffset 0.5s ease" }} />
+
+          {/* Value Text (counter-rotate) */}
+          <g transform={`rotate(225 ${radius} ${radius})`}>
+            <text x="50%" y="50%" dy="0.3em" textAnchor="middle" className="text-5xl font-bold fill-gray-600">
+              {value}
+            </text>
+          </g>
+
+          <g transform={`rotate(225 ${radius} ${radius})`} className={`px-3 py-1 rounded-full text-sm font-semibold border ${badgeCls}`}>
+            <text x="50%" y="90%" textAnchor="middle" className={`fill-current ${labelColor}`}>
+              {label}
+            </text>
+          </g>
+
+        </svg>
+      </div>
+      <div className="w-full grid grid-cols-2 gap-3">
+        <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
+          <span className="text-xl leading-none">👍</span>
+          <div>
+            <p className="text-xs font-semibold text-slate-500">Like</p>
+            <p className="text-lg font-extrabold text-emerald-700 leading-tight">{likeCount}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+          <span className="text-xl leading-none">👎</span>
+          <div>
+            <p className="text-xs font-semibold text-slate-500">Dislike</p>
+            <p className="text-lg font-extrabold text-red-600 leading-tight">{dislikeCount}</p>
+          </div>
+        </div>
+      </div>
+      <p className="text-xs text-slate-400">{total} total response{total !== 1 ? "s" : ""} received</p>
     </div>
   );
 }
@@ -268,7 +363,6 @@ export default function Analytics() {
       <header className="text-[#212121] px-8 py-5 flex items-center justify-between shadow-lg">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">Analytics & Charts</h1>
-          {/* <p className="text-slate-400 text-sm mt-0.5">Visual breakdown of ticket data across all categories</p> */}
         </div>
         <div className="flex items-center gap-2">
           <button className="cursor-pointer">
@@ -419,33 +513,14 @@ export default function Analytics() {
 
         {/* Row 4: Satisfaction + Monthly volume line */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          
           <ChartCard title="Satisfaction Ratings" subtitle="Requestor feedback on resolved tickets">
-            <div className="flex items-center gap-4 mb-2">
-              <span className="text-4xl font-extrabold text-slate-900">{avgRating.toFixed(1)}</span>
-              <div>
-                <Stars rating={avgRating} />
-                <p className="text-xs text-slate-400 mt-1">{ratedTickets.length} ratings received</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              {[5,4,3,2,1].map(star => {
-                const item = ratingDist.find(r => r.star === `${star}★`)!;
-                const pct = ratedTickets.length ? (item.count / ratedTickets.length) * 100 : 0;
-                return (
-                  <div key={star} className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400 w-4 text-right">{star}</span>
-                    <span className="text-amber-400 text-sm">★</span>
-                    <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${pct}%`, backgroundColor: item.fill }}
-                      />
-                    </div>
-                    <span className="text-xs text-slate-400 w-4">{item.count}</span>
-                  </div>
-                );
-              })}
-            </div>
+            <SatisfactionGauge
+              pct={100}
+              likeCount={50}
+              dislikeCount={1}
+              total={ratedTickets.length}
+            />
           </ChartCard>
 
           <ChartCard title="Monthly Ticket Volume" subtitle="Total tickets submitted per month" className="lg:col-span-2">
