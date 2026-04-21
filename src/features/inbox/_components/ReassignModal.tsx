@@ -19,14 +19,11 @@ const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, a
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<number | undefined>(undefined);
     const [error, setError] = useState<boolean>(false);
-    const [res, setRes] = useState<string>('');
-    const [files, setFiles] = useState<any>([]);
-    const [resError, setResError] = useState<boolean>(false)
 
     const fetchUsers = async () => {
         try {
-            const response = await config(`/users/department`);
-            console.log(response.data);
+            const response = await config.get(`/users/department/0`);
+            console.log(response);
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -39,24 +36,28 @@ const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, a
     }, []);
 
     const handleSubmit = async () => {
-        if(res){
-            setResError(false)
-            const formData = new FormData();
-            formData.append('resolution', res);
-            files.forEach((file: any) => {
-                formData.append(`files`, file);
-            });
-            if(id){
-                formData.append('id', id.toString());
-                try {
-                    await dispatch(completeTicket(formData));
-                    close();
-                } catch (error) {
-                    console.log(error)
-                }
-            }
+        if(selectedUser){
+            console.log(selectedUser)
+            setError(false)
+            const response = await config.patch(`/inbox/${id}/reassign`, {user_id: selectedUser});
+            console.log(response)
+            close();
+            // const formData = new FormData();
+            // formData.append('resolution', res);
+            // files.forEach((file: any) => {
+            //     formData.append(`files`, file);
+            // });
+            // if(id){
+            //     formData.append('id', id.toString());
+            //     try {
+            //         await dispatch(completeTicket(formData));
+            //         close();
+            //     } catch (error) {
+            //         console.log(error)
+            //     }
+            // }
         }else{
-            setResError(true)
+            setError(true)
         }
     }
 
@@ -77,14 +78,10 @@ const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, a
                         <select onChange={(e) => setSelectedUser(Number(e.target.value))} className={`border  px-1 py-1 rounded focus:outline-0 ${error ? 'border-red-400' : 'border-neutral-400'}`}>
                             <option value={''} className="hidden">Select an option</option>
                             {
-                                users?.map((user, index)=>(
-                                    <>
-                                        {
-                                            (user.id !== assigned_user_id) && 
-                                            <option key={index} value={user.id}>{user.name}</option>
-                                        }
-                                        {/* <option key={index} value={userOptions.id}>{userOptions.name}</option> */}
-                                    </>
+                                users?.map((user)=>(
+                                    (user.id !== assigned_user_id) && (
+                                        <option key={user.id} value={user.id}>{user.name}</option>
+                                    )
                                 ))
                             }
                         </select>
