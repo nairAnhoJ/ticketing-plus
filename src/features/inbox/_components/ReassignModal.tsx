@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
-import { completeTicket, reassign } from "../inboxSlice";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { reassign } from "../inboxSlice";
+import { useAppDispatch } from "../../../app/hooks";
 import config from "../../../config/config";
 
 interface User {
     id: number;
     name: string;
-}
-
-interface Me {
-    id: number;
-    department_id: number;
 }
 
 const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, assigned_user_id: number, close: () => void}) => {
