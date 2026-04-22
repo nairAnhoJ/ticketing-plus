@@ -683,7 +683,7 @@ const HomeIndex = () => {
 
                                                 {/* Resolution */}
                                                 {
-                                                    (selectedTicket.completed_by) && (
+                                                    (selectedTicket.completed_by) ? (
                                                         <>
                                                             <hr className="border-neutral-500/40 my-6"/>
 
@@ -725,9 +725,12 @@ const HomeIndex = () => {
                                                                     </div>
                                                                 )
                                                             }
+                                                            <h2 className="text-xs mt-6">Assigned To: <span className="text-sm font-semibold">{selectedTicket.assigned_user}</span></h2>
                                                             <h2 className="text-xs mt-6">Resolved By: <span className="text-sm font-semibold">{selectedTicket.completed_by}</span></h2>
                                                             <h2 className="text-xs">Resolution Date: <span className="text-sm font-semibold">{formatDate(selectedTicket.completed_at).replace(",", "")}</span></h2>
                                                         </>
+                                                    ) : (
+                                                        <h2 className="text-xs mt-6">Assigned To: <span className="text-sm font-semibold">{selectedTicket.assigned_user}</span></h2>
                                                     )
                                                 }
                                             </div>

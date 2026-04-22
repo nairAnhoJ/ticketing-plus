@@ -129,6 +129,15 @@ export const sendUpdate = createAsyncThunk('inbox/send-update', async ({id, user
     }
 });
 
+export const reassign = createAsyncThunk('inbox/reassign', async ({id, user_id}: {id: number, user_id: number}) => {
+    try {
+        const res = await config.patch(`/inbox/${id}/reassign`, {user_id});
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 export const changeTicketStatus = createAsyncThunk('inbox/change-status', async ({id, type, user_id}: {id: number, type: 'start' | 'complete', user_id: number}) => {
     try {
         const res = await config.put(`/inbox/${id}/change-status`, {type, user_id});
@@ -192,6 +201,14 @@ const inboxSlice = createSlice({
         .addCase(sendUpdate.fulfilled, (state, payload) => {
             if(state.selectedTicket){
                 state.selectedTicket.updates = payload.payload;
+            }
+        })
+
+        
+        .addCase(reassign.fulfilled, (state, payload) => {
+            if(state.selectedTicket){
+                state.selectedTicket.assigned_user_id = payload.payload?.user.id;
+                state.selectedTicket.assigned_user = payload.payload?.user.name;
             }
         })
 

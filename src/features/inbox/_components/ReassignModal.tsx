@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { completeTicket } from "../inboxSlice";
+import { completeTicket, reassign } from "../inboxSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import config from "../../../config/config";
 
@@ -14,7 +14,7 @@ interface Me {
 }
 
 const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, assigned_user_id: number, close: () => void}) => {
-    const dispatch = useAppDispatch();
+    const appDispatch = useAppDispatch();
 
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<number | undefined>(undefined);
@@ -37,25 +37,9 @@ const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, a
 
     const handleSubmit = async () => {
         if(selectedUser){
-            console.log(selectedUser)
             setError(false)
-            const response = await config.patch(`/inbox/${id}/reassign`, {user_id: selectedUser});
-            console.log(response)
+            appDispatch(reassign({id: id!, user_id: selectedUser}))
             close();
-            // const formData = new FormData();
-            // formData.append('resolution', res);
-            // files.forEach((file: any) => {
-            //     formData.append(`files`, file);
-            // });
-            // if(id){
-            //     formData.append('id', id.toString());
-            //     try {
-            //         await dispatch(completeTicket(formData));
-            //         close();
-            //     } catch (error) {
-            //         console.log(error)
-            //     }
-            // }
         }else{
             setError(true)
         }
