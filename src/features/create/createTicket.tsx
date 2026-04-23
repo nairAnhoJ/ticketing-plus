@@ -25,6 +25,7 @@ const CreateTicket = () => {
     const me = JSON.parse(user);
     const [tab, setTab] = useState<number>(1);
     const [description, setDescription] = useState<string | null>(null)
+    const [sla, setSla] = useState<number | null>(null)
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -32,11 +33,13 @@ const CreateTicket = () => {
     }, [])
 
     const handleDepartmentInchargeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setDescription(null)
         dispatch(fetchTicketCategories(Number(e.target.value)));
     }
 
     const handleTicketCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const cat = ticketCategories.find(cat => cat.id === Number(e.target.value));
+        setSla(cat?.sla_hours || null)
         setDescription(cat?.description || null);
         dispatch(fetchInchargeUser(Number(e.target.value)));
     }
@@ -62,7 +65,6 @@ const CreateTicket = () => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const uploadedFiles = Array.from(e.target.files || []);
         setFiles([...files, ...uploadedFiles]);
-        console.log(uploadedFiles)
     }
 
     const removeFile = (index: number) => {
@@ -79,14 +81,12 @@ const CreateTicket = () => {
         formData.append('assigned_user_id', (inchargeUsers.length > 0) ? inchargeUsers.find(user => (user.is_primary === 1))?.user_id || '' : '');
         formData.append('subject', data.subject);
         formData.append('description', data.description);
+        formData.append('sla_hours', sla?.toString() || '');
         files.forEach((file: any) => {
             formData.append(`files`, file);
         });
-        // console.log((inchargeUsers.length > 0) ? inchargeUsers.find(user => (user.is_primary === 1))?.user_id || '' : '');
-        // console.log(data.assigned_department_id);
         dispatch(storeTicket(formData));
         navigate("/");
-        // await new Promise((resolve) => setTimeout(resolve, 1000))
     }
 
     return (
@@ -245,9 +245,9 @@ const CreateTicket = () => {
                                                 <option value={''} className="hidden">Select an option</option>
                                                 {
                                                     inchargeDepatments?.map((dept, index)=>(
-                                                        <>
+                                                        (dept.department_id !== me.department_id) && (
                                                             <option key={index} value={dept.department_id}>{dept.department_name}</option>
-                                                        </>
+                                                        )
                                                     ))
                                                 }
                                             </select>
@@ -258,14 +258,15 @@ const CreateTicket = () => {
                                                 {
                                                     (ticketCategories.length > 0) ?
                                                         ticketCategories.map((category, index)=>(
-                                                            <>
-                                                                <option key={index} value={category.id} className="first:hidden">{category.name}</option>
-                                                            </>
+                                                            <option key={index} value={category.id} className="first:hidden">{category.name}</option>
                                                         ))
                                                     :
                                                     <option>Select an option</option>
                                                 }
                                             </select>
+                                        </div>
+                                        <div className="mt-3">
+                                            Expected Completion (SLA): <span className="font-semibold">{sla !== null ? `${sla} hours` : '-'}</span>
                                         </div>
                                         <div className="flex flex-col mt-3">
                                             <label className="text-sm">User In-Charge</label>
@@ -275,20 +276,14 @@ const CreateTicket = () => {
                                                         <>
                                                             {
                                                                 inchargeUsers.find(user => (user.is_primary === 1)) && (
-                                                                    <>
-                                                                        <h1><span className="text-sm">★ </span>{inchargeUsers.find(user => (user.is_primary === 1))?.user_name}</h1>
-                                                                    </>
+                                                                    <h1><span className="text-sm">★ </span>{inchargeUsers.find(user => (user.is_primary === 1))?.user_name}</h1>
                                                                 )
                                                             }
                                                             {
                                                                 inchargeUsers.map((user, index)=>(
-                                                                    <>
-                                                                        {   
-                                                                            (user.is_primary !== 1) && (
-                                                                                <p key={index} className="ml-3.75">{user.user_name}</p>
-                                                                            )
-                                                                        }
-                                                                    </>
+                                                                    (user.is_primary !== 1) && (
+                                                                        <p key={index} className="ml-3.75">{user.user_name}</p>
+                                                                    )
                                                                 ))
                                                             }
                                                         </>

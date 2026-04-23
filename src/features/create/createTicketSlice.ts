@@ -101,6 +101,7 @@ const createTicketSlice = createSlice({
                 description: null,
                 sla_hours: 0
             }]
+            state.inchargeUsers = [];
         })
         .addCase(fetchTicketCategories.fulfilled, (state, payload) => {
             state.ticketCategories.push(...payload.payload);
