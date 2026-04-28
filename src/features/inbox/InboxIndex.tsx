@@ -40,7 +40,7 @@ interface Me {
     bg_color: string;
     avatar: string | null;
 }
-
+ 
 const HomeIndex = () => {
     const appDispatch = useAppDispatch();
 

@@ -13,6 +13,7 @@ function ProtectedRoutes() {
     useEffect(()=>{
         config.get('/auth/is-valid')
             .then((res)=>{
+                console.log(res);
                 if(res.data.user.first_time_login === 1){
                     setIsFirstTimeLogin(true)
                 }
