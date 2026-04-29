@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 import config from "../config/config";
+import { fetchInChargeDepartments } from "../features/create/createTicketSlice";
 
 interface Me {
     id: number;
@@ -17,11 +18,17 @@ interface Me {
 
 const Navigation = () => {
     const location = useLocation();
+    const dispatch = useAppDispatch()
     const { user } = useAppSelector((state) => state.auth);
+    const { inchargeDepatments } = useAppSelector((state) => state.createTicket);
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [expandMenu, setExpandMenu] = useState<boolean>(false);
     const [expandProfileMenu, setExpandProfileMenu] = useState<boolean>(false);
     const me: Me = JSON.parse(user);
+
+    useEffect(()=>{
+        dispatch(fetchInChargeDepartments());
+    }, [])
 
     const handleLogout = async () => {
         await config.post('/auth/logout');
@@ -79,30 +86,26 @@ const Navigation = () => {
                         <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">My Requests</h1>
                     </Link>
 
-                    {/* INBOX */}
-                    <Link to='/inbox' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/inbox' && 'bg-[#353535]' }`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M212.31-140Q182-140 161-161q-21-21-21-51.31v-535.38Q140-778 161-799q21-21 51.31-21h535.38Q778-820 799-799q21 21 21 51.31v535.38Q820-182 799-161q-21 21-51.31 21H212.31Zm0-60h535.38q5.39 0 8.85-3.46t3.46-8.85v-115.38H628.46q-26.15 38-64.96 59-38.81 21-83.5 21t-83.5-21q-38.81-21-64.96-59H200v115.38q0 5.39 3.46 8.85t8.85 3.46ZM480-307.69q38 0 69-22t43-58h168v-360q0-5.39-3.46-8.85t-8.85-3.46H212.31q-5.39 0-8.85 3.46t-3.46 8.85v360h168q12 36 43 58t69 22ZM212.31-200H200h560H212.31Z"/></svg>
-                        <h1 className="absolute top-2.5 left-10 text-sm font-semibold">Inbox</h1>
-                    </Link>
+                    {
+                        inchargeDepatments.find(d => d.id === me.department_id) && (
+                            <>
+                                {/* INBOX */}
+                                <Link to='/inbox' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/inbox' && 'bg-[#353535]' }`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M212.31-140Q182-140 161-161q-21-21-21-51.31v-535.38Q140-778 161-799q21-21 51.31-21h535.38Q778-820 799-799q21 21 21 51.31v535.38Q820-182 799-161q-21 21-51.31 21H212.31Zm0-60h535.38q5.39 0 8.85-3.46t3.46-8.85v-115.38H628.46q-26.15 38-64.96 59-38.81 21-83.5 21t-83.5-21q-38.81-21-64.96-59H200v115.38q0 5.39 3.46 8.85t8.85 3.46ZM480-307.69q38 0 69-22t43-58h168v-360q0-5.39-3.46-8.85t-8.85-3.46H212.31q-5.39 0-8.85 3.46t-3.46 8.85v360h168q12 36 43 58t69 22ZM212.31-200H200h560H212.31Z"/></svg>
+                                    <h1 className="absolute top-2.5 left-10 text-sm font-semibold">Inbox</h1>
+                                </Link>
 
-                    {/* TICKET REPORT */}
-                    <Link to='/ticket-report' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/ticket-report' && 'bg-[#353535]' }`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 32 32">
-                            <path fill="currentColor" d="M10 18h8v2h-8zm0-5h12v2H10zm0 10h5v2h-5z"/>
-                            <path fill="currentColor" d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2ZM12 4h8v4h-8Zm13 24H7V7h3v3h12V7h3Z"/>
-                        </svg>
-                        <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">Ticket Report</h1>
-                    </Link>
-
-                    {/* SETTINGS */}
-                    {/* <Link to='/' className={`${expandMenu ? 'w-46' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="currentColor">
-                                <path d="M15.5 12a3.5 3.5 0 1 1-7 0a3.5 3.5 0 0 1 7 0"/><path d="M20.79 9.152C21.598 10.542 22 11.237 22 12s-.403 1.458-1.21 2.848l-1.923 3.316c-.803 1.384-1.205 2.076-1.865 2.456s-1.462.38-3.065.38h-3.874c-1.603 0-2.405 0-3.065-.38s-1.062-1.072-1.865-2.456L3.21 14.848C2.403 13.458 2 12.763 2 12s.403-1.458 1.21-2.848l1.923-3.316C5.936 4.452 6.338 3.76 6.998 3.38S8.46 3 10.063 3h3.874c1.603 0 2.405 0 3.065.38s1.062 1.072 1.865 2.456z"/>
-                            </g>
-                        </svg>
-                        <h1 className="absolute top-2.5 left-10 text-sm font-semibold">Settings</h1>
-                    </Link> */}
+                                {/* TICKET REPORT */}
+                                <Link to='/ticket-report' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/ticket-report' && 'bg-[#353535]' }`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 32 32">
+                                        <path fill="currentColor" d="M10 18h8v2h-8zm0-5h12v2H10zm0 10h5v2h-5z"/>
+                                        <path fill="currentColor" d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2ZM12 4h8v4h-8Zm13 24H7V7h3v3h12V7h3Z"/>
+                                    </svg>
+                                    <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">Ticket Report</h1>
+                                </Link>
+                            </>
+                        )
+                    }
                 </div>
 
                 {/* FOOTER */}
@@ -116,10 +119,6 @@ const Navigation = () => {
                                 )
                                 :
                                 (
-                                    // <div style={{backgroundColor: me.bg_color, color: me.text_color}} className={`w-9 h-9 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
-                                    //     <span>{me.first_name[0].toUpperCase()}</span>
-                                    //     <span>{me.last_name[0].toUpperCase()}</span>
-                                    // </div>
                                     <div className={`w-9 h-9 bg-white text-[#212121] rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
                                         <span>{me.first_name[0].toUpperCase()}</span>
                                         <span>{me.last_name[0].toUpperCase()}</span>

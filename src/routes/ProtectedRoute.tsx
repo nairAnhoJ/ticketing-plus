@@ -1,26 +1,41 @@
 import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import config from '../config/config';
 import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchUser } from '../features/auth/authSlice';
+
+interface Me {
+    id: number;
+    department: string;
+    department_id: number;
+    name: string;
+    first_name: string;
+    last_name: string;
+    text_color: string;
+    bg_color: string;
+    avatar: string | null;
+}
 
 function ProtectedRoutes() {
+    const appDispatch = useAppDispatch();
     const { event_id } = useParams<{ event_id: string }>();
     const location = useLocation();
     const [isVerified, setIsVerified] = useState<boolean>(false)
     const [isFirstTimeLogin, setIsFirstTimeLogin] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
-
+    const { user } = useAppSelector((state) => state.auth);
 
     useEffect(()=>{
         config.get('/auth/is-valid')
             .then((res)=>{
-                console.log(res);
                 if(res.data.user.first_time_login === 1){
                     setIsFirstTimeLogin(true)
                 }
-                setIsVerified(true)
+                setIsVerified(true);
+                const parsedUser = JSON.parse(user);
+                appDispatch(fetchUser(parsedUser?.id));
             })
             .catch((err)=>{
-                console.log(err);
                 setIsVerified(false)
             })
             .finally(() => setLoading(false))
