@@ -303,12 +303,12 @@ export default function Analytics() {
   // })).filter(d => d.count > 0);
 
   // 5. Avg resolution time per category
-  const resolutionByCategory = (["IT", "HR", "Finance", "Facilities", "Admin"] as Category[]).map(c => {
-    const resolved = tickets.filter(t => t.category === c && t.resolvedAt);
-    if (!resolved.length) return null;
-    const avg = resolved.reduce((s, t) => s + resolutionHours(t)!, 0) / resolved.length;
-    return { name: c, hours: parseFloat(avg.toFixed(1)), color: CATEGORY_COLORS[c] };
-  }).filter(Boolean) as { name: string; hours: number; color: string }[];
+  // const resolutionByCategory = (["IT", "HR", "Finance", "Facilities", "Admin"] as Category[]).map(c => {
+  //   const resolved = tickets.filter(t => t.category === c && t.resolvedAt);
+  //   if (!resolved.length) return null;
+  //   const avg = resolved.reduce((s, t) => s + resolutionHours(t)!, 0) / resolved.length;
+  //   return { name: c, hours: parseFloat(avg.toFixed(1)), color: CATEGORY_COLORS[c] };
+  // }).filter(Boolean) as { name: string; hours: number; color: string }[];
 
   // 6. Tickets per resolver (stacked bar)
   const resolvers = ["John Arian Malondras", "Patricia Lim"];
