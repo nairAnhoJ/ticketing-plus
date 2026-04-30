@@ -67,13 +67,13 @@ const STATUS_COLORS: Record<Status, string> = {
   "Closed": "#94a3b8",
 };
 
-const CATEGORY_COLORS: Record<Category, string> = {
-  "IT": "#3b82f6",
-  "HR": "#8b5cf6",
-  "Finance": "#f59e0b",
-  "Facilities": "#10b981",
-  "Admin": "#ec4899",
-};
+// const CATEGORY_COLORS: Record<Category, string> = {
+//   "IT": "#3b82f6",
+//   "HR": "#8b5cf6",
+//   "Finance": "#f59e0b",
+//   "Facilities": "#10b981",
+//   "Admin": "#ec4899",
+// };
 
 // const PRIORITY_COLORS: Record<Priority, string> = {
 //   "Low": "#38bdf8",
