@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import config from "../../config/config";
 import { useSearchParams } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
-import Analytics from "./_components/Analytics";
+// import Analytics from "./_components/Analytics";
 
 interface Counts {
     all: number;

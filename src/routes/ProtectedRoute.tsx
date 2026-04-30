@@ -4,18 +4,6 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchUser } from '../features/auth/authSlice';
 
-interface Me {
-    id: number;
-    department: string;
-    department_id: number;
-    name: string;
-    first_name: string;
-    last_name: string;
-    text_color: string;
-    bg_color: string;
-    avatar: string | null;
-}
-
 function ProtectedRoutes() {
     const appDispatch = useAppDispatch();
     const { event_id } = useParams<{ event_id: string }>();
@@ -35,7 +23,7 @@ function ProtectedRoutes() {
                 const parsedUser = JSON.parse(user);
                 appDispatch(fetchUser(parsedUser?.id));
             })
-            .catch((err)=>{
+            .catch(()=>{
                 setIsVerified(false)
             })
             .finally(() => setLoading(false))
