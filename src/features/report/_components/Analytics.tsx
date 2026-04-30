@@ -1,8 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell, Legend, AreaChart, Area,
-  RadialBarChart, RadialBar,
+  LineChart, Line, PieChart, Pie, Cell, Legend, AreaChart, Area
 } from "recharts";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -76,12 +75,12 @@ const CATEGORY_COLORS: Record<Category, string> = {
   "Admin": "#ec4899",
 };
 
-const PRIORITY_COLORS: Record<Priority, string> = {
-  "Low": "#38bdf8",
-  "Medium": "#a78bfa",
-  "High": "#fb923c",
-  "Critical": "#f43f5e",
-};
+// const PRIORITY_COLORS: Record<Priority, string> = {
+//   "Low": "#38bdf8",
+//   "Medium": "#a78bfa",
+//   "High": "#fb923c",
+//   "Critical": "#f43f5e",
+// };
 
 const MONTH_LABELS = ["Jan", "Feb", "Mar"];
 
@@ -259,6 +258,8 @@ type Range = "all" | "jan" | "feb" | "mar";
 export default function Analytics() {
   const [range, setRange] = useState<Range>("all");
   const [categoryFilter, setCategoryFilter] = useState<Category | "">("");
+  setRange('all')
+  setCategoryFilter('')
 
   const tickets = useMemo(() => {
     let t = MOCK_TICKETS;
@@ -295,11 +296,11 @@ export default function Analytics() {
   })).filter(d => d.Total > 0);
 
   // 4. Priority distribution (bar)
-  const priorityData = (["Low", "Medium", "High", "Critical"] as Priority[]).map(p => ({
-    name: p,
-    count: tickets.filter(t => t.priority === p).length,
-    color: PRIORITY_COLORS[p],
-  })).filter(d => d.count > 0);
+  // const priorityData = (["Low", "Medium", "High", "Critical"] as Priority[]).map(p => ({
+  //   name: p,
+  //   count: tickets.filter(t => t.priority === p).length,
+  //   color: PRIORITY_COLORS[p],
+  // })).filter(d => d.count > 0);
 
   // 5. Avg resolution time per category
   const resolutionByCategory = (["IT", "HR", "Finance", "Facilities", "Admin"] as Category[]).map(c => {
@@ -324,11 +325,11 @@ export default function Analytics() {
 
   // 7. Satisfaction ratings
   const ratedTickets = tickets.filter(t => t.rating !== null);
-  const avgRating = ratedTickets.length ? (ratedTickets.reduce((s, t) => s + t.rating!, 0) / ratedTickets.length) : 0;
-  const ratingDist = [1,2,3,4,5].map(r => ({
-    star: `${r}★`, count: ratedTickets.filter(t => t.rating === r).length,
-    fill: r >= 4 ? "#f59e0b" : r === 3 ? "#94a3b8" : "#ef4444",
-  }));
+  // const avgRating = ratedTickets.length ? (ratedTickets.reduce((s, t) => s + t.rating!, 0) / ratedTickets.length) : 0;
+  // const ratingDist = [1,2,3,4,5].map(r => ({
+  //   star: `${r}★`, count: ratedTickets.filter(t => t.rating === r).length,
+  //   fill: r >= 4 ? "#f59e0b" : r === 3 ? "#94a3b8" : "#ef4444",
+  // }));
 
   // 8. Open vs Closed over time (area)
   const trendData = MONTH_LABELS.map((month, i) => {
@@ -347,15 +348,15 @@ export default function Analytics() {
   const pendingCount = tickets.filter(t => t.status === "Pending").length;
   const criticalCount = tickets.filter(t => t.priority === "Critical").length;
 
-  const RANGES: { key: Range; label: string }[] = [
-    { key: "all", label: "All Time" },
-    { key: "jan", label: "January" },
-    { key: "feb", label: "February" },
-    { key: "mar", label: "March" },
-  ];
+  // const RANGES: { key: Range; label: string }[] = [
+  //   { key: "all", label: "All Time" },
+  //   { key: "jan", label: "January" },
+  //   { key: "feb", label: "February" },
+  //   { key: "mar", label: "March" },
+  // ];
 
 
-  const CATEGORIES_LIST: string[] = ["IT", "HR", "Finance", "Facilities", "Admin"];
+  // const CATEGORIES_LIST: string[] = ["IT", "HR", "Finance", "Facilities", "Admin"];
 
   return (
     <div className="fixed top-0 left-0 pl-16 w-full h-screen overflow-y-auto bg-slate-50 z-9">
@@ -462,7 +463,7 @@ export default function Analytics() {
 
         {/* Row 3: Resolution time + Resolver performance */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <ChartCard title="Avg. Resolution Time by Category" subtitle="Average hours to close a ticket per department">
+          {/* <ChartCard title="Avg. Resolution Time by Category" subtitle="Average hours to close a ticket per department">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={resolutionByCategory} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -474,7 +475,7 @@ export default function Analytics() {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </ChartCard>
+          </ChartCard> */}
 
           <ChartCard title="Resolver Performance" subtitle="Tickets handled per support agent">
             <div className="space-y-4">
