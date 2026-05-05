@@ -26,6 +26,7 @@ const Navigation = () => {
     const [expandProfileMenu, setExpandProfileMenu] = useState<boolean>(false);
     const me: Me = JSON.parse(user);
 
+
     useEffect(()=>{
         dispatch(fetchInChargeDepartments());
     }, [])

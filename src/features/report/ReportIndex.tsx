@@ -263,6 +263,8 @@ function ReportIndex() {
         setFilterDateTo(today);
     }
 
+
+    // CSV Export
     const convertToCSV = () => {
         if (!tickets.length) return "";
         const headers = Object.keys(tickets[0]) as (keyof Ticket)[];
