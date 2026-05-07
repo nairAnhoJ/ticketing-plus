@@ -90,9 +90,20 @@ function avgResolutionHrs(tickets: Ticket[]): string {
       return s + hrs;
     }, 0) / resolved.length;
 
+  return `${avg.toFixed(1)}h`;
+}
+
+function avgResponseHrs(tickets: Ticket[]): string {
+  const resolved = tickets.filter(t => (t.status === "in_progress" || t.status === "closed" || t.status === "needs_feedback"));
+  if (!resolved.length) return "—";
+
+  const avg =
+    resolved.reduce((s, t) => {
+      const hrs = workingHoursDiff(new Date(t.created_at), new Date(t.started_at));
+      return s + hrs;
+    }, 0) / resolved.length;
 
   return `${avg.toFixed(1)}h`;
-  // return avg >= 24 ? `${(avg / 24).toFixed(1)}d` : `${avg.toFixed(1)}h`;
 }
 
 interface Props {
@@ -105,10 +116,8 @@ function KpiCards({
 
   const totalTickets = tickets.length;
   const resolvedTickets = tickets.filter(t => (t.status === "closed" || t.status === "needs_feedback")).length;
-  const pendingCount = tickets.filter(t => t.status === "pending").length;
   const closedTickets = tickets.filter(t => t.status === "closed").length;
   const likeCount = tickets.filter(t => t.status === "closed" && t.rating === 1).length;
-  // const criticalCount = tickets.filter(t => t.priority === "critical" && t.status !== "closed").length;
   const resolutionRate = totalTickets > 0 ? Math.round((resolvedTickets / totalTickets) * 100) : 0;
   const satisfactionRate = closedTickets > 0 ? Math.round((likeCount / closedTickets) * 100) : 0;
 
@@ -117,7 +126,7 @@ function KpiCards({
       <KpiCard label="Total Tickets" value={totalTickets} sub="in selected period" accent="border-slate-200" />
       <KpiCard label="Resolved" value={resolvedTickets} sub="fully resolved" accent="border-slate-200" />
       <KpiCard label="Resolution Rate" value={`${resolutionRate}%`} sub="of all tickets" accent="border-emerald-200" />
-      <KpiCard label="Pending" value={pendingCount} sub="awaiting action" accent="border-red-200" />
+      <KpiCard label="Avg Response" value={avgResponseHrs(tickets)} sub="per ticket" accent="border-sky-200" />
       <KpiCard label="Avg Resolution" value={avgResolutionHrs(tickets)} sub="per resolved ticket" accent="border-sky-200" />
       <KpiCard label="Satisfaction" value={`${closedTickets ? satisfactionRate+'%' : "—"}`} sub={`${closedTickets} responses`} accent="border-sky-200" />
     </div>

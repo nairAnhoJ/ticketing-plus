@@ -1,12 +1,16 @@
 import type { Ticket } from "../ReportIndex"
+import DailyTicketTrends from "./DailyTicketTrends";
 import KpiCards from "./KpiCards";
+import StatusBreakdown from "./StatusBreakdown";
 
 interface Props {
-		tickets: Ticket[];
-		closeAnalytics: () => void;
+	from: string;
+	to: string;
+	tickets: Ticket[];
+	closeAnalytics: () => void;
 }
 
-function Analytics({ tickets, closeAnalytics } : Props) {
+function Analytics({ from, to, tickets, closeAnalytics } : Props) {
   return (
     <div className="fixed top-0 left-0 pl-16 w-full h-screen overflow-y-auto bg-slate-50 z-9">
 			{/* Header */}
@@ -26,6 +30,16 @@ function Analytics({ tickets, closeAnalytics } : Props) {
       <main className="px-8 py-6 max-w-screen-2xl mx-auto space-y-6">
 				{/* KPI Cards */}
 				<KpiCards tickets={tickets} />
+
+				{/* Charts - Row 1 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+					{/* Status Breakdown */}
+					<StatusBreakdown tickets={tickets} />
+
+					{/* Daily Trends */}
+					<DailyTicketTrends from={from} to={to} tickets={tickets} />
+				</div>
+
 			</main>
     </div>
   )
