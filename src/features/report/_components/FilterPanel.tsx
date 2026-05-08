@@ -1,10 +1,6 @@
+import type { Option } from "../ReportIndex";
 
-type Status = "all" | "pending" | "in_progress" | "needs_feedback" | "closed";
-
-interface Option {
-    id: Status;
-    name: string;
-}
+// type Status = "all" | "pending" | "in_progress" | "needs_feedback" | "closed";
 
 interface Props {
 	categories: Option[];

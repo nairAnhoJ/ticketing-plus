@@ -21,11 +21,13 @@ export interface Ticket {
 	id: number;
 	ticket_number: string;
 	category: string;
+	sla_hours: number;
 	subject: string;
 	status: "pending" | "in_progress" | "needs_feedback" | "closed";
 	requester: string;
 	created_at: string;
 	started_at: string;
+	started_by: string;
 	completed_at: string;
 	completed_by: string;
 	rating: number | null;
@@ -45,7 +47,7 @@ interface SelectedTicket {
 	completed_at: string;
 }
 
-interface Option {
+export interface Option {
 	id: Status;
 	name: string;
 }

@@ -67,13 +67,37 @@ const STATUS_COLORS: Record<Status, string> = {
   "Closed": "#94a3b8",
 };
 
-// const CATEGORY_COLORS: Record<Category, string> = {
-//   "IT": "#3b82f6",
-//   "HR": "#8b5cf6",
-//   "Finance": "#f59e0b",
-//   "Facilities": "#10b981",
-//   "Admin": "#ec4899",
-// };
+const COLORS: string[] = [
+  "#3b82f6", // blue
+  "#8b5cf6", // violet
+  "#f59e0b", // amber
+  "#10b981", // emerald
+  "#ec4899", // pink
+
+  "#06b6d4", // cyan
+  "#6366f1", // indigo
+  "#14b8a6", // teal
+  "#f97316", // orange
+  "#84cc16", // lime
+
+  "#ef4444", // red
+  "#a855f7", // purple
+  "#22c55e", // green
+  "#eab308", // yellow
+  "#0ea5e9", // sky
+
+  "#d946ef", // fuchsia
+  "#fb7185", // rose
+  "#2dd4bf", // turquoise
+  "#4ade80", // light green
+  "#c084fc", // soft violet
+
+  "#38bdf8", // light blue
+  "#f472b6", // soft pink
+  "#facc15", // gold
+  "#818cf8", // periwinkle
+  "#34d399", // mint
+];
 
 // const PRIORITY_COLORS: Record<Priority, string> = {
 //   "Low": "#38bdf8",
@@ -463,7 +487,7 @@ export default function OldAnalytics() {
 
         {/* Row 3: Resolution time + Resolver performance */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* <ChartCard title="Avg. Resolution Time by Category" subtitle="Average hours to close a ticket per department">
+          <ChartCard title="Avg. Resolution Time by Category" subtitle="Average hours to close a ticket per department">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={resolutionByCategory} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -475,7 +499,7 @@ export default function OldAnalytics() {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </ChartCard> */}
+          </ChartCard>
 
           <ChartCard title="Resolver Performance" subtitle="Tickets handled per support agent">
             <div className="space-y-4">

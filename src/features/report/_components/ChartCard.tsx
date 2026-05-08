@@ -6,6 +6,17 @@ function ChartCard({ title, subtitle, children, className = "" }: { title: strin
         {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
       </div>
       {children}
+      {
+        title === "Satisfaction Rating" && (
+          <div className="w-full flex">
+            <div className="w-1/2">
+              
+            </div>
+            <div className="w-1/2">
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 }

@@ -53,7 +53,13 @@ function DailyTicketTrends({ from, to, tickets } : Props) {
 					</defs>
 					<CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
 					<XAxis dataKey="date" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-					<YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+					<YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} domain={[0, (dataMax: number) => {
+						if (dataMax <= 5) return dataMax + 1;
+						if (dataMax <= 20) return dataMax + 3;
+						if (dataMax <= 50) return dataMax + 5;
+
+						return Math.ceil(dataMax * 1.1);
+					}]} />
 					<Tooltip content={<ChartTooltip />} />
 					<Legend wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }} />
 					<Area type="monotone" dataKey="Received" stroke="#3b82f6" strokeWidth={2.5} fill="url(#gReceived)" dot={{ r: 4, fill: "#3b82f6" }} />

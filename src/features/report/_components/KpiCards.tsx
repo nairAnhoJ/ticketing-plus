@@ -55,7 +55,7 @@ function nextDay(date: Date): Date {
   return d;
 }
 
-function workingHoursDiff(start: Date, end: Date): number {
+export function workingHoursDiff(start: Date, end: Date): number {
   if (end <= start) return 0;
 
   let total = 0;

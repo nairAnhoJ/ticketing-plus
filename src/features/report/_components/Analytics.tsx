@@ -1,6 +1,10 @@
 import type { Ticket } from "../ReportIndex"
+import AvgResolutionByUser from "./AvgResolutionByUser";
+import AvgResponseByUser from "./AvgResponseByUser";
 import DailyTicketTrends from "./DailyTicketTrends";
 import KpiCards from "./KpiCards";
+import SatisfactionRating from "./SatisfactionRating";
+import SlaCompliance from "./SlaCompliance";
 import StatusBreakdown from "./StatusBreakdown";
 
 interface Props {
@@ -38,6 +42,25 @@ function Analytics({ from, to, tickets, closeAnalytics } : Props) {
 
 					{/* Daily Trends */}
 					<DailyTicketTrends from={from} to={to} tickets={tickets} />
+				</div>
+
+				{/* Charts - Row 2 */}
+        <div className="">
+					<AvgResponseByUser tickets={tickets} />
+				</div>
+
+				{/* Charts - Row 3 */}
+        <div className="">
+					<AvgResolutionByUser tickets={tickets} />
+				</div>
+
+				{/* Charts - Row 4 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+					{/* Status Breakdown */}
+					<SatisfactionRating tickets={tickets} />
+
+					{/* SLA Compliance % */}
+					<SlaCompliance tickets={tickets} />
 				</div>
 
 			</main>
