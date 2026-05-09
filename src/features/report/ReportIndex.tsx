@@ -225,7 +225,7 @@ function ReportIndex() {
 					{/* {<Analytics />  } */}
 					{
 						showAnalytics && (
-							<Analytics from={filterDateFrom} to={filterDateTo} tickets={tickets} closeAnalytics={()=> setShowAnalytics(false)}/>
+							<Analytics from={filterDateFrom} to={filterDateTo} tickets={tickets} categories={categories} closeAnalytics={()=> setShowAnalytics(false)}/>
 						)
 					}
 

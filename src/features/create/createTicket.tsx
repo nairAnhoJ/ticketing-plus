@@ -300,7 +300,7 @@ const CreateTicket = () => {
                                             description && 
                                             <div className="flex flex-col mt-3">
                                                 <label className="text-sm">Ticket Category Remarks</label>
-                                                <h1 className="text-sm leading-3.5">{description}</h1>
+                                                <h1 className="text-sm leading-3.5 whitespace-pre-wrap">{description}</h1>
                                             </div>
                                         }
                                     </div>

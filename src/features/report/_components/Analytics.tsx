@@ -1,4 +1,5 @@
-import type { Ticket } from "../ReportIndex"
+import type { Option, Ticket } from "../ReportIndex"
+import AvgResolutionByCategory from "./AvgResolutionByCategory";
 import AvgResolutionByUser from "./AvgResolutionByUser";
 import AvgResponseByUser from "./AvgResponseByUser";
 import DailyTicketTrends from "./DailyTicketTrends";
@@ -11,10 +12,11 @@ interface Props {
 	from: string;
 	to: string;
 	tickets: Ticket[];
+	categories: Option[];
 	closeAnalytics: () => void;
 }
 
-function Analytics({ from, to, tickets, closeAnalytics } : Props) {
+function Analytics({ from, to, tickets, categories, closeAnalytics } : Props) {
   return (
     <div className="fixed top-0 left-0 pl-16 w-full h-screen overflow-y-auto bg-slate-50 z-9">
 			{/* Header */}
@@ -39,7 +41,16 @@ function Analytics({ from, to, tickets, closeAnalytics } : Props) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 					{/* Status Breakdown */}
 					<StatusBreakdown tickets={tickets} />
+					
+					{/* Status Breakdown */}
+					<SatisfactionRating tickets={tickets} />
 
+					{/* SLA Compliance % */}
+					<SlaCompliance tickets={tickets} />
+				</div>
+
+				{/* Charts - Row 2 */}
+        <div className="">
 					{/* Daily Trends */}
 					<DailyTicketTrends from={from} to={to} tickets={tickets} />
 				</div>
@@ -54,13 +65,13 @@ function Analytics({ from, to, tickets, closeAnalytics } : Props) {
 					<AvgResolutionByUser tickets={tickets} />
 				</div>
 
+				{/* Charts - Row 3 */}
+        <div className="">
+					<AvgResolutionByCategory tickets={tickets} categories={categories} />
+				</div>
+
 				{/* Charts - Row 4 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-					{/* Status Breakdown */}
-					<SatisfactionRating tickets={tickets} />
-
-					{/* SLA Compliance % */}
-					<SlaCompliance tickets={tickets} />
 				</div>
 
 			</main>
