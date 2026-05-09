@@ -95,6 +95,15 @@ export const fetchMyRequests = createAsyncThunk('my-requests/fetch', async ({id,
     }
 });
 
+export const fetchNewRequests = createAsyncThunk('my-requests/fetch-new', async ({id, search = "", status}: {id: number, search: string, status: 'all' | 'pending' | 'in_progress'}) => {
+    try {
+        const res = await config.get(`/my-requests?id=${id}&search=${search}&status=${status}`);
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 export const fetchTicketCounts = createAsyncThunk('my-requests/ticket-counts', async (id: number) => {
     try {
         const res = await config.get(`/my-requests/ticket-counts/${id}`);
@@ -160,6 +169,32 @@ const homeSlice = createSlice({
             state.listLoading = false;
             state.ticketList = payload.payload ?? [];
             // state.errors = null;
+        })
+
+        
+        .addCase(fetchNewRequests.fulfilled, (state, payload) => {
+            const incoming: Ticket[] = payload.payload;
+            const existing = state.ticketList;
+
+            const updatedList = [...existing];
+
+            incoming.forEach(inItem => {
+                const index = updatedList.findIndex(
+                    exItem => exItem.id === inItem.id
+                );
+
+                if (index !== -1) {
+                    // exists → check notif count
+                    if (updatedList[index].requester_notif_count !== inItem.requester_notif_count){
+                        updatedList[index] = {
+                            ...updatedList[index],
+                            ...inItem,
+                        };
+                    }
+                }
+            });
+
+            state.ticketList = updatedList;
         })
 
         

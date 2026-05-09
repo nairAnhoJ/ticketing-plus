@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
-import { cancelTicket, fetchMyRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./homeSlice";
+import { cancelTicket, fetchMyRequests, fetchNewRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./homeSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import FeedbackModal from "./_components/FeedbackModal";
@@ -83,6 +83,14 @@ const HomeIndex = () => {
     useEffect(()=>{
         fetchTickets(me.id, search, currentTab);
     }, [currentTab])
+    
+    useEffect(()=>{
+        const interval = setInterval(() => {
+            appDispatch(fetchNewRequests({id: me.id, search: search, status: currentTab}))
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [])
     
     const useCountAnimation = (end: number) => {
         const start: number = 0;
