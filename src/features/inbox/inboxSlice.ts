@@ -152,7 +152,6 @@ export const completeTicket = createAsyncThunk('inbox/complete-ticket', async (d
         const res = await config.post(`/inbox/complete-ticket`, data);
         return res.data;
     } catch (error: any) {
-        console.log(error)
         return rejectWithValue(error.response?.data || "Server Error");
     }
 });

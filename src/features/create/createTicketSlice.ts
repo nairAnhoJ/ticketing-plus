@@ -56,7 +56,6 @@ export const fetchTicketCategories = createAsyncThunk('create-ticket/ticket-cate
 export const fetchInchargeUser = createAsyncThunk('create-ticket/incharge-user', async (id: number) => {
     try {
         const res = await config.get(`/incharge-users/${id}`);
-        console.log(res.data)
         return res.data;
     } catch (error) {
         console.log(error)

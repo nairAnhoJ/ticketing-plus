@@ -40,7 +40,6 @@ function Profile({me}: {me: Me}) {
                 if(res.status === 201){
                     appDispatch(fetchUser(me.id));
                 }
-                console.log(res)
             })
             .catch((err) => console.log(err))
             .finally(()=> {setLoading(false); setPreview(null)})

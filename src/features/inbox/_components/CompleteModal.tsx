@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { completeTicket } from "../inboxSlice";
+import { completeTicket, fetchSelectedRequest } from "../inboxSlice";
 import { useAppDispatch } from "../../../app/hooks";
 
 
@@ -13,7 +13,6 @@ const CompleteModal = ({id, close}: {id: number | undefined, close: () => void})
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const uploadedFiles = Array.from(e.target.files || []);
         setFiles([...files, ...uploadedFiles]);
-        console.log(uploadedFiles)
     }
 
     const removeFile = (index: number) => {
@@ -33,7 +32,10 @@ const CompleteModal = ({id, close}: {id: number | undefined, close: () => void})
             if(id){
                 formData.append('id', id.toString());
                 try {
-                    await dispatch(completeTicket(formData));
+                    await dispatch(completeTicket(formData)).unwrap()
+                    .then(()=>{
+                        dispatch(fetchSelectedRequest(id))
+                    });
                     close();
                 } catch (error) {
                     console.log(error)

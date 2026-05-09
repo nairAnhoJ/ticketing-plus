@@ -54,7 +54,6 @@ export const loginUser = createAsyncThunk<LoginResponse, LoginPayload, { rejectV
             return res;
         }
     } catch (err: any) {
-        console.log(err)
         if(err.response?.status === 401 || err.response?.status === 400){
             return thunkAPI.rejectWithValue(err.response.data.errors);
         }else{
@@ -66,7 +65,6 @@ export const loginUser = createAsyncThunk<LoginResponse, LoginPayload, { rejectV
 export const fetchUser = createAsyncThunk('users/fetch', async (id: number) => {
     try {
         const res = await config.get(`/users/${id}`);
-        console.log(res)
         return res.data;
     } catch (error) {
         console.log(error)

@@ -33,7 +33,6 @@ function SlaCompliance({tickets}: {tickets: Ticket[]}) {
 				acc.notMet++;
 			}
 
-			console.log(acc)
 			return acc;
 		},
 		{

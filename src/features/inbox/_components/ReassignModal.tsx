@@ -18,7 +18,6 @@ const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, a
     const fetchUsers = async () => {
         try {
             const response = await config.get(`/users/department/0`);
-            console.log(response);
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);

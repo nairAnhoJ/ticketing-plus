@@ -46,14 +46,12 @@ function Security({id}: {id: number}) {
             })
         }
         if(newErrors.length > 0) {
-            console.log(newErrors)
             setErrors(newErrors);
             setLoading(false);
             return false;
         }
         
         if (data.newPassword.length < 8) {
-            console.log(data.newPassword.length)
             setErrors([
                 {
                     path: "newPassword",
@@ -96,7 +94,6 @@ function Security({id}: {id: number}) {
                 setLoading(false);
             }
         } catch (error: any) {
-            console.log(error.response.data);
             setErrors(error.response.data.errors);
             setLoading(false);
         }

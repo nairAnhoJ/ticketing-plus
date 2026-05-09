@@ -186,7 +186,7 @@ const HomeIndex = () => {
 
     const handleConfirmClick = async() => {
         if(selectedTicket){
-            await appDispatch(changeTicketStatus({id: selectedTicket.id, type: confirmationDetails.type, user_id: me.id}))
+            await appDispatch(changeTicketStatus({id: selectedTicket.id, type: confirmationDetails.type, user_id: me.id}));
             await appDispatch(fetchInbox({department_id: me.department_id, search: search, status: currentTab}))
             .unwrap()
             .then((tickets)=>{
