@@ -42,6 +42,13 @@ function SetPassword() {
     const allRulesMet = Object.values(rules).every(Boolean);
     const passwordsMatch = password === password_confirmation && password_confirmation !== "";
     const canSubmit = allRulesMet && passwordsMatch;
+    
+    const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key === 'Enter' && canSubmit){
+            e.preventDefault();
+            handleSubmit();
+        }
+    }
 
     function handleSubmit() {
         if (!canSubmit) return;
@@ -114,6 +121,7 @@ function SetPassword() {
                         <input
                         type={showPassword ? "text" : "password"}
                         value={password}
+                         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>)=>handleEnterKey(e)}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter new password"
                         className="w-full border border-gray-200 rounded-lg px-4 py-3 pr-10 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-gray-900 focus:ring-2 focus:ring-gray-900 focus:ring-opacity-10 transition-all"
@@ -138,6 +146,7 @@ function SetPassword() {
                         <input
                         type={showConfirm ? "text" : "password"}
                         value={password_confirmation}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>)=>handleEnterKey(e)}
                         onChange={(e) => setConfirm(e.target.value)}
                         placeholder="Re-enter your password"
                         className={`w-full border rounded-lg px-4 py-3 pr-10 text-sm text-gray-900 placeholder-gray-400 outline-none focus:ring-2 focus:ring-opacity-10 transition-all ${
