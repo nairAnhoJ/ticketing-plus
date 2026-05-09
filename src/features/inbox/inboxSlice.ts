@@ -102,6 +102,15 @@ export const fetchInbox = createAsyncThunk('inbox/fetch-all', async ({department
     }
 });
 
+export const fetchNewInbox = createAsyncThunk('inbox/fetch-new', async ({department_id, search = "", status}: {department_id: number, search: string, status: 'all' | 'pending' | 'in_progress'}) => {
+    try {
+        const res = await config.get(`/inbox?department_id=${department_id}&search=${search}&status=${status}`);
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 export const fetchTicketCounts = createAsyncThunk('inbox/ticket-counts', async (id: number) => {
     try {
         const res = await config.get(`/inbox/ticket-counts/${id}`);
@@ -177,8 +186,36 @@ const inboxSlice = createSlice({
             state.ticketList = payload.payload ?? [];
             // state.errors = null;
         })
-
         
+
+        .addCase(fetchNewInbox.fulfilled, (state, payload) => {
+            const incoming : Ticket[] = payload.payload; // new data
+            const existing = state.ticketList; // current state
+
+            const updatedList = [...existing];
+
+            incoming.forEach(inItem => {
+                const index = updatedList.findIndex(
+                    exItem => exItem.id === inItem.id
+                );
+
+                if (index !== -1) {
+                    // exists → check notif count
+                    if (updatedList[index].assigned_notif_count !== inItem.assigned_notif_count ){
+                        updatedList[index] = {
+                            ...updatedList[index],
+                            ...inItem, // overwrite with incoming
+                        };
+                    }
+                } else {
+                    // new ticket → add it
+                    updatedList.unshift(inItem);
+                }
+            });
+            state.ticketList = updatedList;
+        })
+
+
         .addCase(fetchTicketCounts.fulfilled, (state, payload) => {
             state.ticketCount = payload.payload;
         })

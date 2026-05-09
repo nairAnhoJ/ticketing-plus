@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
 // import { cancelTicket, fetchMyRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./inboxSlice";
-import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, changeTicketStatus } from "./inboxSlice";
+import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, changeTicketStatus, fetchNewInbox } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import CompleteModal from "./_components/CompleteModal";
@@ -84,6 +84,14 @@ const HomeIndex = () => {
     useEffect(()=>{
         fetchInboxTickets(me.department_id, search, currentTab);
     }, [currentTab])
+
+    useEffect(()=>{
+        const interval = setInterval(() => {
+            appDispatch(fetchNewInbox({department_id: me.department_id, search, status: currentTab}));
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [])
 
     const useCountAnimation = (end: number) => {
         const start: number = 0;
