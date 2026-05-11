@@ -651,7 +651,7 @@ const HomeIndex = () => {
                                                 </div>
                                                 <h2 className="text-sm font-semibold mt-6">{selectedTicket.ticket_category}</h2>
                                                 <h1 className="font-semibold mt-1">{selectedTicket.subject}</h1>
-                                                <div className="text-sm leading-4 mt-3">{selectedTicket.description}</div>
+                                                <div className="text-sm leading-4 mt-3 whitespace-pre-wrap">{selectedTicket.description}</div>
 
                                                 {/* Request Attachments */}
                                                 {
