@@ -46,7 +46,6 @@ const HomeIndex = () => {
 
     const { user } = useAppSelector((state) => state.auth);
     const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.inbox)
-    const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
@@ -166,7 +165,6 @@ const HomeIndex = () => {
     }
 
     const handleTicketSelect = (id: number) => {
-        setSelectedTicketId(id);
         appDispatch(fetchSelectedRequest(id));
     }
 
