@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
-import { cancelTicket, fetchMyRequests, fetchNewRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./homeSlice";
+import { cancelTicket, fetchMyRequests, fetchNewMessages, fetchNewRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./homeSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import FeedbackModal from "./_components/FeedbackModal";
@@ -85,12 +85,15 @@ const HomeIndex = () => {
     }, [currentTab])
     
     useEffect(()=>{
-        const interval = setInterval(() => {
-            appDispatch(fetchNewRequests({id: me.id, search: search, status: currentTab}))
+        const interval = setInterval(async() => {
+            await appDispatch(fetchNewRequests({id: me.id, search: search, status: currentTab}))
+            if(selectedTicket){
+                await appDispatch(fetchNewMessages(selectedTicket!.id));
+            }
         }, 5000);
 
         return () => clearInterval(interval);
-    }, [])
+    }, [selectedTicket])
     
     const useCountAnimation = (end: number) => {
         const start: number = 0;
@@ -181,6 +184,7 @@ const HomeIndex = () => {
 
             e.preventDefault();
         }else if(key === "Enter"){
+            e.preventDefault();
             handleSubmitUpdate();
         }
     }

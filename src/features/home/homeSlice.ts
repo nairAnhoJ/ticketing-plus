@@ -11,6 +11,7 @@ export interface TicketCount {
 }
 
 export interface TicketUpdates {
+    id: number;
     message: string;
     user_id: number;
     created_by: string;
@@ -122,6 +123,15 @@ export const fetchSelectedRequest = createAsyncThunk('my-requests/fetch-by-id', 
     }
 });
 
+export const fetchNewMessages = createAsyncThunk('my-requests/fetch-new-messages', async (id: number) => {
+    try {
+        const ticket = await config.get(`/my-requests/${id}/updates`);
+        return ticket.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 export const sendUpdate = createAsyncThunk('my-requests/send-update', async ({id, user_id, message}: {id: number, user_id: number, message: string}) => {
     try {
         const res = await config.post(`/my-requests/${id}/send-update`, {user_id, message});
@@ -213,6 +223,22 @@ const homeSlice = createSlice({
             state.selectedTicket = payload.payload;
             state.ticketList.find(t=>t.id === payload.payload.id)!.requester_notif_count = 0;
             // state.errors = null;
+        })
+        
+                
+        .addCase(fetchNewMessages.fulfilled, (state, payload) => {
+            const incoming : TicketUpdates[] = payload.payload.updates; // new data
+            const existing = state.selectedTicket!.updates; // current state
+
+            if(existing){
+                const difference = incoming.filter(
+                    inc => !existing.some(ex => ex.id === inc.id)
+                );
+
+                const updated = [...difference, ...existing];
+
+                state.selectedTicket!.updates = updated;
+            }
         })
 
         

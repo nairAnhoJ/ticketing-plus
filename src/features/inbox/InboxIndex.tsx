@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
 // import { cancelTicket, fetchMyRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./inboxSlice";
-import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, changeTicketStatus, fetchNewInbox } from "./inboxSlice";
+import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, changeTicketStatus, fetchNewInbox, fetchNewMessages } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import CompleteModal from "./_components/CompleteModal";
@@ -46,7 +46,7 @@ const HomeIndex = () => {
 
     const { user } = useAppSelector((state) => state.auth);
     const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.inbox)
-    // const pendingCount = useCountAnimation(number(ticketCount.pending));
+    const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
@@ -86,12 +86,23 @@ const HomeIndex = () => {
     }, [currentTab])
 
     useEffect(()=>{
-        const interval = setInterval(() => {
-            appDispatch(fetchNewInbox({department_id: me.department_id, search, status: currentTab}));
+        const interval = setInterval(async() => {
+            await appDispatch(fetchNewInbox({department_id: me.department_id, search, status: currentTab}));
+            if(selectedTicket?.id){
+                await appDispatch(fetchNewMessages(selectedTicket.id));
+            }
         }, 5000);
-
         return () => clearInterval(interval);
-    }, [])
+    }, [selectedTicket])
+
+    // useEffect(()=>{
+    //     const updatesInterval = setInterval(() => {
+    //         if(selectedTicket){
+    //             appDispatch(fetchNewMessages(selectedTicket!.id));
+    //         }
+    //     }, 3000);
+    //     return () => clearInterval(updatesInterval);
+    // }, [])
 
     const useCountAnimation = (end: number) => {
         const start: number = 0;
@@ -155,6 +166,7 @@ const HomeIndex = () => {
     }
 
     const handleTicketSelect = (id: number) => {
+        setSelectedTicketId(id);
         appDispatch(fetchSelectedRequest(id));
     }
 
@@ -182,6 +194,7 @@ const HomeIndex = () => {
 
             e.preventDefault();
         }else if(key === "Enter"){
+            e.preventDefault();
             handleSubmitUpdate();
         }
     }
@@ -773,7 +786,9 @@ const HomeIndex = () => {
                                                                 {update.message}
                                                                 <div className="absolute -right-1.25 -bottom-1.25 w-2.5 h-2.5 rotate-45 border-5 border-transparent border-t-blue-600/85"></div>
                                                             </div>
-                                                            <span className="text-[11px] font-semibold">{formatDate(update.created_at).replace(',', ' ')}</span>
+                                                            <span className="text-[11px] font-semibold">{
+                                                                formatDate(update.created_at).replace(',', ' ')
+                                                            }</span>
                                                         </div>
                                                     ) 
                                                     : 

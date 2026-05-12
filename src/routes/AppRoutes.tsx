@@ -22,13 +22,10 @@ function AppRoutes() {
 							<Route path='/' element={<HomeIndex />}></Route>
 							<Route path='/create-ticket' element={<CreateTicket />}></Route>
 
-
 							<Route path='/inbox' element={<Inbox />}></Route>
-
 
 							<Route path='/ticket-report' element={<ReportIndex />}></Route>
 
-							
 							<Route path='/set-password' element={<SetPassword />}></Route>
 							<Route path='/settings' element={<Settings />}></Route>
 						</Route>

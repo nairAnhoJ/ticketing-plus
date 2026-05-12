@@ -11,6 +11,7 @@ export interface TicketCount {
 }
 
 export interface TicketUpdates {
+    id: number;
     message: string;
     user_id: number;
     created_by: string;
@@ -69,6 +70,9 @@ export interface SelectedTicket{
     resolution: string;
     completed_by: string;
     completed_at: string;
+    
+    requester_notif_count: number;
+    assigned_notif_count: number;
 }
 
 interface InitialState {
@@ -123,6 +127,15 @@ export const fetchTicketCounts = createAsyncThunk('inbox/ticket-counts', async (
 export const fetchSelectedRequest = createAsyncThunk('inbox/fetch-by-id', async (id: number) => {
     try {
         const ticket = await config.get(`/inbox/${id}`);
+        return ticket.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+export const fetchNewMessages = createAsyncThunk('inbox/fetch-new-messages', async (id: number) => {
+    try {
+        const ticket = await config.get(`/inbox/${id}/updates`);
         return ticket.data;
     } catch (error) {
         console.log(error)
@@ -186,9 +199,9 @@ const inboxSlice = createSlice({
             state.ticketList = payload.payload ?? [];
             // state.errors = null;
         })
-        
 
         .addCase(fetchNewInbox.fulfilled, (state, payload) => {
+            console.log(state.selectedTicket?.id);
             const incoming : Ticket[] = payload.payload; // new data
             const existing = state.ticketList; // current state
 
@@ -215,11 +228,28 @@ const inboxSlice = createSlice({
             state.ticketList = updatedList;
         })
 
+        
+        .addCase(fetchNewMessages.fulfilled, (state, payload) => {
+            const incoming : TicketUpdates[] = payload.payload; // new data
+
+            if(state.selectedTicket){
+                const existing = state.selectedTicket!.updates; // current state
+                if(existing){
+                    const difference = incoming.filter(
+                        inc => !existing.some(ex => ex.id === inc.id)
+                    );
+
+                    const updated = [...difference, ...existing];
+
+                    state.selectedTicket!.updates = updated;
+                }
+            }
+        })
+
 
         .addCase(fetchTicketCounts.fulfilled, (state, payload) => {
             state.ticketCount = payload.payload;
         })
-
 
 
         .addCase(fetchSelectedRequest.pending, (state) => {
