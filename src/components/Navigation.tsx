@@ -88,7 +88,7 @@ const Navigation = () => {
                     </Link>
 
                     {
-                        inchargeDepatments.find(d => d.id === me.department_id) && (
+                        inchargeDepatments.find(d => d.department_id === me.department_id) && (
                             <>
                                 {/* INBOX */}
                                 <Link to='/inbox' className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/inbox' && 'bg-[#353535]' }`}>
