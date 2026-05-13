@@ -182,10 +182,10 @@ function ReportIndex() {
 	// CSV Export
 	const convertToCSV = () => {
 			if (!tickets.length) return "";
-			const headers = Object.keys(tickets[0]) as (keyof Ticket)[];
+			const headers = (Object.keys(tickets[0]) as (keyof Ticket)[]).filter(header => header !== "rating");
 
 			const rows = tickets.map(obj =>
-					headers.map(header => JSON.stringify(obj[header] ?? "")).join(",")
+				headers.map(header => JSON.stringify(obj[header] ?? "")).join(",")
 			);
 
 			return [headers.join(","), ...rows].join("\n");

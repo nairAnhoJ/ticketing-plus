@@ -124,7 +124,16 @@ export const fetchTicketCounts = createAsyncThunk('inbox/ticket-counts', async (
     }
 });
 
-export const fetchSelectedRequest = createAsyncThunk('inbox/fetch-by-id', async (id: number) => {
+export const fetchSelectedTicket = createAsyncThunk('inbox/fetch-by-id', async (id: number) => {
+    try {
+        const ticket = await config.get(`/inbox/${id}`);
+        return ticket.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+export const fetchSelectedTicketUpdate = createAsyncThunk('inbox/fetch-by-id-update', async (id: number) => {
     try {
         const ticket = await config.get(`/inbox/${id}`);
         return ticket.data;
@@ -205,46 +214,57 @@ const inboxSlice = createSlice({
             const incoming : Ticket[] = payload.payload; // new data
             const existing = state.ticketList; // current state
 
-            const updatedList = [...existing];
+            // const updatedList = [...existing];
 
-            incoming.forEach(inItem => {
-                const index = updatedList.findIndex(
-                    exItem => exItem.id === inItem.id
+            // incoming.forEach(inItem => {
+            //     const index = updatedList.findIndex(
+            //         exItem => exItem.id === inItem.id
+            //     );
+
+            //     if (index !== -1) {
+            //         // exists → check notif count
+            //         if (updatedList[index].assigned_notif_count !== inItem.assigned_notif_count ){
+            //             updatedList[index] = {
+            //                 ...updatedList[index],
+            //                 ...inItem, // overwrite with incoming
+            //             };
+            //         }
+            //     } else {
+            //         // new ticket → add it
+            //         updatedList.unshift(inItem);
+            //     }
+            // });
+            // state.ticketList = updatedList;
+
+            incoming.forEach((incomingTicket) => {
+                const existingTicket = existing.find(
+                    t => t.id === incomingTicket.id
                 );
 
-                if (index !== -1) {
-                    // exists → check notif count
-                    if (updatedList[index].assigned_notif_count !== inItem.assigned_notif_count ){
-                        updatedList[index] = {
-                            ...updatedList[index],
-                            ...inItem, // overwrite with incoming
-                        };
-                    }
+                if (existingTicket) {
+                    Object.assign(existingTicket, incomingTicket);
                 } else {
-                    // new ticket → add it
-                    updatedList.unshift(inItem);
+                    existing.unshift(incomingTicket);
                 }
             });
-            state.ticketList = updatedList;
         })
-
         
-        .addCase(fetchNewMessages.fulfilled, (state, payload) => {
-            const incoming : TicketUpdates[] = payload.payload; // new data
+        // .addCase(fetchNewMessages.fulfilled, (state, payload) => {
+        //     const incoming : TicketUpdates[] = payload.payload; // new data
 
-            if(state.selectedTicket){
-                const existing = state.selectedTicket!.updates; // current state
-                if(existing){
-                    const difference = incoming.filter(
-                        inc => !existing.some(ex => ex.id === inc.id)
-                    );
+        //     if(state.selectedTicket){
+        //         const existing = state.selectedTicket!.updates; // current state
+        //         if(existing){
+        //             const difference = incoming.filter(
+        //                 inc => !existing.some(ex => ex.id === inc.id)
+        //             );
 
-                    const updated = [...difference, ...existing];
+        //             const updated = [...difference, ...existing];
 
-                    state.selectedTicket!.updates = updated;
-                }
-            }
-        })
+        //             state.selectedTicket!.updates = updated;
+        //         }
+        //     }
+        // })
 
 
         .addCase(fetchTicketCounts.fulfilled, (state, payload) => {
@@ -252,14 +272,36 @@ const inboxSlice = createSlice({
         })
 
 
-        .addCase(fetchSelectedRequest.pending, (state) => {
+        .addCase(fetchSelectedTicket.pending, (state) => {
             state.selectLoading = true;
             // state.errors = null;
         })
-        .addCase(fetchSelectedRequest.fulfilled, (state, payload) => {
+        .addCase(fetchSelectedTicket.fulfilled, (state, payload) => {
             state.selectLoading = false;
             state.selectedTicket = payload.payload;
             state.ticketList.find(t=>t.id === payload.payload.id)!.assigned_notif_count = 0;
+            // state.errors = null;
+        })
+
+        .addCase(fetchSelectedTicketUpdate.fulfilled, (state, payload) => {
+            const incomingUpdates : TicketUpdates[] = payload.payload.updates; // new data
+
+            if(state.selectedTicket){
+                const existingUpdates = state.selectedTicket!.updates; // current state
+                if(existingUpdates){
+                    const difference = incomingUpdates.filter(
+                        inc => !existingUpdates.some(ex => ex.id === inc.id)
+                    );
+
+                    const updated = [...difference, ...existingUpdates];
+
+                    state.selectedTicket!.updates = updated;
+                }
+            }
+            console.log(payload.payload)
+            // state.selectLoading = false;
+            // state.selectedTicket = payload.payload;
+            // state.ticketList.find(t=>t.id === payload.payload.id)!.assigned_notif_count = 0;
             // state.errors = null;
         })
 

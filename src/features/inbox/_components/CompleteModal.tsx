@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { completeTicket, fetchSelectedRequest } from "../inboxSlice";
+import { completeTicket, fetchSelectedTicket } from "../inboxSlice";
 import { useAppDispatch } from "../../../app/hooks";
 
 
@@ -34,7 +34,7 @@ const CompleteModal = ({id, close}: {id: number | undefined, close: () => void})
                 try {
                     await dispatch(completeTicket(formData)).unwrap()
                     .then(()=>{
-                        dispatch(fetchSelectedRequest(id))
+                        dispatch(fetchSelectedTicket(id))
                     });
                     close();
                 } catch (error) {

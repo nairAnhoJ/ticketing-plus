@@ -69,7 +69,7 @@ const HomeIndex = () => {
     }, [])
 
     useEffect(()=>{
-        if(isFirstRender){
+        if(isFirstRender.current){
             isFirstRender.current = false;
             return;
         }

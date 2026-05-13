@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
 // import { cancelTicket, fetchMyRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./inboxSlice";
-import { fetchInbox, fetchTicketCounts, fetchSelectedRequest, sendUpdate, changeTicketStatus, fetchNewInbox, fetchNewMessages } from "./inboxSlice";
+import { fetchInbox, fetchTicketCounts, fetchSelectedTicket, sendUpdate, changeTicketStatus, fetchNewInbox, fetchNewMessages, fetchSelectedTicketUpdate } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import CompleteModal from "./_components/CompleteModal";
@@ -69,7 +69,7 @@ const HomeIndex = () => {
     }, [])
 
     useEffect(()=>{
-        if(isFirstRender){
+        if(isFirstRender.current){
             isFirstRender.current = false;
             return;
         }
@@ -87,60 +87,62 @@ const HomeIndex = () => {
     useEffect(()=>{
         const interval = setInterval(async() => {
             await appDispatch(fetchNewInbox({department_id: me.department_id, search, status: currentTab}));
+            await appDispatch(fetchTicketCounts(me.department_id));
+
             if(selectedTicket?.id){
-                await appDispatch(fetchNewMessages(selectedTicket.id));
+                await appDispatch(fetchSelectedTicketUpdate(selectedTicket.id));
+                // await appDispatch(fetchNewMessages(selectedTicket.id));
             }
         }, 5000);
         return () => clearInterval(interval);
     }, [selectedTicket])
 
-    // useEffect(()=>{
-    //     const updatesInterval = setInterval(() => {
-    //         if(selectedTicket){
-    //             appDispatch(fetchNewMessages(selectedTicket!.id));
-    //         }
-    //     }, 3000);
-    //     return () => clearInterval(updatesInterval);
-    // }, [])
-
     const useCountAnimation = (end: number) => {
-        const start: number = 0;
-        const duration: number = 500;
-        const [count, setCount] = useState(start);
+        const prev = useRef(0);
+        const [count, setCount] = useState(0);
 
         useEffect(() => {
-            let animationFrame: number;
+            let frame: number;
+            const duration = 500;
             const startTime = performance.now();
 
-            const animate = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
+            const start = prev.current;
 
-            const value = Math.floor(start + (end - start) * progress);
-            setCount(value);
+            const animate = (time: number) => {
+                const progress = Math.min(
+                    (time - startTime) / duration,
+                    1
+                );
 
-            if (progress < 1) {
-                animationFrame = requestAnimationFrame(animate);
-            }
+                const value = start + (end - start) * progress;
+
+                setCount(Math.floor(value));
+
+                if (progress < 1) {
+                    frame = requestAnimationFrame(animate);
+                } else {
+                    prev.current = end;
+                }
             };
 
-            animationFrame = requestAnimationFrame(animate);
+            frame = requestAnimationFrame(animate);
 
-            return () => cancelAnimationFrame(animationFrame);
-        }, [start, end, duration]);
+            return () => cancelAnimationFrame(frame);
+        }, [end]);
 
-        return count > 0 ? count : 0;
-    }
-    const pendingCount = useCountAnimation(ticketCount.pending);
-    const inProgressCount = useCountAnimation(ticketCount.in_progress);
-    const feedbackCount = useCountAnimation(ticketCount.needs_feedback);
+        return count;
+    };
+    
+    const pendingCount = useCountAnimation(Number(ticketCount.pending ?? 0));
+    const inProgressCount = useCountAnimation(Number(ticketCount.in_progress ?? 0));
+    const feedbackCount = useCountAnimation(Number(ticketCount.needs_feedback ?? 0));
 
     const fetchInboxTickets = (department_id: number, search: string, status: 'all' | 'pending' | 'in_progress') => {
         appDispatch(fetchInbox({department_id: department_id, search: search, status: status}))
         .unwrap()
         .then((tickets)=>{
             if(tickets && tickets.length > 0){
-                appDispatch(fetchSelectedRequest(tickets[0].id))
+                appDispatch(fetchSelectedTicket(tickets[0].id))
             }
         })
     }
@@ -165,7 +167,7 @@ const HomeIndex = () => {
     }
 
     const handleTicketSelect = (id: number) => {
-        appDispatch(fetchSelectedRequest(id));
+        appDispatch(fetchSelectedTicket(id));
     }
 
     const handleSingleDownload = (id: number, filename: string, type: string) => {
@@ -210,7 +212,7 @@ const HomeIndex = () => {
             .unwrap()
             .then((tickets)=>{
                 if(tickets && tickets.length > 0){
-                    appDispatch(fetchSelectedRequest(selectedTicket.id))
+                    appDispatch(fetchSelectedTicket(selectedTicket.id))
                 }
             })
         }
