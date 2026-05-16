@@ -7,6 +7,13 @@ export interface InchargeDepartments {
     department_id: number;
 }
 
+export interface FormCategory {
+    id: number;
+    ticket_category_id: number;
+    name: string;
+    is_required: boolean;
+}
+
 export interface TicketCategory {
     id: number;
     name: string;
@@ -24,6 +31,7 @@ export interface InchargeUser {
 interface InitialState {
     loading: boolean;
     inchargeDepatments: InchargeDepartments[];
+    formCategories: FormCategory[];
     ticketCategories: TicketCategory[];
     inchargeUsers: InchargeUser[];
 }
@@ -31,6 +39,7 @@ interface InitialState {
 const initialState: InitialState = {
     loading: false,
     inchargeDepatments: [],
+    formCategories: [],
     ticketCategories: [],
     inchargeUsers: []
 }
@@ -61,6 +70,17 @@ export const fetchInchargeUser = createAsyncThunk('create-ticket/incharge-user',
         console.log(error)
     }
 });
+
+export const fetchFormCategory = createAsyncThunk('create-ticket/form-category', async () => {
+    try {
+        const res = await config.get(`/form-categories`);
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+
 
 export const storeTicket = createAsyncThunk('create-ticket/store-ticket', async (data: any) => {
     try {
@@ -114,6 +134,12 @@ const createTicketSlice = createSlice({
         })
         .addCase(fetchInchargeUser.fulfilled, (state, payload) => {
             state.inchargeUsers = payload.payload;
+            state.loading = false;
+        })
+
+        
+        .addCase(fetchFormCategory.fulfilled, (state, payload) => {
+            state.formCategories = payload.payload;
             state.loading = false;
         })
     },

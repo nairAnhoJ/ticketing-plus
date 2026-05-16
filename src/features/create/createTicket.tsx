@@ -3,8 +3,9 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import {z} from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories, storeTicket } from "./createTicketSlice";
+import { fetchFormCategory, fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories, storeTicket } from "./createTicketSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
+import LnForm from "./_components/lnForm";
 
 const schema = z.object({
     assigned_department_id: z.string().min(1),
@@ -20,16 +21,18 @@ const CreateTicket = () => {
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormFields>({ resolver: zodResolver(schema) });
     const [files, setFiles] = useState<any>([]);
-    const { inchargeDepatments, ticketCategories, inchargeUsers } = useAppSelector((state) => state.createTicket);
+    const { inchargeDepatments, ticketCategories, inchargeUsers, formCategories } = useAppSelector((state) => state.createTicket);
     const { user } = useAppSelector((state) => state.auth);
     const me = JSON.parse(user);
     const [tab, setTab] = useState<number>(1);
     const [description, setDescription] = useState<string | null>(null)
+    const [selectedTicketCategory, setSelectedTicketCategory] = useState<number | null>(null);
     const [sla, setSla] = useState<number | null>(null)
     const navigate = useNavigate();
 
     useEffect(()=>{
         dispatch(fetchInChargeDepartments());
+        dispatch(fetchFormCategory());
     }, [])
 
     const handleDepartmentInchargeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -39,6 +42,7 @@ const CreateTicket = () => {
 
     const handleTicketCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const cat = ticketCategories.find(cat => cat.id === Number(e.target.value));
+        setSelectedTicketCategory(Number(e.target.value));
         setSla(cat?.sla_hours || null)
         setDescription(cat?.description || null);
         dispatch(fetchInchargeUser(Number(e.target.value)));
@@ -220,7 +224,8 @@ const CreateTicket = () => {
             {/* For Desktop */}
             <div className="hidden lg:flex w-screen h-dvh overflow-hidden text-neutral-600">
                 <div className="w-full h-full pl-16">
-                    <form onSubmit={handleSubmit(onSubmit)} className="w-full xl:w-250 h-full p-6">
+                    <form onSubmit={handleSubmit(onSubmit)} className="w-full xl:w-full h-full p-6">
+                        {/* Header */}
                         <div className="w-full pb-6 flex items-center justify-between border-b border-neutral-300">
                             <h1 className="text-2xl font-bold">Write a Ticket</h1>
                             <div className="flex gap-x-3">
@@ -232,15 +237,17 @@ const CreateTicket = () => {
                                 </button>
                             </div>
                         </div>
+
                         <div className="w-full h-[calc(100%-57px)] overflow-x-hidden overflow-y-auto">
                             <div className="w-full py-6 pr-6">
+                                {/* Request Information */}
                                 <div className="w-full flex pb-6 border-b border-neutral-400">
-                                    <div className="w-2/5">
+                                    <div className="w-1/4">
                                         <h1 className="font-bold text-xl leading-5">Request Information</h1>
                                     </div>
-                                    <div className="w-3/5">
+                                    <div className="w-3/4">
                                         <div className="flex flex-col">
-                                            <label className="text-sm">Department In-Charge*</label>
+                                            <label className="text-sm">Department In-Charge <span className="text-sm text-red-500">*</span></label>
                                             <select {...register('assigned_department_id')} onChange={(e) => handleDepartmentInchargeChange(e)} className={`border  px-1 py-1 rounded focus:outline-0 ${errors.assigned_department_id ? 'border-red-400' : 'border-neutral-400'}`}>
                                                 <option value={''} className="hidden">Select an option</option>
                                                 {
@@ -253,7 +260,7 @@ const CreateTicket = () => {
                                             </select>
                                         </div>
                                         <div className="flex flex-col mt-3">
-                                            <label className="text-sm">Ticket Category*</label>
+                                            <label className="text-sm">Ticket Category <span className="text-sm text-red-500">*</span></label>
                                             <select {...register('ticket_category_id')} onChange={(e)=>handleTicketCategoryChange(e)} disabled={!(ticketCategories.length > 0)} className={`border px-1 py-1 rounded focus:outline-0 disabled:opacity-60 ${errors.ticket_category_id ? 'border-red-400' : 'border-neutral-400'}`}>
                                                 {
                                                     (ticketCategories.length > 0) ?
@@ -305,26 +312,36 @@ const CreateTicket = () => {
                                         }
                                     </div>
                                 </div>
+
+                                {/* Ticket Details */}
                                 <div className="w-full flex py-6 border-b border-neutral-400">
-                                    <div className="w-2/5">
+                                    <div className="w-1/4">
                                         <h1 className="font-bold text-xl leading-5">Ticket Details</h1>
                                     </div>
-                                    <div className="w-3/5">
-                                        <div className="flex flex-col">
-                                            <label className="text-sm">Subject*</label>
-                                            <input {...register('subject')} type="text" className={`border px-2 py-1 rounded focus:outline-0 ${errors.subject ? 'border-red-400' : 'border-neutral-400'}`} />
-                                        </div>
+                                    <div className="w-3/4">
+                                        {
+                                            (selectedTicketCategory && formCategories.some(fc => fc.ticket_category_id === selectedTicketCategory)) ? (
+                                                <LnForm />
+                                            ) : (
+                                                <div className="flex flex-col">
+                                                    <label className="text-sm">Subject <span className="text-sm text-red-500">*</span></label>
+                                                    <input {...register('subject')} type="text" className={`border px-2 py-1 rounded focus:outline-0 ${errors.subject ? 'border-red-400' : 'border-neutral-400'}`} />
+                                                </div>
+                                            )
+                                        }
                                         <div className="flex flex-col mt-3">
-                                            <label className="text-sm">Description*</label>
+                                            <label className="text-sm">Description <span className="text-sm text-red-500">*</span></label>
                                             <textarea {...register('description')} onInput={handleTextArea} rows={5} className={`border px-2 py-1 rounded focus:outline-0 resize-none overflow-hidden ${errors.description ? 'border-red-400' : 'border-neutral-400'}`} />
                                         </div>
                                     </div>
                                 </div> 
+
+                                {/* Supporting Files */}
                                 <div className="w-full flex py-6">
-                                    <div className="w-2/5">  
+                                    <div className="w-1/4">  
                                         <h1 className="font-bold text-xl leading-5">Supporting Files</h1>
                                     </div>
-                                    <div className="w-3/5">
+                                    <div className="w-3/4">
                                         <div className="flex flex-col"> 
                                             <p className="text-sm">Attachments</p>
                                             <div className="w-full h-40 bg-blue-50/50 border-2 border-blue-500 border-dashed rounded-lg flex flex-col items-center justify-center">
