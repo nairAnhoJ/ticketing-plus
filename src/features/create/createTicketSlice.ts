@@ -34,6 +34,7 @@ interface InitialState {
     formCategories: FormCategory[];
     ticketCategories: TicketCategory[];
     inchargeUsers: InchargeUser[];
+    lnErrors: {path: string, message: string}[];
 }
 
 const initialState: InitialState = {
@@ -41,7 +42,8 @@ const initialState: InitialState = {
     inchargeDepatments: [],
     formCategories: [],
     ticketCategories: [],
-    inchargeUsers: []
+    inchargeUsers: [],
+    lnErrors: [],
 }
 
 export const fetchInChargeDepartments = createAsyncThunk('create-ticket/incharge-departments', async () => {
@@ -89,6 +91,7 @@ export const storeTicket = createAsyncThunk('create-ticket/store-ticket', async 
         });
         return res.data;
     } catch (error) {
+        console.log('nag-error')
         console.log(error)
     }
 });
@@ -97,7 +100,6 @@ const createTicketSlice = createSlice({
     name: 'create',
     initialState,
     reducers: {
-        
     },
     extraReducers(builder) { builder
         .addCase(fetchInChargeDepartments.pending, (state) => {
@@ -141,6 +143,11 @@ const createTicketSlice = createSlice({
         .addCase(fetchFormCategory.fulfilled, (state, payload) => {
             state.formCategories = payload.payload;
             state.loading = false;
+        })
+
+        .addCase(storeTicket.rejected, (state, payload) => {
+            console.log('rejected');
+            console.log(payload.error);
         })
     },
 })

@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchFormCategory, fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories, storeTicket } from "./createTicketSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
-import LnForm from "./_components/lnForm";
+import LnForm, { type LnData } from "./_components/LnForm";
 
 const schema = z.object({
     assigned_department_id: z.string().min(1),
@@ -19,7 +19,7 @@ type FormFields = z.infer<typeof schema>;
 const CreateTicket = () => {
     const dispatch = useAppDispatch();
 
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormFields>({ resolver: zodResolver(schema) });
+    const { register, setValue, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormFields>({ resolver: zodResolver(schema) });
     const [files, setFiles] = useState<any>([]);
     const { inchargeDepatments, ticketCategories, inchargeUsers, formCategories } = useAppSelector((state) => state.createTicket);
     const { user } = useAppSelector((state) => state.auth);
@@ -29,6 +29,35 @@ const CreateTicket = () => {
     const [selectedTicketCategory, setSelectedTicketCategory] = useState<number | null>(null);
     const [sla, setSla] = useState<number | null>(null)
     const navigate = useNavigate();
+
+    // LN Form State
+	const [lnData, setLnData] = useState<LnData>({
+		type: '',
+		bp_code: '',
+		name: '',
+		billing_address: '',
+		shipping_address: '',
+		tin: '',
+		style: '',
+		sales_employee: '',
+		wtax_code: '',
+		payment_terms: '',
+		is_on_hold: false,
+		is_auto_email: false,
+		ar_incharge: '',
+		ar_email: '',
+		contact_name1: '',
+		contact_no1: '',
+		contact_email1: '',
+		contact_name2: '',
+		contact_no2: '',
+		contact_email2: '',
+		contact_name3: '',
+		contact_no3: '',
+		contact_email3: '',
+	});
+    const [lnErrors, setLnErrors] = useState<string[]>([]);
+
 
     useEffect(()=>{
         dispatch(fetchInChargeDepartments());
@@ -89,8 +118,29 @@ const CreateTicket = () => {
         files.forEach((file: any) => {
             formData.append(`files`, file);
         });
+
+        if(selectedTicketCategory && formCategories.some(fc => fc.ticket_category_id === selectedTicketCategory) && formCategories.find(fc => fc.ticket_category_id === selectedTicketCategory)?.name === "INFOR"){
+            setLnErrors([]);
+            const errors = [];
+            if(lnData.type === ''){
+                errors.push('type');
+            }
+            if(lnData.bp_code === ''){
+                errors.push('bp_code');
+            }
+            if(lnData.name === ''){
+                errors.push('name');
+            }
+            if(errors.length === 0){
+                formData.append('ln_data', JSON.stringify(lnData));
+            }else{
+                setLnErrors(errors);
+                return;
+            }
+        }
+
         dispatch(storeTicket(formData));
-        navigate("/");
+        // navigate("/");
     }
 
     return (
@@ -320,8 +370,8 @@ const CreateTicket = () => {
                                     </div>
                                     <div className="w-3/4">
                                         {
-                                            (selectedTicketCategory && formCategories.some(fc => fc.ticket_category_id === selectedTicketCategory)) ? (
-                                                <LnForm />
+                                            (selectedTicketCategory && formCategories.some(fc => fc.ticket_category_id === selectedTicketCategory) && formCategories.find(fc => fc.ticket_category_id === selectedTicketCategory)?.name === "INFOR") ? (
+                                                <LnForm setLnData={setLnData} lnData={lnData} lnErrors={lnErrors} setValue={setValue} errors={errors}/>
                                             ) : (
                                                 <div className="flex flex-col">
                                                     <label className="text-sm">Subject <span className="text-sm text-red-500">*</span></label>
