@@ -3,7 +3,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import {z} from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchFormCategory, fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories, storeTicket } from "./createTicketSlice";
+import { fetchFormCategory, fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories, storeTicket, type LnError } from "./createTicketSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LnForm, { type LnData } from "./_components/LnForm";
 
@@ -56,7 +56,7 @@ const CreateTicket = () => {
 		contact_no3: '',
 		contact_email3: '',
 	});
-    const [lnErrors, setLnErrors] = useState<string[]>([]);
+    const [lnErrors, setLnErrors] = useState<LnError[]>([]);
 
 
     useEffect(()=>{
@@ -121,15 +121,15 @@ const CreateTicket = () => {
 
         if(selectedTicketCategory && formCategories.some(fc => fc.ticket_category_id === selectedTicketCategory) && formCategories.find(fc => fc.ticket_category_id === selectedTicketCategory)?.name === "INFOR"){
             setLnErrors([]);
-            const errors = [];
+            const errors: LnError[] = [];
             if(lnData.type === ''){
-                errors.push('type');
+                errors.push({ path: 'type', message: 'Type is required' });
             }
             if(lnData.bp_code === ''){
-                errors.push('bp_code');
+                errors.push({ path: 'bp_code', message: 'BP Code is required' });
             }
             if(lnData.name === ''){
-                errors.push('name');
+                errors.push({ path: 'name', message: 'Name is required' });
             }
             if(errors.length === 0){
                 formData.append('ln_data', JSON.stringify(lnData));
@@ -139,7 +139,11 @@ const CreateTicket = () => {
             }
         }
 
-        dispatch(storeTicket(formData));
+        const response = await dispatch(storeTicket(formData));
+        if(storeTicket.rejected.match(response)){
+            setLnErrors(response.payload ?? []);
+        }
+        console.log(response);
         // navigate("/");
     }
 

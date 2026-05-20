@@ -28,13 +28,18 @@ export interface InchargeUser {
     is_primary: number;
 }
 
+export interface LnError {
+    path: string;
+    message: string;
+}
+
 interface InitialState {
     loading: boolean;
     inchargeDepatments: InchargeDepartments[];
     formCategories: FormCategory[];
     ticketCategories: TicketCategory[];
     inchargeUsers: InchargeUser[];
-    lnErrors: {path: string, message: string}[];
+    lnErrors: LnError[];
 }
 
 const initialState: InitialState = {
@@ -84,15 +89,18 @@ export const fetchFormCategory = createAsyncThunk('create-ticket/form-category',
 
 
 
-export const storeTicket = createAsyncThunk('create-ticket/store-ticket', async (data: any) => {
+export const storeTicket = createAsyncThunk<any, any, { rejectValue: LnError[] }>('create-ticket/store-ticket', async (data: any, { rejectWithValue }) => {
     try {
         const res = await config.post(`/my-requests/store`, data, {
             headers: { "Content-Type": "multipart/form-data" },
         });
         return res.data;
-    } catch (error) {
+    } catch (error: any) {
         console.log('nag-error')
         console.log(error)
+        return rejectWithValue(
+            error.response?.data || error.message
+        );
     }
 });
 
@@ -145,9 +153,9 @@ const createTicketSlice = createSlice({
             state.loading = false;
         })
 
+
         .addCase(storeTicket.rejected, (state, payload) => {
-            console.log('rejected');
-            console.log(payload.error);
+            state.lnErrors = payload.payload ?? []
         })
     },
 })

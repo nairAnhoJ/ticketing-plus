@@ -1,3 +1,4 @@
+import type { LnError } from "../createTicketSlice";
 
 export interface LnData {
 	type: string;
@@ -29,7 +30,7 @@ interface Props {
 	setLnData: React.Dispatch<React.SetStateAction<LnData>>
 	lnData: LnData;
 	setValue: any;
-	lnErrors: string[];
+	lnErrors: LnError[];
 	errors: any;
 }
 
@@ -56,7 +57,7 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 				<div className="grid grid-cols-2 gap-x-3">
 					<div className="flex flex-col mt-3">
 						<label className="text-sm">Type <span className="text-sm text-red-500">*</span></label>
-						<select onChange={(e)=>setLnData({...lnData, type: e.target.value})} className={`border ${lnErrors.includes('type') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`}>
+						<select onChange={(e)=>setLnData({...lnData, type: e.target.value})} className={`border ${lnErrors.some(err => err.path === 'type') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`}>
 								<option className="hidden">Select an option</option>
 								<option value={'Customer'}>Customer</option>
 								<option value={'Vendor'}>Vendor</option>
@@ -65,7 +66,8 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 					</div>
 					<div className="flex flex-col mt-3">
 						<label className="text-sm">BP Code <span className="text-sm text-red-500">*</span></label>
-						<input type="text" onChange={(e)=>setLnData({...lnData, bp_code: e.target.value})} className={`border ${lnErrors.includes('bp_code') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`} />
+						<input type="text" onChange={(e)=>setLnData({...lnData, bp_code: e.target.value})} className={`border ${lnErrors.some(err => err.path === 'bp_code') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`} />
+						{(lnErrors.some(err => err.path === 'bp_code') && lnErrors.find(err => err.path === 'bp_code')?.message === 'already exists') && <p className="text-red-500 text-sm">Customer with this BP Code already exists</p>}
 					</div>
 				</div>
 
@@ -73,7 +75,7 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 				<div className="">
 					<div className="flex flex-col mt-3">
 						<label className="text-sm">Name <span className="text-sm text-red-500">*</span></label>
-						<input type="text" onChange={(e)=>setLnData({...lnData, name: e.target.value})} className={`border ${lnErrors.includes('name') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`} />
+						<input type="text" onChange={(e)=>setLnData({...lnData, name: e.target.value})} className={`border ${lnErrors.some(err => err.path === 'name') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`} />
 					</div>
 				</div>
 
