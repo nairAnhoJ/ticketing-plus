@@ -49,7 +49,7 @@ const HomeIndex = () => {
     const { user } = useAppSelector((state) => state.auth);
     const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.home)
     const [showTicketMenu, setShowTicketMenu] = useState(false);
-    const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
+    const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress' | 'needs_feedback'>('all');
     const [search, setSearch] = useState<string>('');
     const [inputUpdate, setInputUpdate] = useState<string>('');
     const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
@@ -127,7 +127,7 @@ const HomeIndex = () => {
     const inProgressCount = useCountAnimation(ticketCount.in_progress);
     const feedbackCount = useCountAnimation(ticketCount.needs_feedback);
 
-    const fetchTickets = (id: number, search: string, status: 'all' | 'pending' | 'in_progress') => {
+    const fetchTickets = (id: number, search: string, status: 'all' | 'pending' | 'in_progress' | 'needs_feedback') => {
         appDispatch(fetchMyRequests({id: id, search: search, status: status}))
         .unwrap()
         .then((tickets)=>{
@@ -393,7 +393,7 @@ const HomeIndex = () => {
             {/* FOR DESKTOP */}
             <div className="hidden lg:flex w-screen bg-white h-dvh pl-16 overflow-hidden">
                 {/* TICKET LIST SECTION */}
-                <div className="h-full w-100 pt-6 border-r border-[#ccc] text-[#505050]">
+                <div className="h-full w-105 pt-6 border-r border-[#ccc] text-[#505050]">
                     {/* Header */}
                     <div className="flex items-center justify-between w-full h-10 px-6">
                         <h1 className="text-2xl font-bold">My Requests</h1>
@@ -415,7 +415,7 @@ const HomeIndex = () => {
 
                     {/* Tabs */}
                     <div className="px-6 mt-3">
-                        <div className="h-12 w-full bg-neutral-200 rounded-lg grid grid-cols-3">
+                        <div className="h-12 w-full bg-neutral-200 rounded-lg grid grid-cols-4">
                             <div className="text-xs font-bold p-2">
                                 <button onClick={()=>setCurrentTab('all')} className={`flex items-center justify-center w-full h-full rounded-lg cursor-pointer ${currentTab === 'all' && 'bg-[#303030] text-white'}`}>
                                     All
@@ -429,6 +429,11 @@ const HomeIndex = () => {
                             <div className="text-xs font-bold p-2">
                                 <button onClick={()=>setCurrentTab('in_progress')} className={`flex items-center justify-center w-full h-full rounded-lg cursor-pointer ${currentTab === 'in_progress' && 'bg-[#303030] text-white'}`}>
                                     In-Progress
+                                </button>
+                            </div>
+                            <div className="text-xs font-bold p-2">
+                                <button onClick={()=>setCurrentTab('needs_feedback')} className={`flex items-center justify-center w-full h-full rounded-lg cursor-pointer ${currentTab === 'needs_feedback' && 'bg-[#303030] text-white'}`}>
+                                    Needs Feedback
                                 </button>
                             </div>
                         </div>
@@ -619,11 +624,11 @@ const HomeIndex = () => {
                                             <div className="w-full flex flex-col">
                                                 <div className="flex items-center justify-between">
                                                     <h1 className="text-lg font-semibold">{selectedTicket.ticket_number}</h1>
-                                                    <p className={`text-white text-sm font-bold px-2 py-1 rounded tracking-wide
+                                                    <p onClick={()=>selectedTicket.status === 'needs_feedback' && setShowFeedbackModal(true)} className={`text-white text-sm font-bold px-2 py-1 rounded tracking-wide
                                                             ${
                                                                 selectedTicket.status === 'pending' || selectedTicket.status === 'cancelled' ? 'bg-red-500 border-red-600' : 
                                                                 selectedTicket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
-                                                                selectedTicket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-neutral-500 border-neutral-600'
+                                                                selectedTicket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600 cursor-pointer' : 'bg-neutral-500 border-neutral-600'
                                                             }`}>
                                                         {(selectedTicket.status).replace('_', ' ').toUpperCase()}
                                                     </p>

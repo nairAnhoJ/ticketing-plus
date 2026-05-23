@@ -87,7 +87,7 @@ const initialState: InitialState = {
 
 
 
-export const fetchMyRequests = createAsyncThunk('my-requests/fetch', async ({id, search = "", status}: {id: number, search: string, status: 'all' | 'pending' | 'in_progress'}) => {
+export const fetchMyRequests = createAsyncThunk('my-requests/fetch', async ({id, search = "", status}: {id: number, search: string, status: 'all' | 'pending' | 'in_progress' | 'needs_feedback'}) => {
     try {
         const res = await config.get(`/my-requests?id=${id}&search=${search}&status=${status}`);
         return res.data;
@@ -96,7 +96,7 @@ export const fetchMyRequests = createAsyncThunk('my-requests/fetch', async ({id,
     }
 });
 
-export const fetchNewRequests = createAsyncThunk('my-requests/fetch-new', async ({id, search = "", status}: {id: number, search: string, status: 'all' | 'pending' | 'in_progress'}) => {
+export const fetchNewRequests = createAsyncThunk('my-requests/fetch-new', async ({id, search = "", status}: {id: number, search: string, status: 'all' | 'pending' | 'in_progress' | 'needs_feedback'}) => {
     try {
         const res = await config.get(`/my-requests?id=${id}&search=${search}&status=${status}`);
         return res.data;
