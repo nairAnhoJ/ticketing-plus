@@ -137,14 +137,19 @@ const CreateTicket = () => {
                 setLnErrors(errors);
                 return;
             }
+
+            const response = await dispatch(storeTicket(formData));
+            if(storeTicket.rejected.match(response)){
+                setLnErrors(response.payload ?? []);
+            }else{
+                navigate("/");
+            }
+        }else{
+            await dispatch(storeTicket(formData));
+
+            navigate("/");
         }
 
-        const response = await dispatch(storeTicket(formData));
-        if(storeTicket.rejected.match(response)){
-            setLnErrors(response.payload ?? []);
-        }
-        console.log(response);
-        // navigate("/");
     }
 
     return (
@@ -276,7 +281,7 @@ const CreateTicket = () => {
             </div>
 
             {/* For Desktop */}
-            <div className="hidden lg:flex w-screen h-dvh overflow-hidden text-neutral-600">
+            <div className="hidden lg:flex w-screen h-dvh overflow-hidden text-neutral-600 bg-neutral-100">
                 <div className="w-full h-full pl-16">
                     <form onSubmit={handleSubmit(onSubmit)} className="w-full xl:w-full h-full p-6">
                         {/* Header */}
@@ -302,7 +307,7 @@ const CreateTicket = () => {
                                     <div className="w-3/4">
                                         <div className="flex flex-col">
                                             <label className="text-sm">Department In-Charge <span className="text-sm text-red-500">*</span></label>
-                                            <select {...register('assigned_department_id')} onChange={(e) => handleDepartmentInchargeChange(e)} className={`border  px-1 py-1 rounded focus:outline-0 ${errors.assigned_department_id ? 'border-red-400' : 'border-neutral-400'}`}>
+                                            <select {...register('assigned_department_id')} onChange={(e) => handleDepartmentInchargeChange(e)} className={`border  px-1 py-1 rounded focus:outline-0 bg-white ${errors.assigned_department_id ? 'border-red-400' : 'border-neutral-400'}`}>
                                                 <option value={''} className="hidden">Select an option</option>
                                                 {
                                                     inchargeDepatments?.map((dept, index)=>(
@@ -315,7 +320,7 @@ const CreateTicket = () => {
                                         </div>
                                         <div className="flex flex-col mt-3">
                                             <label className="text-sm">Ticket Category <span className="text-sm text-red-500">*</span></label>
-                                            <select {...register('ticket_category_id')} onChange={(e)=>handleTicketCategoryChange(e)} disabled={!(ticketCategories.length > 0)} className={`border px-1 py-1 rounded focus:outline-0 disabled:opacity-60 ${errors.ticket_category_id ? 'border-red-400' : 'border-neutral-400'}`}>
+                                            <select {...register('ticket_category_id')} onChange={(e)=>handleTicketCategoryChange(e)} disabled={!(ticketCategories.length > 0)} className={`border px-1 py-1 rounded focus:outline-0 disabled:opacity-60 bg-white ${errors.ticket_category_id ? 'border-red-400' : 'border-neutral-400'}`}>
                                                 {
                                                     (ticketCategories.length > 0) ?
                                                         ticketCategories.map((category, index)=>(
@@ -379,13 +384,13 @@ const CreateTicket = () => {
                                             ) : (
                                                 <div className="flex flex-col">
                                                     <label className="text-sm">Subject <span className="text-sm text-red-500">*</span></label>
-                                                    <input {...register('subject')} type="text" className={`border px-2 py-1 rounded focus:outline-0 ${errors.subject ? 'border-red-400' : 'border-neutral-400'}`} />
+                                                    <input {...register('subject')} type="text" className={`border px-2 py-1 rounded focus:outline-0 bg-white ${errors.subject ? 'border-red-400' : 'border-neutral-400'}`} />
                                                 </div>
                                             )
                                         }
                                         <div className="flex flex-col mt-3">
                                             <label className="text-sm">Description <span className="text-sm text-red-500">*</span></label>
-                                            <textarea {...register('description')} onInput={handleTextArea} rows={5} className={`border px-2 py-1 rounded focus:outline-0 resize-none overflow-hidden ${errors.description ? 'border-red-400' : 'border-neutral-400'}`} />
+                                            <textarea {...register('description')} onInput={handleTextArea} rows={5} className={`border px-2 py-1 rounded focus:outline-0 resize-none overflow-hidden bg-white ${errors.description ? 'border-red-400' : 'border-neutral-400'}`} />
                                         </div>
                                     </div>
                                 </div> 
