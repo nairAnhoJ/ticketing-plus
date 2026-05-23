@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
-// import { cancelTicket, fetchMyRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./inboxSlice";
-import { fetchInbox, fetchTicketCounts, fetchSelectedTicket, sendUpdate, changeTicketStatus, fetchNewInbox, fetchNewMessages, fetchSelectedTicketUpdate } from "./inboxSlice";
+import { fetchInbox, fetchTicketCounts, fetchSelectedTicket, sendUpdate, changeTicketStatus, fetchNewInbox, fetchSelectedTicketUpdate } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import CompleteModal from "./_components/CompleteModal";
@@ -91,7 +90,6 @@ const HomeIndex = () => {
 
             if(selectedTicket?.id){
                 await appDispatch(fetchSelectedTicketUpdate(selectedTicket.id));
-                // await appDispatch(fetchNewMessages(selectedTicket.id));
             }
         }, 5000);
         return () => clearInterval(interval);

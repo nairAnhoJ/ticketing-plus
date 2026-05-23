@@ -142,15 +142,6 @@ export const fetchSelectedTicketUpdate = createAsyncThunk('inbox/fetch-by-id-upd
     }
 });
 
-export const fetchNewMessages = createAsyncThunk('inbox/fetch-new-messages', async (id: number) => {
-    try {
-        const ticket = await config.get(`/inbox/${id}/updates`);
-        return ticket.data;
-    } catch (error) {
-        console.log(error)
-    }
-});
-
 export const sendUpdate = createAsyncThunk('inbox/send-update', async ({id, user_id, message}: {id: number, user_id: number, message: string}) => {
     try {
         const res = await config.post(`/inbox/${id}/send-update`, {user_id, message});
@@ -214,28 +205,6 @@ const inboxSlice = createSlice({
             const incoming : Ticket[] = payload.payload; // new data
             const existing = state.ticketList; // current state
 
-            // const updatedList = [...existing];
-
-            // incoming.forEach(inItem => {
-            //     const index = updatedList.findIndex(
-            //         exItem => exItem.id === inItem.id
-            //     );
-
-            //     if (index !== -1) {
-            //         // exists → check notif count
-            //         if (updatedList[index].assigned_notif_count !== inItem.assigned_notif_count ){
-            //             updatedList[index] = {
-            //                 ...updatedList[index],
-            //                 ...inItem, // overwrite with incoming
-            //             };
-            //         }
-            //     } else {
-            //         // new ticket → add it
-            //         updatedList.unshift(inItem);
-            //     }
-            // });
-            // state.ticketList = updatedList;
-
             incoming.forEach((incomingTicket) => {
                 const existingTicket = existing.find(
                     t => t.id === incomingTicket.id
@@ -248,23 +217,6 @@ const inboxSlice = createSlice({
                 }
             });
         })
-        
-        // .addCase(fetchNewMessages.fulfilled, (state, payload) => {
-        //     const incoming : TicketUpdates[] = payload.payload; // new data
-
-        //     if(state.selectedTicket){
-        //         const existing = state.selectedTicket!.updates; // current state
-        //         if(existing){
-        //             const difference = incoming.filter(
-        //                 inc => !existing.some(ex => ex.id === inc.id)
-        //             );
-
-        //             const updated = [...difference, ...existing];
-
-        //             state.selectedTicket!.updates = updated;
-        //         }
-        //     }
-        // })
 
 
         .addCase(fetchTicketCounts.fulfilled, (state, payload) => {
