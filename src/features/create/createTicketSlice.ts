@@ -87,8 +87,6 @@ export const fetchFormCategory = createAsyncThunk('create-ticket/form-category',
     }
 });
 
-
-
 export const storeTicket = createAsyncThunk<any, any, { rejectValue: LnError[] }>('create-ticket/store-ticket', async (data: any, { rejectWithValue }) => {
     try {
         const res = await config.post(`/my-requests/store`, data, {

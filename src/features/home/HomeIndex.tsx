@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
-import { cancelTicket, fetchMyRequests, fetchNewMessages, fetchNewRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./homeSlice";
+import { cancelTicket, fetchLNTicket, fetchMyRequests, fetchNewMessages, fetchNewRequests, fetchSelectedRequest, fetchTicketCounts, sendUpdate } from "./homeSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import FeedbackModal from "./_components/FeedbackModal";
+import { fetchFormCategory } from "../create/createTicketSlice";
+import LnFormModal from "../../components/LnFormModal";
 
 interface ConfirmationDetails {
     type: string;
@@ -47,7 +49,8 @@ const HomeIndex = () => {
     const appDispatch = useAppDispatch();
 
     const { user } = useAppSelector((state) => state.auth);
-    const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.home)
+    const { listLoading, selectLoading, ticketList, selectedTicket, lnTicket, ticketCount } = useAppSelector((state) => state.home)
+    const { formCategories } = useAppSelector((state) => state.createTicket);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress' | 'needs_feedback'>('all');
     const [search, setSearch] = useState<string>('');
@@ -61,11 +64,13 @@ const HomeIndex = () => {
         cancelText: '',
     })
     const [showFeedbackModal, setShowFeedbackModal] = useState<boolean>(false);
+    const [showLnFormModal, setShowLnFormModal] = useState<boolean>(false);
     const isFirstRender = useRef(true);
     const me: Me = JSON.parse(user);
 
     useEffect(()=>{
         appDispatch(fetchTicketCounts(me.id));
+        appDispatch(fetchFormCategory());
     }, [])
 
     useEffect(()=>{
@@ -130,9 +135,14 @@ const HomeIndex = () => {
     const fetchTickets = (id: number, search: string, status: 'all' | 'pending' | 'in_progress' | 'needs_feedback') => {
         appDispatch(fetchMyRequests({id: id, search: search, status: status}))
         .unwrap()
-        .then((tickets)=>{
+        .then(async (tickets)=>{
             if(tickets && tickets.length > 0){
                 appDispatch(fetchSelectedRequest(tickets[0].id))
+                .unwrap()
+                .then(async(ticket) => {
+                    console.log(ticket)
+                    await appDispatch(fetchLNTicket(ticket.id))
+                })
             }
         })
     }
@@ -156,8 +166,9 @@ const HomeIndex = () => {
         return filename.slice(lastDot + 1).toLowerCase();
     }
 
-    const handleTicketSelect = (id: number) => {
-        appDispatch(fetchSelectedRequest(id));
+    const handleTicketSelect = async (id: number) => {
+        await appDispatch(fetchSelectedRequest(id));
+        await appDispatch(fetchLNTicket(id))
     }
 
     const handleSingleDownload = (id: number, filename: string) => {
@@ -226,6 +237,11 @@ const HomeIndex = () => {
             {/* Feedback Modal */}
             {
                 showFeedbackModal && <FeedbackModal close={()=>setShowFeedbackModal(false)} id={selectedTicket?.id}/>
+            }
+
+            {/* LN Form Modal */}
+            {
+                showLnFormModal && <LnFormModal lnTicket={lnTicket} ticket={selectedTicket} close={() => setShowLnFormModal(false)} />
             }
 
             {/* FOR MOBILE */}
@@ -636,6 +652,14 @@ const HomeIndex = () => {
                                                 
                                                 <h1 className="font-semibold mt-6">{selectedTicket.subject}</h1>
                                                 <div className="text-sm leading-4 mt-3 whitespace-pre-wrap">{selectedTicket.description}</div>
+
+                                                {
+                                                    (selectedTicket.ticket_category_id && formCategories.some(fc => fc.ticket_category_id === selectedTicket.ticket_category_id) && formCategories.find(fc => fc.ticket_category_id === selectedTicket.ticket_category_id)?.name === "INFOR") && (
+                                                        <p onClick={()=>setShowLnFormModal(true)} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium mt-3">Show LN/SAP Form</p>
+                                                    )
+                                                }
+
+
 
                                                 {/* Request Attachments */}
                                                 {

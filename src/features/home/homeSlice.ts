@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import config from "../../config/config";
+import type { LnData } from "../create/_components/LnForm";
 
 // const storedToken = localStorage.getItem("token");
 // const storedUser = localStorage.getItem("user");
@@ -43,6 +44,7 @@ export interface Ticket{
 export interface SelectedTicket{
     id: number;
     ticket_number: string;
+    ticket_category_id: number;
     ticket_category: string;
     assigned_user: string;
     assigned_user_first_name: string;
@@ -69,6 +71,7 @@ interface InitialState {
     ticketCount: TicketCount;
     ticketList: Ticket[];
     selectedTicket: SelectedTicket | null;
+    lnTicket: LnData | null;
     listLoading: boolean;
     selectLoading: boolean;
 }
@@ -81,6 +84,7 @@ const initialState: InitialState = {
     },
     ticketList: [],
     selectedTicket: null,
+    lnTicket: null,
     listLoading: false,
     selectLoading: false
 }
@@ -118,6 +122,16 @@ export const fetchSelectedRequest = createAsyncThunk('my-requests/fetch-by-id', 
     try {
         const ticket = await config.get(`/my-requests/${id}`);
         return ticket.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+export const fetchLNTicket = createAsyncThunk('ln-tickets/fetch', async (id: number) => {
+    try {
+        const res = await config.get(`/ln-tickets/${id}`);
+        console.log(res.data)
+        return res.data;
     } catch (error) {
         console.log(error)
     }
@@ -223,6 +237,10 @@ const homeSlice = createSlice({
             state.selectedTicket = payload.payload;
             state.ticketList.find(t=>t.id === payload.payload.id)!.requester_notif_count = 0;
             // state.errors = null;
+        })
+
+        .addCase(fetchLNTicket.fulfilled, (state, payload) => {
+            state.lnTicket = payload.payload;
         })
         
                 
