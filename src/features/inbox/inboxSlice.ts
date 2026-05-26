@@ -45,6 +45,7 @@ export interface SelectedTicket{
     id: number;
     ticket_number: string;
     ticket_category: string;
+    ticket_category_id: number;
 
     requester: string;
     requester_first_name: string;

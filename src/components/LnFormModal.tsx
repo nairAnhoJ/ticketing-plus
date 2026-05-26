@@ -1,16 +1,18 @@
 import { useState } from "react";
 import type { LnData } from "../features/create/_components/LnForm";
-import type { SelectedTicket } from "../features/home/homeSlice";
 import FieldWithCopy from "./FieldWithCopy";
 
 interface Props {
     lnTicket?: LnData | null;
-    ticket?: SelectedTicket | null;
+	ticket_number?: string;
+	subject?: string;
+	description?: string;
     close: () => void;
 }
 
-function LnFormModal({ lnTicket, ticket, close } : Props) {
+function LnFormModal({ lnTicket, ticket_number, subject, description, close } : Props) {
 	const [copied, setCopied] = useState<string>('');
+
 
 	const handleCopy = async (ln_url: keyof LnData) => {
 		try {
@@ -36,15 +38,15 @@ function LnFormModal({ lnTicket, ticket, close } : Props) {
 				</div>
 				<div className="h-[calc(100%-62px)] flex flex-col gap-y-1 p-6 text-neutral-600 overflow-y-scroll">
 					<div className="">
-						<div className="leading-3 font-bold">{ticket?.ticket_number}</div>
+						<div className="leading-3 font-bold">{ticket_number}</div>
 					</div>
 					<div className="mt-2">
 						{/* <label className="text-sm">Subject</label> */}
-						<div className="leading-3 font-semibold">{ticket?.subject}</div>
+						<div className="leading-3 font-semibold">{subject}</div>
 					</div>
 					<div className="mt-2">
 						{/* <label className="text-sm">Body</label> */}
-						<div className="leading-3 whitespace-pre-wrap">{ticket?.description}</div>
+						<div className="leading-3 whitespace-pre-wrap">{description}</div>
 					</div>
 
 					{/* BP Code and Type */}

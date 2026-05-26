@@ -6,6 +6,9 @@ import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import CompleteModal from "./_components/CompleteModal";
 import ReassignModal from "./_components/ReassignModal";
+import LnFormModal from "../../components/LnFormModal";
+import { fetchLNTicket } from "../home/homeSlice";
+import { fetchFormCategory } from "../create/createTicketSlice";
 
 interface ConfirmationDetails {
     type: "start" | "complete";
@@ -45,6 +48,8 @@ const HomeIndex = () => {
 
     const { user } = useAppSelector((state) => state.auth);
     const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.inbox)
+    const { lnTicket } = useAppSelector((state) => state.home)
+    const { formCategories } = useAppSelector((state) => state.createTicket);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
@@ -60,11 +65,13 @@ const HomeIndex = () => {
     })
     const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
     const [showReassignModal, setShowReassignModal] = useState<boolean>(false);
+    const [showLnFormModal, setShowLnFormModal] = useState<boolean>(false);
     const isFirstRender = useRef(true);
     const me: Me = JSON.parse(user);
 
     useEffect(()=>{
         appDispatch(fetchTicketCounts(me.department_id));
+        appDispatch(fetchFormCategory());
     }, [])
 
     useEffect(()=>{
@@ -141,6 +148,10 @@ const HomeIndex = () => {
         .then((tickets)=>{
             if(tickets && tickets.length > 0){
                 appDispatch(fetchSelectedTicket(tickets[0].id))
+                .unwrap()
+                .then(async(ticket) => {
+                    await appDispatch(fetchLNTicket(ticket.id))
+                })
             }
         })
     }
@@ -164,8 +175,9 @@ const HomeIndex = () => {
         return filename.slice(lastDot + 1).toLowerCase();
     }
 
-    const handleTicketSelect = (id: number) => {
-        appDispatch(fetchSelectedTicket(id));
+    const handleTicketSelect = async (id: number) => {
+        await appDispatch(fetchSelectedTicket(id));
+        await appDispatch(fetchLNTicket(id))
     }
 
     const handleSingleDownload = (id: number, filename: string, type: string) => {
@@ -243,6 +255,11 @@ const HomeIndex = () => {
 
             {
                 showReassignModal && <ReassignModal close={()=>setShowReassignModal(false)} id={selectedTicket?.id} assigned_user_id={selectedTicket ? selectedTicket.assigned_user_id : 0}/>
+            }
+
+            {/* LN Form Modal */}
+            {
+                showLnFormModal && <LnFormModal lnTicket={lnTicket} ticket_number={selectedTicket?.ticket_number} subject={selectedTicket?.subject} description={selectedTicket?.description} close={() => setShowLnFormModal(false)} />
             }
 
             {/* FOR MOBILE */}
@@ -663,6 +680,12 @@ const HomeIndex = () => {
                                                 <h2 className="text-sm font-semibold mt-6">{selectedTicket.ticket_category}</h2>
                                                 <h1 className="font-semibold mt-1">{selectedTicket.subject}</h1>
                                                 <div className="text-sm leading-4 mt-3 whitespace-pre-wrap">{selectedTicket.description}</div>
+
+                                                {
+                                                    (selectedTicket.ticket_category_id && formCategories.some(fc => fc.ticket_category_id === selectedTicket.ticket_category_id) && formCategories.find(fc => fc.ticket_category_id === selectedTicket.ticket_category_id)?.name === "INFOR") && (
+                                                        <p onClick={()=>setShowLnFormModal(true)} className="text-sm text-blue-500 hover:underline cursor-pointer font-medium mt-3">Show LN/SAP Form</p>
+                                                    )
+                                                }
 
                                                 {/* Request Attachments */}
                                                 {

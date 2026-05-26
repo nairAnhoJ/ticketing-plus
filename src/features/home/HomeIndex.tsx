@@ -140,7 +140,6 @@ const HomeIndex = () => {
                 appDispatch(fetchSelectedRequest(tickets[0].id))
                 .unwrap()
                 .then(async(ticket) => {
-                    console.log(ticket)
                     await appDispatch(fetchLNTicket(ticket.id))
                 })
             }
@@ -241,7 +240,7 @@ const HomeIndex = () => {
 
             {/* LN Form Modal */}
             {
-                showLnFormModal && <LnFormModal lnTicket={lnTicket} ticket={selectedTicket} close={() => setShowLnFormModal(false)} />
+                showLnFormModal && <LnFormModal lnTicket={lnTicket} ticket_number={selectedTicket?.ticket_number} subject={selectedTicket?.subject} description={selectedTicket?.description} close={() => setShowLnFormModal(false)} />
             }
 
             {/* FOR MOBILE */}
