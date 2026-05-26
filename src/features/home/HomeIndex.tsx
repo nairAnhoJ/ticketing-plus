@@ -65,6 +65,7 @@ const HomeIndex = () => {
     })
     const [showFeedbackModal, setShowFeedbackModal] = useState<boolean>(false);
     const [showLnFormModal, setShowLnFormModal] = useState<boolean>(false);
+    const [showWriteTicketError, setShowWriteTicketError] = useState<boolean>(false);
     const isFirstRender = useRef(true);
     const me: Me = JSON.parse(user);
 
@@ -95,6 +96,7 @@ const HomeIndex = () => {
             if(selectedTicket){
                 await appDispatch(fetchNewMessages(selectedTicket!.id));
             }
+            setShowWriteTicketError(false)
         }, 5000);
 
         return () => clearInterval(interval);
@@ -412,12 +414,35 @@ const HomeIndex = () => {
                     {/* Header */}
                     <div className="flex items-center justify-between w-full h-10 px-6">
                         <h1 className="text-2xl font-bold">My Requests</h1>
-                        <Link to='create-ticket' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
-                            <h1 className="whitespace-nowrap text-xs">Write Ticket</h1>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
-                                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
-                            </svg>
-                        </Link>
+                        {
+                            ticketCount.needs_feedback > 0 ? (
+                                <div className="relative">
+                                    <div onClick={() => setShowWriteTicketError(true)} className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200 opacity-50 relative">
+                                        <h1 className="whitespace-nowrap text-xs">Write Ticket</h1>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
+                                            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                                        </svg>
+                                    </div>
+                                    {
+                                        showWriteTicketError && (
+                                            <>
+                                                <div className="absolute w-48 -bottom-12 left-1/2 -translate-x-1/2 px-2 py-1 flex items-center text-center bg-[#454545] text-neutral-200 rounded-full z-5">
+                                                    <span className="text-xs">Ticket creation is disabled until feedback is completed.</span>
+                                                </div>
+                                                <div className="absolute -bottom-5.5 left-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-[#454545] z-4"></div>
+                                            </>
+                                        )
+                                    }
+                                </div>
+                            ) : (
+                                <Link to='create-ticket' className="bg-[#303030] flex items-end justify-center pl-3 pr-1.5 py-1 rounded-full text-neutral-200">
+                                    <h1 className="whitespace-nowrap text-xs">Write Ticket</h1>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4" viewBox="0 -960 960 960" fill="currentColor">
+                                        <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                                    </svg>
+                                </Link>
+                            )
+                        }
                     </div>
 
                     {/* SEARCH */}
