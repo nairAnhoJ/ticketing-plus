@@ -13,10 +13,10 @@ function FieldWithCopy({ label, value, field, copied, onCopy, canCopy = true} : 
     return (
         <div className="flex flex-col mt-3 relative">
             <label className="text-sm">{label}</label>
-            <div className="leading-3 rounded bg-white border border-neutral-400 p-2 whitespace-pre-wrap">{value || ' '}</div>
+            <input type="text" value={value || ' '} readOnly className="leading-4 rounded bg-white text-sm border border-neutral-400 p-2 pr-7 overflow-hidden whitespace-pre-wrap focus:outline-none"/>
             {
                 canCopy &&
-                <button type="button" onClick={() => onCopy(field)} className="absolute top-5.75 right-1 p-1 rounded text-neutral-600 hover:bg-neutral-200 cursor-pointer">
+                <button type="button" onClick={() => onCopy(field)} className="absolute top-6 right-1 p-1 rounded text-neutral-600 bg-white hover:bg-neutral-200 cursor-pointer">
                     {
                         copied === field ?
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>

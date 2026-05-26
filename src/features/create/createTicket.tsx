@@ -311,9 +311,10 @@ const CreateTicket = () => {
                                                 <option value={''} className="hidden">Select an option</option>
                                                 {
                                                     inchargeDepatments?.map((dept, index)=>(
-                                                        (dept.department_id !== me.department_id) && (
-                                                            <option key={index} value={dept.department_id}>{dept.department_name}</option>
-                                                        )
+                                                        <option key={index} value={dept.department_id}>{dept.department_name}</option>
+                                                        // (dept.department_id !== me.department_id) && (
+                                                        //     <option key={index} value={dept.department_id}>{dept.department_name}</option>
+                                                        // )
                                                     ))
                                                 }
                                             </select>
