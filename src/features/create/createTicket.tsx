@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchFormCategory, fetchInChargeDepartments, fetchInchargeUser, fetchTicketCategories, storeTicket, type LnError } from "./createTicketSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LnForm, { type LnData } from "./_components/LnForm";
+import { fetchTicketCounts } from "../home/homeSlice";
 
 const schema = z.object({
     assigned_department_id: z.string().min(1),
@@ -58,8 +59,18 @@ const CreateTicket = () => {
 	});
     const [lnErrors, setLnErrors] = useState<LnError[]>([]);
 
+    const getTicketCount = async () => {
+        await dispatch(fetchTicketCounts(me.id))
+        .unwrap()
+        .then((res)=>{
+            if(res.needs_feedback > 0){
+                navigate('/')
+            }
+        });
+    }
 
     useEffect(()=>{
+        getTicketCount();
         dispatch(fetchInChargeDepartments());
         dispatch(fetchFormCategory());
     }, [])
