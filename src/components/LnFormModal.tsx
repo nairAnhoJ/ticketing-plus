@@ -18,9 +18,9 @@ function LnFormModal({ lnTicket, ticket_number, subject, description, close } : 
 		try {
 			const text = lnTicket?.[ln_url]?.toString() || '';
 
-			if (navigator.clipboard && window.isSecureContext) {
-				await navigator.clipboard.writeText(text);
-			} else {
+			// if (navigator.clipboard && window.isSecureContext) {
+			// 	await navigator.clipboard.writeText(text);
+			// } else {
 				const textArea = document.createElement('textarea');
 				textArea.value = text;
 				textArea.style.position = 'fixed';
@@ -31,7 +31,7 @@ function LnFormModal({ lnTicket, ticket_number, subject, description, close } : 
 
 				document.execCommand('copy');
 				document.body.removeChild(textArea);
-			}
+			// }
 
 			setCopied(ln_url);
 
@@ -77,9 +77,10 @@ function LnFormModal({ lnTicket, ticket_number, subject, description, close } : 
 					</div>
 
 					{/* BP Code and Type */}
-					<div className="grid grid-cols-2 gap-x-3">
-						<FieldWithCopy label="BP Code" value={lnTicket?.bp_code} field="bp_code" copied={copied} onCopy={handleCopy} />
+					<div className="grid grid-cols-3 gap-x-3">
 						<FieldWithCopy label="Type" value={lnTicket?.type} field="type" copied={copied} onCopy={handleCopy} canCopy={false} />
+						<FieldWithCopy label="SAP BP Code" value={lnTicket?.sap_bp_code} field="sap_bp_code" copied={copied} onCopy={handleCopy} />
+						<FieldWithCopy label="LN BP Code" value={lnTicket?.ln_bp_code} field="ln_bp_code" copied={copied} onCopy={handleCopy} />
 					</div>
 
 					<div className="grid grid-cols-1 gap-x-3">
