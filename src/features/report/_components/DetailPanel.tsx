@@ -1,3 +1,5 @@
+import { avgResolutionHrs } from "../ReportIndex";
+
 interface SelectedTicket {
 	id: number;
 	ticket_number: string;
@@ -37,70 +39,68 @@ const formatStatus = (status: string) => {
     .join(" ");
 };
 
-const WORK_START = 8; // 8 AM
-const WORK_END = 17;  // 5 PM
+// const WORK_START = 8; // 8 AM
+// const WORK_END = 17;  // 5 PM
 
-const PH_HOLIDAYS = [
-	"2026-01-01",
-	"2026-04-09",
-	"2026-12-25",
-	// add more...
-];
+// const PH_HOLIDAYS = [
+// 	"2026-05-27",
+// 	// add more...
+// ];
 
-function isHoliday(date: Date): boolean {
-	const iso = date.toISOString().slice(0, 10);
-	return PH_HOLIDAYS.includes(iso);
-}
+// function isHoliday(date: Date): boolean {
+// 	const iso = date.toISOString().slice(0, 10);
+// 	return PH_HOLIDAYS.includes(iso);
+// }
 
-function isWorkingDay(date: Date): boolean {
-	const day = date.getDay(); // 0 = Sun, 6 = Sat
-	return day !== 0; // Mon–Sat only
-}
+// function isWorkingDay(date: Date): boolean {
+// 	const day = date.getDay(); // 0 = Sun, 6 = Sat
+// 	return day !== 0; // Mon–Sat only
+// }
 
-function setTime(date: Date, hour: number): Date {
-	const d = new Date(date);
-	d.setHours(hour, 0, 0, 0);
-	return d;
-}
+// function setTime(date: Date, hour: number): Date {
+// 	const d = new Date(date);
+// 	d.setHours(hour, 0, 0, 0);
+// 	return d;
+// }
 
-function nextDay(date: Date): Date {
-	const d = new Date(date);
-	d.setDate(d.getDate() + 1);
-	d.setHours(0, 0, 0, 0);
-	return d;
-}
+// function nextDay(date: Date): Date {
+// 	const d = new Date(date);
+// 	d.setDate(d.getDate() + 1);
+// 	d.setHours(0, 0, 0, 0);
+// 	return d;
+// }
 
-function workingHoursDiff(start: Date, end: Date): number {
-	if (end <= start) return 0;
+// function workingHoursDiff(start: Date, end: Date): number {
+// 	if (end <= start) return 0;
 
-	let total = 0;
-	let current = new Date(start);
+// 	let total = 0;
+// 	let current = new Date(start);
 
-	while (current < end) {
-		if (isWorkingDay(current) && !isHoliday(current)) {
-			const dayStart = setTime(current, WORK_START);
-			const dayEnd = setTime(current, WORK_END);
+// 	while (current < end) {
+// 		if (isWorkingDay(current) && !isHoliday(current)) {
+// 			const dayStart = setTime(current, WORK_START);
+// 			const dayEnd = setTime(current, WORK_END);
 
-			const rangeStart = new Date(Math.max(current.getTime(), dayStart.getTime()));
-			const rangeEnd = new Date(Math.min(end.getTime(), dayEnd.getTime()));
+// 			const rangeStart = new Date(Math.max(current.getTime(), dayStart.getTime()));
+// 			const rangeEnd = new Date(Math.min(end.getTime(), dayEnd.getTime()));
 
-			if (rangeEnd > rangeStart) {
-				total += (rangeEnd.getTime() - rangeStart.getTime()) / (1000 * 60 * 60);
-			}
-		}
+// 			if (rangeEnd > rangeStart) {
+// 				total += (rangeEnd.getTime() - rangeStart.getTime()) / (1000 * 60 * 60);
+// 			}
+// 		}
 
-		current = nextDay(current);
-	}
+// 		current = nextDay(current);
+// 	}
 
-	return total;
-}
+// 	return total;
+// }
 
-function avgResolutionHrs(tickets: SelectedTicket): string {
-	const avg = workingHoursDiff(new Date(tickets.created_at), new Date(tickets.completed_at));
+// function avgResolutionHrs(tickets: SelectedTicket): string {
+// 	const avg = workingHoursDiff(new Date(tickets.created_at), new Date(tickets.completed_at));
 
-	return `${avg.toFixed(1)}h`;
-	// return avg >= 24 ? `${(avg / 24).toFixed(1)}d` : `${avg.toFixed(1)}h`;
-}
+// 	return `${avg.toFixed(1)}h`;
+// 	// return avg >= 24 ? `${(avg / 24).toFixed(1)}d` : `${avg.toFixed(1)}h`;
+// }
 
 function DetailPanel({ selectedTicket, setSelectedTicket }: Props) {
   return (

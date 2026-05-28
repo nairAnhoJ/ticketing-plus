@@ -107,8 +107,17 @@ const CreateTicket = () => {
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'csv', 'xls', 'xlsx', 'ppt', 'pptx'];
         const uploadedFiles = Array.from(e.target.files || []);
-        setFiles([...files, ...uploadedFiles]);
+        uploadedFiles.forEach(uploadedFile => {
+	        const extension = uploadedFile.name.split('.').pop()?.toLowerCase();
+
+            if(!extension || !allowedExtensions.includes(extension)){
+
+            }else{
+                setFiles([...files, ...uploadedFiles]);
+            }
+        });
     }
 
     const removeFile = (index: number) => {
@@ -422,7 +431,7 @@ const CreateTicket = () => {
                                                 <h1 className="text-sm">Choose files to upload</h1>
                                                 <label htmlFor="file-upload" className="mt-2 text-white bg-blue-500 hover:bg-blue-600 border border-blue-400 px-5 py-1 rounded text-sm font-bold cursor-pointer">Browse</label>
                                             </div>
-                                            {/* <p className="text-sm">Only support .jpg, .png, .pdf, .docx, .xlsx, .csv, .pptx files</p> */}
+                                            <p className="text-sm">Only support .jpg, .png, .pdf, .docx, .xlsx, .csv, .pptx files</p>
                                             <input onChange={handleFileChange} type="file" id="file-upload" multiple className="hidden" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx" />
                                             <div className="w-full flex flex-col gap-y-2 mt-3">
                                                 {/* Uploaded File */}

@@ -1,6 +1,20 @@
 import { Cell, Label, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import ChartTooltip from "./ChartTooltip"
-import type { Ticket } from "../ReportIndex";
+import { workingHoursDiff, type Ticket } from "../ReportIndex";
+
+// interface SelectedTicket {
+// 	id: number;
+// 	ticket_number: string;
+// 	category: string;
+// 	subject: string;
+// 	description: string;
+// 	status: "pending" | "in_progress" | "needs_feedback" | "closed";
+// 	requester: string;
+// 	requested_at: string;
+// 	created_at: string;
+// 	completed_by: string;
+// 	completed_at: string;
+// }
 
 type Status = "met" | "notMet";
 
@@ -14,19 +28,23 @@ const formatStatus = (status: string) => {
 
 
 
-function SlaCompliance({tickets}: {tickets: Ticket[]}) {
-	function diffHours(start: string, end: string): number {
-		const ms = new Date(end).getTime() - new Date(start).getTime();
 
-		return ms / (1000 * 60 * 60);
-	}
+
+
+
+
+
+
+
+
+
+function SlaCompliance({tickets}: {tickets: Ticket[]}) {
 
 	const sla = tickets.reduce(
 		(acc, ticket) => {
 			if (!ticket.completed_at) return acc;
 
-			const hours = diffHours(ticket.created_at, ticket.completed_at);
-
+			const hours = workingHoursDiff(new Date(ticket.created_at), new Date(ticket.completed_at));
 			if (hours <= ticket.sla_hours) {
 				acc.met++;
 			} else {

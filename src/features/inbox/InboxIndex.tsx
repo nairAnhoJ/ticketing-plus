@@ -646,11 +646,18 @@ const HomeIndex = () => {
                                                                         }
                                                                         {
                                                                             (selectedTicket.status !== 'closed' && selectedTicket.status !== 'cancelled' && selectedTicket.status !== 'needs_feedback') && (
-                                                                                <button
-                                                                                    onClick={() => {setShowReassignModal(true); setShowTicketMenu(false)}}
-                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                    Reassign Ticket
-                                                                                </button>
+                                                                                <>
+                                                                                    <button
+                                                                                        onClick={() => {setShowReassignModal(true); setShowTicketMenu(false)}}
+                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                        Reassign Ticket
+                                                                                    </button>
+                                                                                    <button
+                                                                                        onClick={() => {setShowReassignModal(true); setShowTicketMenu(false)}}
+                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                        Hold Ticket
+                                                                                    </button>
+                                                                                </>
                                                                             )
                                                                         }
                                                                     </div>

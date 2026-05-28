@@ -202,7 +202,6 @@ const inboxSlice = createSlice({
         })
 
         .addCase(fetchNewInbox.fulfilled, (state, payload) => {
-            console.log(state.selectedTicket?.id);
             const incoming : Ticket[] = payload.payload; // new data
             const existing = state.ticketList; // current state
 
@@ -251,11 +250,6 @@ const inboxSlice = createSlice({
                     state.selectedTicket!.updates = updated;
                 }
             }
-            console.log(payload.payload)
-            // state.selectLoading = false;
-            // state.selectedTicket = payload.payload;
-            // state.ticketList.find(t=>t.id === payload.payload.id)!.assigned_notif_count = 0;
-            // state.errors = null;
         })
 
         

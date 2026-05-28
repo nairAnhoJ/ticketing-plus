@@ -16,7 +16,23 @@ function LnFormModal({ lnTicket, ticket_number, subject, description, close } : 
 
 	const handleCopy = async (ln_url: keyof LnData) => {
 		try {
-			await navigator.clipboard.writeText(lnTicket?.[ln_url]?.toString() || '');
+			const text = lnTicket?.[ln_url]?.toString() || '';
+
+			if (navigator.clipboard && window.isSecureContext) {
+				await navigator.clipboard.writeText(text);
+			} else {
+				const textArea = document.createElement('textarea');
+				textArea.value = text;
+				textArea.style.position = 'fixed';
+				textArea.style.left = '-9999px';
+
+				document.body.appendChild(textArea);
+				textArea.select();
+
+				document.execCommand('copy');
+				document.body.removeChild(textArea);
+			}
+
 			setCopied(ln_url);
 
 			setTimeout(() => {
@@ -25,6 +41,17 @@ function LnFormModal({ lnTicket, ticket_number, subject, description, close } : 
 		} catch (error) {
 			console.error('Error copying to clipboard:', error);
 		}
+
+		// try {
+		// 	await navigator.clipboard.writeText(lnTicket?.[ln_url]?.toString() || '');
+		// 	setCopied(ln_url);
+
+		// 	setTimeout(() => {
+		// 		setCopied('');
+		// 	}, 3000);
+		// } catch (error) {
+		// 	console.error('Error copying to clipboard:', error);
+		// }
 	};
 
   return (

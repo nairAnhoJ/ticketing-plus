@@ -1,8 +1,7 @@
 import ChartCard from './ChartCard'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import ChartTooltip from './ChartTooltip'
-import type { Option, Ticket } from '../ReportIndex';
-import { workingHoursDiff } from './KpiCards';
+import { workingHoursDiff, type Option, type Ticket } from '../ReportIndex';
 
 interface Props {
 	tickets: Ticket[];

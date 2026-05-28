@@ -130,7 +130,6 @@ export const fetchSelectedRequest = createAsyncThunk('my-requests/fetch-by-id', 
 export const fetchLNTicket = createAsyncThunk('ln-tickets/fetch', async (id: number) => {
     try {
         const res = await config.get(`/ln-tickets/${id}`);
-        console.log(res.data)
         return res.data;
     } catch (error) {
         console.log(error)

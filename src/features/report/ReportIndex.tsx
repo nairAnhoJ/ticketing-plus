@@ -61,6 +61,79 @@ function fmt(dateStr: string) {
 
 
 
+
+
+const WORK_START = 8; // 8 AM
+const WORK_END = 17;  // 5 PM
+
+let PH_HOLIDAYS: string[] = [];
+
+function formatLocalDate(date: Date): string {
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+
+	return `${year}-${month}-${day}`;
+}
+
+function isHoliday(date: Date): boolean {
+	const local = formatLocalDate(date);
+	return PH_HOLIDAYS.includes(local);
+}
+
+function isWorkingDay(date: Date): boolean {
+	const day = date.getDay(); // 0 = Sun, 6 = Sat
+	return day !== 0; // Mon–Sat only
+}
+
+function setTime(date: Date, hour: number): Date {
+	const d = new Date(date);
+	d.setHours(hour, 0, 0, 0);
+	return d;
+}
+
+function nextDay(date: Date): Date {
+	const d = new Date(date);
+	d.setDate(d.getDate() + 1);
+	d.setHours(0, 0, 0, 0);
+	return d;
+}
+
+export function workingHoursDiff(start: Date, end: Date): number {
+	if (end <= start) return 0;
+
+	let total = 0;
+	let current = new Date(start);
+
+	while (current < end) {
+		if (isWorkingDay(current) && !isHoliday(current)) {
+			const dayStart = setTime(current, WORK_START);
+			const dayEnd = setTime(current, WORK_END);
+
+			const rangeStart = new Date(Math.max(current.getTime(), dayStart.getTime()));
+			const rangeEnd = new Date(Math.min(end.getTime(), dayEnd.getTime()));
+
+			if (rangeEnd > rangeStart) {
+				total += (rangeEnd.getTime() - rangeStart.getTime()) / (1000 * 60 * 60);
+			}
+		}
+
+		current = nextDay(current);
+	}
+
+	return total;
+}
+
+export function avgResolutionHrs(tickets: SelectedTicket): string {
+	const avg = workingHoursDiff(new Date(tickets.created_at), new Date(tickets.completed_at));
+
+	return `${avg.toFixed(1)}h`;
+}
+
+
+
+
+
 function ReportIndex() {
 	const [searchParams, setSearchParams] = useSearchParams()
 
@@ -95,6 +168,15 @@ function ReportIndex() {
 
 	const [categories, setCategories] = useState<Option[]>([])
 	const [resolvers, setResolvers] = useState<Option[]>([])
+
+	const fetchHolidays = async() => {
+		const res = await config.get("/holidays");
+		PH_HOLIDAYS = res.data.map((holiday: any) => holiday.date);
+	}
+
+	useEffect(() => {
+		fetchHolidays();
+	}, [])
 
 	useEffect(()=>{
 		setLoading(true)
