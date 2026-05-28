@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { reassign } from "../inboxSlice";
+import { reassign, sendUpdate } from "../inboxSlice";
 import { useAppDispatch } from "../../../app/hooks";
 import config from "../../../config/config";
 
@@ -8,7 +8,14 @@ interface User {
     name: string;
 }
 
-const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, assigned_user_id: number, close: () => void}) => {
+interface Props {
+    id: number | undefined; 
+    assigned_user_id: number; 
+    close: () => void;
+    me: User
+}
+
+const ReassignModal = ({id, assigned_user_id, close, me}: Props) => {
     const appDispatch = useAppDispatch();
 
     const [users, setUsers] = useState<User[]>([]);
@@ -33,6 +40,7 @@ const ReassignModal = ({id, assigned_user_id, close}: {id: number | undefined, a
         if(selectedUser){
             setError(false)
             appDispatch(reassign({id: id!, user_id: selectedUser}))
+            appDispatch(sendUpdate({id: id!, user_id: me.id,  message: `This ticket has been reassigned to ${users.find(user => user.id === selectedUser)?.name}.`}));
             close();
         }else{
             setError(true)

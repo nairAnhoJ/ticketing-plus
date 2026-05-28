@@ -254,7 +254,7 @@ const HomeIndex = () => {
             }
 
             {
-                showReassignModal && <ReassignModal close={()=>setShowReassignModal(false)} id={selectedTicket?.id} assigned_user_id={selectedTicket ? selectedTicket.assigned_user_id : 0}/>
+                showReassignModal && <ReassignModal close={()=>setShowReassignModal(false)} id={selectedTicket?.id} me={me} assigned_user_id={selectedTicket ? selectedTicket.assigned_user_id : 0}/>
             }
 
             {/* LN Form Modal */}
