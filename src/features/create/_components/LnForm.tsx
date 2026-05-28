@@ -6,6 +6,8 @@ import config from "../../../config/config";
 export interface LnData {
 	type: string;
 	bp_code: string;
+	sap_bp_code: string;
+	ln_bp_code: string;
 	name: string;
 	billing_address: string;
 	shipping_address: string;
@@ -42,13 +44,13 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 	const [selectedCustomerId, setSelectedCustomerId] = useState<number>(0);
 	// const [selectedCustomer, setSelectedCustomer] = useState<LnData>();
 	const [showCustomer, setShowCustomer] = useState<boolean>(false);
+	const [isRequired, setIsRequired] = useState<boolean>(false);
 
 	const fetchCustomerDetails = async () => {
-		console.log(selectedCustomerId);
 		try {
 			const response = await config.get(`/ln-customers/${selectedCustomerId}`);
-			console.log(response.data);
-			setLnData(response.data);
+			const { id, ...dataWithoutId } = response.data;
+			setLnData(dataWithoutId);
 		} catch (error) {
 			console.error(error);
 		}
@@ -56,7 +58,6 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 
 	useEffect(() => {
 		if(selectedCustomerId !== 0){
-			// fetch customer details and set to form
 			fetchCustomerDetails();
 		}
 	}, [selectedCustomerId]);
@@ -68,6 +69,8 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 			setLnData({
 				type: '',
 				bp_code: '',
+				sap_bp_code: '',
+				ln_bp_code: '',
 				name: '',
 				billing_address: '',
 				shipping_address: '',
@@ -90,6 +93,9 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 				contact_no3: '',
 				contact_email3: '',
 			});
+			setIsRequired(false);
+		}else{
+			setIsRequired(true);
 		}
 
 		setSubject(selectedSubject);
@@ -121,7 +127,7 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 				</div>
 
 				{/* Row 2 - Type & BP Code */}
-				<div className="grid grid-cols-2 gap-x-3">
+				<div className="grid grid-cols-3 gap-x-3">
 					<div className="flex flex-col mt-3">
 						<label className="text-sm">Type <span className="text-sm text-red-500">*</span></label>
 						<select onChange={(e)=>setLnData({...lnData, type: e.target.value})} value={lnData.type} className={`border bg-white ${lnErrors.some(err => err.path === 'type') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`}>
@@ -132,9 +138,14 @@ function LnForm({setLnData, lnData, setValue, lnErrors, errors}: Props) {
 						</select>
 					</div>
 					<div className="flex flex-col mt-3">
-						<label className="text-sm">BP Code <span className="text-sm text-red-500">*</span></label>
-						<input type="text" onChange={(e)=>setLnData({...lnData, bp_code: e.target.value})} value={lnData.bp_code} className={`border bg-white ${lnErrors.some(err => err.path === 'bp_code') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`} />
-						{(lnErrors.some(err => err.path === 'bp_code') && lnErrors.find(err => err.path === 'bp_code')?.message === 'already exists') && <p className="text-red-500 text-sm">Customer with this BP Code already exists</p>}
+						<label className="text-sm">SAP BP Code {isRequired && (<span className="text-sm text-red-500">*</span>)}</label>
+						<input type="text" onChange={(e)=>setLnData({...lnData, sap_bp_code: e.target.value})} value={lnData.sap_bp_code} className={`border bg-white ${lnErrors.some(err => err.path === 'sap_bp_code') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`} />
+						{(lnErrors.some(err => err.path === 'sap_bp_code') && lnErrors.find(err => err.path === 'sap_bp_code')?.message === 'already exists') && <p className="text-red-500 text-sm">Customer with this BP Code already exists</p>}
+					</div>
+					<div className="flex flex-col mt-3">
+						<label className="text-sm">LN BP Code {isRequired && (<span className="text-sm text-red-500">*</span>)}</label>
+						<input type="text" onChange={(e)=>setLnData({...lnData, ln_bp_code: e.target.value})} value={lnData.ln_bp_code} className={`border bg-white ${lnErrors.some(err => err.path === 'ln_bp_code') ? 'border-red-500' : 'border-neutral-400'} px-1 py-1 rounded focus:outline-0`} />
+						{(lnErrors.some(err => err.path === 'ln_bp_code') && lnErrors.find(err => err.path === 'ln_bp_code')?.message === 'already exists') && <p className="text-red-500 text-sm">Customer with this BP Code already exists</p>}
 					</div>
 				</div>
 

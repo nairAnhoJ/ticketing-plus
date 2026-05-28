@@ -35,6 +35,8 @@ const CreateTicket = () => {
 	const [lnData, setLnData] = useState<LnData>({
 		type: '',
 		bp_code: '',
+		sap_bp_code: '',
+		ln_bp_code: '',
 		name: '',
 		billing_address: '',
 		shipping_address: '',
@@ -145,8 +147,13 @@ const CreateTicket = () => {
             if(lnData.type === ''){
                 errors.push({ path: 'type', message: 'Type is required' });
             }
-            if(lnData.bp_code === ''){
-                errors.push({ path: 'bp_code', message: 'BP Code is required' });
+            if(data.subject !== 'Add Account'){
+                if(lnData.sap_bp_code === ''){
+                    errors.push({ path: 'sap_bp_code', message: 'SAP BP Code is required' });
+                }
+                if(lnData.ln_bp_code === ''){
+                    errors.push({ path: 'ln_bp_code', message: 'LN BP Code is required' });
+                }
             }
             if(lnData.name === ''){
                 errors.push({ path: 'name', message: 'Name is required' });

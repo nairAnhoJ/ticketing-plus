@@ -5,6 +5,8 @@ interface Customer {
 	id: number;
 	name: string;
 	bp_code: string;
+	sap_bp_code: string;
+	ln_bp_code: string;
 }
 
 interface Props {
@@ -21,6 +23,7 @@ function CustomerBrowser({ close, setSelectedCustomerId }: Props) {
 		setLoading(true);
 		try {
 			const response = await config.get(`/ln-customers?search=${search}`);
+			console.log(response.data);
 			setCustomers(response.data);
 		} catch (error) {
 			console.error(error);
@@ -40,7 +43,7 @@ function CustomerBrowser({ close, setSelectedCustomerId }: Props) {
 
   return (
     <div className="w-screen h-screen fixed top-0 left-0 z-10 bg-neutral-900/30 flex items-center justify-center">
-			<div className="w-3/5 h-4/5 bg-white rounded-lg">
+			<div className="w-4/5 h-4/5 bg-white rounded-lg">
 				<div className="w-full h-full flex flex-col">
 					<div className="flex items-center justify-between border-b border-neutral-200 p-4">
 						<h1 className="font-bold text-lg">Customers</h1>
@@ -59,7 +62,8 @@ function CustomerBrowser({ close, setSelectedCustomerId }: Props) {
 										<thead>
 											<tr>
 												<th className="px-2">#</th>
-												<th className="px-2">BP Code</th>
+												<th className="px-2">SAP BP Code</th>
+												<th className="px-2">LN BP Code</th>
 												<th className="text-left">Name</th>
 											</tr>
 										</thead>
@@ -74,7 +78,8 @@ function CustomerBrowser({ close, setSelectedCustomerId }: Props) {
 														customers.map((customer, index) => (
 															<tr className="hover:bg-neutral-200 even:bg-neutral-100" key={customer.id}>
 																<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{index + 1}</td>
-																<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.bp_code}</td>
+																<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.sap_bp_code}</td>
+																<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.ln_bp_code}</td>
 																<td className="text-left cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.name}</td>
 															</tr>
 														)
