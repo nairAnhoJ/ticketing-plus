@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import config from "../../config/config";
 import { useSearchParams } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
@@ -57,6 +57,48 @@ type Status = "all" | "pending" | "in_progress" | "needs_feedback" | "closed";
 function fmt(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
 }
+
+
+
+
+
+
+export const useCountAnimation = (end: number) => {
+	const prev = useRef(0);
+	const [count, setCount] = useState(0);
+
+	useEffect(() => {
+		let frame: number;
+		const duration = 500;
+		const startTime = performance.now();
+
+		const start = prev.current;
+
+		const animate = (time: number) => {
+			const progress = Math.min(
+				(time - startTime) / duration,
+				1
+			);
+
+			const value = start + (end - start) * progress;
+
+			setCount(Math.floor(value));
+
+			if (progress < 1) {
+				frame = requestAnimationFrame(animate);
+			} else {
+				prev.current = end;
+			}
+		};
+
+		frame = requestAnimationFrame(animate);
+
+		return () => cancelAnimationFrame(frame);
+	}, [end]);
+
+	return count;
+};
+
 
 
 

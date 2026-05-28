@@ -1,6 +1,6 @@
 import { Cell, Label, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import ChartTooltip from "./ChartTooltip"
-import type { Ticket } from "../ReportIndex";
+import { useCountAnimation, type Ticket } from "../ReportIndex";
 
 type Status = "0" | "1";
 
@@ -37,7 +37,7 @@ function SatisfactionRating({tickets}: {tickets: Ticket[]}) {
 							{statusData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
 					</Pie>
 					<Label position="center" fill="#666" fontSize={24} fontWeight="bold">
-            {satisfactionRate+"%"}
+            {useCountAnimation(satisfactionRate)+"%"}
           </Label>
 					<Tooltip content={<ChartTooltip />} />
 					<Legend
@@ -55,7 +55,7 @@ function SatisfactionRating({tickets}: {tickets: Ticket[]}) {
 							<span className="text-xl leading-none">👍</span>
 							<div>
 								<p className="text-xs font-semibold text-slate-500">Satisfied</p>
-								<p className="text-lg font-extrabold text-emerald-700 leading-tight">{likeCount}</p>
+								<p className="text-lg font-extrabold text-emerald-700 leading-tight">{useCountAnimation(likeCount)}</p>
 							</div>
 						</div>
 					</div>
@@ -64,7 +64,7 @@ function SatisfactionRating({tickets}: {tickets: Ticket[]}) {
 							<span className="text-xl leading-none">👎</span>
 							<div>
 								<p className="text-xs font-semibold text-slate-500">Unsatisfied</p>
-								<p className="text-lg font-extrabold text-rose-700 leading-tight">{closedTickets - likeCount}</p>
+								<p className="text-lg font-extrabold text-rose-700 leading-tight">{useCountAnimation(closedTickets - likeCount)}</p>
 							</div>
 						</div>
 					</div>

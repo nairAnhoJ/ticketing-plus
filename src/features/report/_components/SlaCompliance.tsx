@@ -1,6 +1,6 @@
 import { Cell, Label, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import ChartTooltip from "./ChartTooltip"
-import { workingHoursDiff, type Ticket } from "../ReportIndex";
+import { useCountAnimation, workingHoursDiff, type Ticket } from "../ReportIndex";
 
 // interface SelectedTicket {
 // 	id: number;
@@ -78,7 +78,7 @@ function SlaCompliance({tickets}: {tickets: Ticket[]}) {
 							{statusData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
 					</Pie>
 					<Label position="center" fill="#666" fontSize={24} fontWeight="bold">
-            {slaComplianceRate+"%"}
+            {useCountAnimation(slaComplianceRate)+"%"}
           </Label>
 					<Tooltip content={<ChartTooltip />} />
 					<Legend
@@ -96,7 +96,7 @@ function SlaCompliance({tickets}: {tickets: Ticket[]}) {
 							{/* <span className="text-xl leading-none">👍</span> */}
 							<div>
 								<p className="text-xs font-semibold text-slate-500">Met</p>
-								<p className="text-lg font-extrabold text-emerald-700 leading-tight">{sla.met}</p>
+								<p className="text-lg font-extrabold text-emerald-700 leading-tight">{useCountAnimation(sla.met)}</p>
 							</div>
 						</div>
 					</div>
@@ -105,7 +105,7 @@ function SlaCompliance({tickets}: {tickets: Ticket[]}) {
 							{/* <span className="text-xl leading-none">👎</span> */}
 							<div>
 								<p className="text-xs font-semibold text-slate-500">Missed</p>
-								<p className="text-lg font-extrabold text-rose-700 leading-tight">{sla.notMet}</p>
+								<p className="text-lg font-extrabold text-rose-700 leading-tight">{useCountAnimation(sla.notMet)}</p>
 							</div>
 						</div>
 					</div>

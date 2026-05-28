@@ -1,4 +1,4 @@
-import { workingHoursDiff, type Ticket } from "../ReportIndex";
+import { useCountAnimation, workingHoursDiff, type Ticket } from "../ReportIndex";
 
 function KpiCard({ label, value, sub, accent }: { label: string; value: string | number; sub?: string; accent: string }) {
   return (
@@ -123,12 +123,12 @@ function KpiCards({
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-      <KpiCard label="Total Tickets" value={totalTickets} sub="in selected period" accent="border-slate-200" />
-      <KpiCard label="Resolved" value={resolvedTickets} sub="fully resolved" accent="border-slate-200" />
-      <KpiCard label="Resolution Rate" value={`${resolutionRate}%`} sub="of all tickets" accent="border-emerald-200" />
+      <KpiCard label="Total Tickets" value={useCountAnimation(totalTickets)} sub="in selected period" accent="border-slate-200" />
+      <KpiCard label="Resolved" value={useCountAnimation(resolvedTickets)} sub="fully resolved" accent="border-slate-200" />
+      <KpiCard label="Resolution Rate" value={`${useCountAnimation(resolutionRate)}%`} sub="of all tickets" accent="border-emerald-200" />
       <KpiCard label="Avg Response" value={avgResponseHrs(tickets)} sub="per ticket" accent="border-sky-200" />
       <KpiCard label="Avg Resolution" value={avgResolutionHrs(tickets)} sub="per resolved ticket" accent="border-sky-200" />
-      <KpiCard label="Satisfaction" value={`${closedTickets ? satisfactionRate+'%' : "—"}`} sub={`${closedTickets} responses`} accent="border-sky-200" />
+      <KpiCard label="Satisfaction" value={`${closedTickets ? useCountAnimation(satisfactionRate)+'%' : "—"}`} sub={`${closedTickets} responses`} accent="border-sky-200" />
     </div>
   )
 }
