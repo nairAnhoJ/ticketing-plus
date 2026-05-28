@@ -652,11 +652,11 @@ const HomeIndex = () => {
                                                                                         className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                         Reassign Ticket
                                                                                     </button>
-                                                                                    <button
+                                                                                    {/* <button
                                                                                         onClick={() => {setShowReassignModal(true); setShowTicketMenu(false)}}
                                                                                         className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                         Hold Ticket
-                                                                                    </button>
+                                                                                    </button> */}
                                                                                 </>
                                                                             )
                                                                         }
