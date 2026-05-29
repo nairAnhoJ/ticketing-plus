@@ -161,7 +161,7 @@ export const reassign = createAsyncThunk('inbox/reassign', async ({id, user_id}:
     }
 });
 
-export const changeTicketStatus = createAsyncThunk('inbox/change-status', async ({id, type, user_id}: {id: number, type: 'start' | 'complete', user_id: number}) => {
+export const changeTicketStatus = createAsyncThunk('inbox/change-status', async ({id, type, user_id}: {id: number, type: 'start' | 'complete' | 'hold', user_id: number}) => {
     try {
         const res = await config.put(`/inbox/${id}/change-status`, {type, user_id});
         return res.data;

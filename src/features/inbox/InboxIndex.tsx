@@ -9,6 +9,7 @@ import ReassignModal from "./_components/ReassignModal";
 import LnFormModal from "../../components/LnFormModal";
 import { fetchLNTicket } from "../home/homeSlice";
 import { fetchFormCategory } from "../create/createTicketSlice";
+import HoldModal from "./_components/HoldModal";
 
 interface ConfirmationDetails {
     type: "start" | "complete";
@@ -65,6 +66,7 @@ const HomeIndex = () => {
     })
     const [showCompleteModal, setShowCompleteModal] = useState<boolean>(false);
     const [showReassignModal, setShowReassignModal] = useState<boolean>(false);
+    const [showHoldModal, setShowHoldModal] = useState<boolean>(false);
     const [showLnFormModal, setShowLnFormModal] = useState<boolean>(false);
     const isFirstRender = useRef(true);
     const me: Me = JSON.parse(user);
@@ -249,12 +251,19 @@ const HomeIndex = () => {
                 showConfirmationModal && <ConfirmationModal details={confirmationDetails} confirmClick={handleConfirmClick} cancelClick={()=>setShowConfirmationModal(false)}/>
             }
 
+            {/* Complete Modal */}
             {
                 showCompleteModal && <CompleteModal close={()=>setShowCompleteModal(false)} id={selectedTicket?.id}/>
             }
 
+            {/* Reassign Modal */}
             {
                 showReassignModal && <ReassignModal close={()=>setShowReassignModal(false)} id={selectedTicket?.id} me={me} assigned_user_id={selectedTicket ? selectedTicket.assigned_user_id : 0}/>
+            }
+
+            {/* Hold Modal */}
+            {
+                showHoldModal && <HoldModal close={()=>setShowHoldModal(false)} id={selectedTicket?.id} me={me} />
             }
 
             {/* LN Form Modal */}
@@ -652,11 +661,11 @@ const HomeIndex = () => {
                                                                                         className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                         Reassign Ticket
                                                                                     </button>
-                                                                                    {/* <button
-                                                                                        onClick={() => {setShowReassignModal(true); setShowTicketMenu(false)}}
+                                                                                    <button
+                                                                                        onClick={() => {setShowHoldModal(true); setShowTicketMenu(false)}}
                                                                                         className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                         Hold Ticket
-                                                                                    </button> */}
+                                                                                    </button>
                                                                                 </>
                                                                             )
                                                                         }
