@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAppDispatch } from "../../../app/hooks";
-import { sendUpdate } from "../inboxSlice";
-import config from "../../../config/config";
+import { hold, sendUpdate } from "../inboxSlice";
 
 interface User {
     id: number;
@@ -19,13 +18,10 @@ function HoldModal({ id, close, me } : Props) {
 	const [error, setError] = useState<boolean>(false);
 
 	const handleSubmit = async() => {
+		setError(false);
 		const msg = `Your ticket has been temporarily placed on hold.\n\nReason: ${reason}.\n\nWe will provide updates once processing resumes.`
 		if (reason) {
-			setError(false);
-
-			const response = await config.patch(`/inbox/${id}/hold`);
-			console.log(response);
-
+			appDispatch(hold(id!))
 			appDispatch(sendUpdate({id: id!, user_id: me.id,  message: msg}));
 			close();
 		} else {

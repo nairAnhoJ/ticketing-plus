@@ -665,12 +665,13 @@ const HomeIndex = () => {
                                                 <div className="flex items-center justify-between">
                                                     <h1 className="text-lg font-semibold">{selectedTicket.ticket_number}</h1>
                                                     <p onClick={()=>selectedTicket.status === 'needs_feedback' && setShowFeedbackModal(true)} className={`text-white text-sm font-bold px-2 py-1 rounded tracking-wide
-                                                            ${
+                                                            ${  
+                                                                selectedTicket.is_on_hold ? 'bg-gray-500 border-gray-600' :
                                                                 selectedTicket.status === 'pending' || selectedTicket.status === 'cancelled' ? 'bg-red-500 border-red-600' : 
                                                                 selectedTicket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
                                                                 selectedTicket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600 cursor-pointer' : 'bg-neutral-500 border-neutral-600'
                                                             }`}>
-                                                        {(selectedTicket.status).replace('_', ' ').toUpperCase()}
+                                                        {selectedTicket.is_on_hold ? 'ON HOLD' : (selectedTicket.status).replace('_', ' ').toUpperCase()}
                                                     </p>
                                                 </div>
                                                 

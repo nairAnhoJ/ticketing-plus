@@ -71,6 +71,9 @@ export interface SelectedTicket{
     resolution: string;
     completed_by: string;
     completed_at: string;
+
+    is_on_hold: boolean;
+    on_hold_duration: string;
     
     requester_notif_count: number;
     assigned_notif_count: number;
@@ -161,7 +164,25 @@ export const reassign = createAsyncThunk('inbox/reassign', async ({id, user_id}:
     }
 });
 
-export const changeTicketStatus = createAsyncThunk('inbox/change-status', async ({id, type, user_id}: {id: number, type: 'start' | 'complete' | 'hold', user_id: number}) => {
+export const hold = createAsyncThunk('inbox/hold', async (id: number) => {
+    try {
+        const res = await config.patch(`/inbox/${id}/hold`);
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+export const resume = createAsyncThunk('inbox/resume', async (id: number) => {
+    try {
+        const res = await config.patch(`/inbox/${id}/resume`);
+        return res.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+export const changeTicketStatus = createAsyncThunk('inbox/change-status', async ({id, type, user_id}: {id: number, type: 'start' | 'complete' | 'resume', user_id: number}) => {
     try {
         const res = await config.put(`/inbox/${id}/change-status`, {type, user_id});
         return res.data;
@@ -264,6 +285,13 @@ const inboxSlice = createSlice({
             if(state.selectedTicket){
                 state.selectedTicket.assigned_user_id = payload.payload?.user.id;
                 state.selectedTicket.assigned_user = payload.payload?.user.name;
+            }
+        })
+
+        
+        .addCase(hold.fulfilled, (state) => {
+            if(state.selectedTicket){
+                state.selectedTicket.is_on_hold = true;
             }
         })
 

@@ -65,6 +65,8 @@ export interface SelectedTicket{
     resolution: string;
     completed_by: string;
     completed_at: string;
+    is_on_hold: boolean;
+    on_hold_duration: string;
 }
 
 interface InitialState {

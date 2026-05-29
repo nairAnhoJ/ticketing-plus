@@ -31,7 +31,6 @@ const ReassignModal = ({id, assigned_user_id, close, me}: Props) => {
         }
     };
 
-
     useEffect(() => {
         fetchUsers();
     }, []);

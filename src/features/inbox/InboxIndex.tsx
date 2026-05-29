@@ -12,7 +12,7 @@ import { fetchFormCategory } from "../create/createTicketSlice";
 import HoldModal from "./_components/HoldModal";
 
 interface ConfirmationDetails {
-    type: "start" | "complete";
+    type: "start" | "complete" | "resume";
     title: string;
     msg: string;
     confirmText: string;
@@ -42,6 +42,13 @@ interface Me {
     text_color: string;
     bg_color: string;
     avatar: string | null;
+}
+
+const statusColor = {
+    'pending': 'bg-yellow-100 text-yellow-800',
+    'in_progress': 'bg-blue-100 text-blue-800',
+    'completed': 'bg-green-100 text-green-800',
+    'on_hold': 'bg-gray-100 text-gray-800'
 }
  
 const HomeIndex = () => {
@@ -632,26 +639,27 @@ const HomeIndex = () => {
                                                                 <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
                                                                 <div className="w-40 h-auto absolute right-0 -bottom-0.5 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
                                                                     <div className="w-full flex flex-col">
-                                                                        {
-                                                                            (selectedTicket.status === 'pending') ? (
-                                                                                <button
-                                                                                    onClick={() => {handleShowConfirmationModal({
-                                                                                        type: 'start',
-                                                                                        title: 'Start Ticket?',
-                                                                                        msg: 'If you start the ticket, you cannot revert it. Are you sure you want to proceed?',
-                                                                                        confirmText: 'Yes',
-                                                                                        cancelText: 'Cancel'
-                                                                                    }); setShowTicketMenu(false)}}
-                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                    Start Ticket
-                                                                                </button>
-                                                                            ) : (selectedTicket.status === 'in_progress') ? (
-                                                                                <button
-                                                                                    onClick={() => {setShowCompleteModal(true); setShowTicketMenu(false)}}
-                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                    Complete Ticket
-                                                                                </button>
-                                                                            ) : ''
+                                                                        {   !selectedTicket.is_on_hold && (
+                                                                                (selectedTicket.status === 'pending') ? (
+                                                                                    <button
+                                                                                        onClick={() => {handleShowConfirmationModal({
+                                                                                            type: 'start',
+                                                                                            title: 'Start Ticket?',
+                                                                                            msg: 'If you start the ticket, you cannot revert it. Are you sure you want to proceed?',
+                                                                                            confirmText: 'Yes',
+                                                                                            cancelText: 'Cancel'
+                                                                                        }); setShowTicketMenu(false)}}
+                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                        Start Ticket
+                                                                                    </button>
+                                                                                ) : (selectedTicket.status === 'in_progress') ? (
+                                                                                    <button
+                                                                                        onClick={() => {setShowCompleteModal(true); setShowTicketMenu(false)}}
+                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                        Complete Ticket
+                                                                                    </button>
+                                                                                ) : ''
+                                                                            )
                                                                         }
                                                                         {
                                                                             (selectedTicket.status !== 'closed' && selectedTicket.status !== 'cancelled' && selectedTicket.status !== 'needs_feedback') && (
@@ -661,11 +669,27 @@ const HomeIndex = () => {
                                                                                         className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                         Reassign Ticket
                                                                                     </button>
-                                                                                    <button
-                                                                                        onClick={() => {setShowHoldModal(true); setShowTicketMenu(false)}}
-                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                        Hold Ticket
-                                                                                    </button>
+                                                                                    {
+                                                                                        !selectedTicket.is_on_hold ? (
+                                                                                            <button
+                                                                                                onClick={() => {setShowHoldModal(true); setShowTicketMenu(false)}}
+                                                                                                className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                Hold Ticket
+                                                                                            </button>
+                                                                                        ) : (
+                                                                                            <button
+                                                                                                onClick={() => {handleShowConfirmationModal({
+                                                                                                    type: 'resume',
+                                                                                                    title: 'Resume Ticket?',
+                                                                                                    msg: 'Are you sure you want to resume the ticket?',
+                                                                                                    confirmText: 'Yes',
+                                                                                                    cancelText: 'Cancel'
+                                                                                                }); setShowTicketMenu(false)}}
+                                                                                                className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                Resume Ticket
+                                                                                            </button>
+                                                                                        )
+                                                                                    }
                                                                                 </>
                                                                             )
                                                                         }
@@ -686,11 +710,12 @@ const HomeIndex = () => {
                                                     <h1 className="text-lg font-semibold">{selectedTicket.ticket_number}</h1>
                                                     <p className={`text-white text-sm font-bold px-2 py-1 rounded tracking-wide
                                                             ${
+                                                                selectedTicket.is_on_hold ? 'bg-gray-500 border-gray-600' :
                                                                 selectedTicket.status === 'pending' || selectedTicket.status === 'cancelled' ? 'bg-red-500 border-red-600' : 
                                                                 selectedTicket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
-                                                                selectedTicket.status === 'needs_feedback' || selectedTicket.status === 'completed' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
+                                                                selectedTicket.status === 'needs_feedback' || selectedTicket.status === 'completed' ? 'bg-emerald-500 border-emerald-600' : 'bg-neutral-500 border-neutral-600'
                                                             }`}>
-                                                        {(selectedTicket.status).replace('_', '-').toUpperCase()}
+                                                        {selectedTicket.is_on_hold ? 'ON HOLD' : (selectedTicket.status).replace('_', '-').toUpperCase()}
                                                     </p>
                                                 </div>
                                                 <h2 className="text-sm font-semibold mt-6">{selectedTicket.ticket_category}</h2>
