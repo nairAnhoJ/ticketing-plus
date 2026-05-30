@@ -8,14 +8,14 @@ interface Details {
 
 interface DetailsProps {
     details: Details;
-    confirmClick: () => void;
+    confirmClick: (type: string) => void;
     cancelClick: () => void;
 }
 
 
 const ConfirmationModal = ({details, confirmClick, cancelClick}: DetailsProps) => {
     const handleConfirm = () => {
-        confirmClick();
+        confirmClick(details.type);
     } 
 
     const handleCancel = () => {

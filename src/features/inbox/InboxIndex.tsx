@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
-import { fetchInbox, fetchTicketCounts, fetchSelectedTicket, sendUpdate, changeTicketStatus, fetchNewInbox, fetchSelectedTicketUpdate } from "./inboxSlice";
+import { fetchInbox, fetchTicketCounts, fetchSelectedTicket, sendUpdate, changeTicketStatus, fetchNewInbox, fetchSelectedTicketUpdate, resume } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import CompleteModal from "./_components/CompleteModal";
@@ -42,13 +42,6 @@ interface Me {
     text_color: string;
     bg_color: string;
     avatar: string | null;
-}
-
-const statusColor = {
-    'pending': 'bg-yellow-100 text-yellow-800',
-    'in_progress': 'bg-blue-100 text-blue-800',
-    'completed': 'bg-green-100 text-green-800',
-    'on_hold': 'bg-gray-100 text-gray-800'
 }
  
 const HomeIndex = () => {
@@ -224,9 +217,19 @@ const HomeIndex = () => {
         setShowTicketMenu(false);
     }
 
-    const handleConfirmClick = async() => {
+    const handleConfirmClick = async(type: string) => {
+        console.log(type)
         if(selectedTicket){
-            await appDispatch(changeTicketStatus({id: selectedTicket.id, type: confirmationDetails.type, user_id: me.id}));
+            if(type === 'resume'){
+                await appDispatch(resume(selectedTicket!.id))
+                .unwrap()
+                .then(()=>{
+                    const msg = `Your ticket has been resumed after being placed on hold.\nWe are now continuing the investigation and will keep you updated on any progress.`
+                    appDispatch(sendUpdate({id: selectedTicket.id, user_id: me.id,  message: msg}));})
+                .finally(() => setShowConfirmationModal(false));
+            }else{
+                await appDispatch(changeTicketStatus({id: selectedTicket.id, type: confirmationDetails.type, user_id: me.id}));
+            }
             await appDispatch(fetchInbox({department_id: me.department_id, search: search, status: currentTab}))
             .unwrap()
             .then((tickets)=>{
@@ -234,8 +237,8 @@ const HomeIndex = () => {
                     appDispatch(fetchSelectedTicket(selectedTicket.id))
                 }
             })
+            .finally(() => setShowConfirmationModal(false));
         }
-        setShowConfirmationModal(false);
     }
 
     const handleSubmitUpdate = () => {
