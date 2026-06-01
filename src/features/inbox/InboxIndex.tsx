@@ -656,11 +656,34 @@ const HomeIndex = () => {
                                                                                         Start Ticket
                                                                                     </button>
                                                                                 ) : (selectedTicket.status === 'in_progress') ? (
-                                                                                    <button
-                                                                                        onClick={() => {setShowCompleteModal(true); setShowTicketMenu(false)}}
-                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                        Complete Ticket
-                                                                                    </button>
+                                                                                    <>
+                                                                                        <button
+                                                                                            onClick={() => {setShowCompleteModal(true); setShowTicketMenu(false)}}
+                                                                                            className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                            Complete Ticket
+                                                                                        </button>
+                                                                                        {
+                                                                                            !selectedTicket.is_on_hold ? (
+                                                                                                <button
+                                                                                                    onClick={() => {setShowHoldModal(true); setShowTicketMenu(false)}}
+                                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                    Hold Ticket
+                                                                                                </button>
+                                                                                            ) : (
+                                                                                                <button
+                                                                                                    onClick={() => {handleShowConfirmationModal({
+                                                                                                        type: 'resume',
+                                                                                                        title: 'Resume Ticket?',
+                                                                                                        msg: 'Are you sure you want to resume the ticket?',
+                                                                                                        confirmText: 'Yes',
+                                                                                                        cancelText: 'Cancel'
+                                                                                                    }); setShowTicketMenu(false)}}
+                                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                    Resume Ticket
+                                                                                                </button>
+                                                                                            )
+                                                                                        }
+                                                                                    </>
                                                                                 ) : ''
                                                                             )
                                                                         }
@@ -672,27 +695,6 @@ const HomeIndex = () => {
                                                                                         className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
                                                                                         Reassign Ticket
                                                                                     </button>
-                                                                                    {
-                                                                                        !selectedTicket.is_on_hold ? (
-                                                                                            <button
-                                                                                                onClick={() => {setShowHoldModal(true); setShowTicketMenu(false)}}
-                                                                                                className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                                Hold Ticket
-                                                                                            </button>
-                                                                                        ) : (
-                                                                                            <button
-                                                                                                onClick={() => {handleShowConfirmationModal({
-                                                                                                    type: 'resume',
-                                                                                                    title: 'Resume Ticket?',
-                                                                                                    msg: 'Are you sure you want to resume the ticket?',
-                                                                                                    confirmText: 'Yes',
-                                                                                                    cancelText: 'Cancel'
-                                                                                                }); setShowTicketMenu(false)}}
-                                                                                                className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                                Resume Ticket
-                                                                                            </button>
-                                                                                        )
-                                                                                    }
                                                                                 </>
                                                                             )
                                                                         }

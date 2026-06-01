@@ -30,10 +30,11 @@ export interface Ticket {
 	started_by: string;
 	completed_at: string;
 	completed_by: string;
+	on_hold_duration: string;
 	rating: number | null;
 }
 
-interface SelectedTicket { 
+export interface SelectedTicket { 
 	id: number;
 	ticket_number: string;
 	category: string;
@@ -43,8 +44,10 @@ interface SelectedTicket {
 	requester: string;
 	requested_at: string;
 	created_at: string;
+	started_at: string;
 	completed_by: string;
 	completed_at: string;
+	on_hold_duration: string;
 }
 
 export interface Option {
@@ -101,37 +104,26 @@ export const useCountAnimation = (end: number) => {
 
 
 
+const WORK_START = 8;
+const WORK_END = 17;
 
+let holidaySet = new Set<string>();
 
-
-
-const WORK_START = 8; // 8 AM
-const WORK_END = 17;  // 5 PM
-
-let PH_HOLIDAYS: string[] = [];
+// call this once after fetching holidays
+export function setHolidays(holidays: string[]) {
+	holidaySet = new Set(holidays);
+}
 
 function formatLocalDate(date: Date): string {
 	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const day = String(date.getDate()).padStart(2, '0');
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
 
 	return `${year}-${month}-${day}`;
 }
 
-function isHoliday(date: Date): boolean {
-	const local = formatLocalDate(date);
-	return PH_HOLIDAYS.includes(local);
-}
-
 function isWorkingDay(date: Date): boolean {
-	const day = date.getDay(); // 0 = Sun, 6 = Sat
-	return day !== 0; // Mon–Sat only
-}
-
-function setTime(date: Date, hour: number): Date {
-	const d = new Date(date);
-	d.setHours(hour, 0, 0, 0);
-	return d;
+	return date.getDay() !== 0;
 }
 
 function nextDay(date: Date): Date {
@@ -141,40 +133,49 @@ function nextDay(date: Date): Date {
 	return d;
 }
 
-export function workingHoursDiff(start: Date, end: Date): number {
+function getWorkBounds(date: Date) {
+	const start = new Date(date);
+	start.setHours(WORK_START, 0, 0, 0);
+
+	const end = new Date(date);
+	end.setHours(WORK_END, 0, 0, 0);
+
+	return { start, end };
+}
+
+export function workingSecondsDiff(start: Date, end: Date): number {
 	if (end <= start) return 0;
 
-	let total = 0;
+	let totalSeconds = 0;
 	let current = new Date(start);
 
 	while (current < end) {
-		if (isWorkingDay(current) && !isHoliday(current)) {
-			const dayStart = setTime(current, WORK_START);
-			const dayEnd = setTime(current, WORK_END);
+		const dayKey = formatLocalDate(current);
 
-			const rangeStart = new Date(Math.max(current.getTime(), dayStart.getTime()));
-			const rangeEnd = new Date(Math.min(end.getTime(), dayEnd.getTime()));
+		if (isWorkingDay(current) && !holidaySet.has(dayKey)) {
+			const { start: workStart, end: workEnd } = getWorkBounds(current);
+
+			const rangeStart = new Date(
+				Math.max(current.getTime(), workStart.getTime())
+			);
+
+			const rangeEnd = new Date(
+				Math.min(end.getTime(), workEnd.getTime())
+			);
 
 			if (rangeEnd > rangeStart) {
-				total += (rangeEnd.getTime() - rangeStart.getTime()) / (1000 * 60 * 60);
+				totalSeconds += Math.floor((rangeEnd.getTime() - rangeStart.getTime()) / 1000);
 			}
 		}
-
 		current = nextDay(current);
 	}
-
-	return total;
+	return Math.max(0, totalSeconds);
 }
 
-export function avgResolutionHrs(tickets: SelectedTicket): string {
-	const avg = workingHoursDiff(new Date(tickets.created_at), new Date(tickets.completed_at));
-
-	return `${avg.toFixed(1)}h`;
+export function getNetWorkingSeconds(start: Date, end: Date, onHoldSeconds: number): number {
+	const working = workingSecondsDiff(start, end);
+	return (Math.max(0, working - (onHoldSeconds || 0))) / (60 * 60);
 }
-
-
-
-
 
 function ReportIndex() {
 	const [searchParams, setSearchParams] = useSearchParams()
@@ -213,7 +214,10 @@ function ReportIndex() {
 
 	const fetchHolidays = async() => {
 		const res = await config.get("/holidays");
-		PH_HOLIDAYS = res.data.map((holiday: any) => holiday.date);
+		setHolidays(
+			res.data.map((h: any) => h.date)
+		);
+		// PH_HOLIDAYS = res.data.map((holiday: any) => holiday.date);
 	}
 
 	useEffect(() => {
@@ -283,8 +287,10 @@ function ReportIndex() {
 							requester: res.data.requester,
 							requested_at: res.data.created_at,
 							created_at: res.data.created_at,
+							started_at: res.data.started_at,
 							completed_by: res.data.completed_by,
 							completed_at: res.data.completed_at,
+							on_hold_duration: res.data.on_hold_duration,
 					})
 				}
 			)
@@ -385,6 +391,7 @@ function ReportIndex() {
 									clearFilters={clearFilters}
 									setSearchParams={setSearchParams}	
 									setShowAnalytics={() => setShowAnalytics(true)}
+									setSelectedTicket={() => setSelectedTicket(null)}
 							/>
 			
 							{/* Table + Detail Panel */}
@@ -395,9 +402,9 @@ function ReportIndex() {
 					
 									{/* Detail Panel */}
 									{
-											selectedTicket && (
-													<DetailPanel selectedTicket={selectedTicket} setSelectedTicket={() => setSelectedTicket(null)} />
-											)
+										selectedTicket && selectedTicket !== null && (
+											<DetailPanel selectedTicket={selectedTicket} setSelectedTicket={() => setSelectedTicket(null)} />
+										)
 									}
 							</div>
 					</main>

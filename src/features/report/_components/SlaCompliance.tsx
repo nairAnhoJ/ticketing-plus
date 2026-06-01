@@ -1,6 +1,6 @@
 import { Cell, Label, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import ChartTooltip from "./ChartTooltip"
-import { useCountAnimation, workingHoursDiff, type Ticket } from "../ReportIndex";
+import { useCountAnimation, getNetWorkingSeconds, type Ticket } from "../ReportIndex";
 
 // interface SelectedTicket {
 // 	id: number;
@@ -44,7 +44,7 @@ function SlaCompliance({tickets}: {tickets: Ticket[]}) {
 		(acc, ticket) => {
 			if (!ticket.completed_at) return acc;
 
-			const hours = workingHoursDiff(new Date(ticket.created_at), new Date(ticket.completed_at));
+			const hours = getNetWorkingSeconds(new Date(ticket.created_at), new Date(ticket.completed_at), Number(ticket.on_hold_duration));
 			if (hours <= ticket.sla_hours) {
 				acc.met++;
 			} else {

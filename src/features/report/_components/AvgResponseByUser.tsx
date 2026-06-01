@@ -1,7 +1,7 @@
 import ChartCard from './ChartCard'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import ChartTooltip from './ChartTooltip'
-import { workingHoursDiff, type Ticket } from '../ReportIndex';
+import { workingSecondsDiff, type Ticket } from '../ReportIndex';
 
 interface Props {
 	tickets: Ticket[];
@@ -50,14 +50,14 @@ function AvgResponseByUser({ tickets } : Props) {
 
   const resolutionByUser = users.map((user, i) => {
     const resolved = tickets.filter(t => t.started_by === user && t.started_at);
-
     if (!resolved.length) return null;
+
 		const avg = 	resolved.reduce((s, t) => {
-			const hrs = workingHoursDiff(new Date(t.created_at), new Date(t.started_at));
-			return s + hrs;
+			const hrs = workingSecondsDiff(new Date(t.created_at), new Date(t.started_at));
+      return s + hrs;
 		}, 0) / resolved.length;
 		
-    return { name: user, hours: parseFloat(avg.toFixed(1)), color: COLORS[i] };
+    return { name: user, hours: parseFloat((avg / (60 * 60)).toFixed(1)), color: COLORS[i] };
   })
 	.filter(Boolean) as { name: string; hours: number; color: string }[];
 

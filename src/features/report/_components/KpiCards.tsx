@@ -1,4 +1,4 @@
-import { useCountAnimation, workingHoursDiff, type Ticket } from "../ReportIndex";
+import { useCountAnimation, getNetWorkingSeconds, type Ticket, workingSecondsDiff } from "../ReportIndex";
 
 function KpiCard({ label, value, sub, accent }: { label: string; value: string | number; sub?: string; accent: string }) {
   return (
@@ -10,96 +10,28 @@ function KpiCard({ label, value, sub, accent }: { label: string; value: string |
   );
 }
 
-// function resolutionHours(t: Ticket): number | null {
-//   if (!t.completed_at) return null;
-//   return (new Date(t.completed_at).getTime() - new Date(t.created_at).getTime()) / 3600000;
-// }
+// Avg Response Hours
+function avgResponseHrs(tickets: Ticket[]): string {
+  const filteredTickets = tickets.filter(t => (t.status === "in_progress" || t.status === "closed" || t.status === "needs_feedback"));
+  if (!filteredTickets.length) return "—";
 
-// function avgResolutionHrs(tickets: Ticket[]): string {
-//   const resolved = tickets.filter(t => t.status === "closed");
-//   if (!resolved.length) return "—";
-//   const avg = resolved.reduce((s, t) => s + resolutionHours(t)!, 0) / resolved.length;
-//   return avg >= 24 ? `${(avg / 24).toFixed(1)}d` : `${avg.toFixed(1)}h`;
-// }
+  const avg = filteredTickets.reduce((s, t) => {
+      console.log(t.on_hold_duration)
+      const hrs = workingSecondsDiff(new Date(t.created_at), new Date(t.started_at));
+      return s + hrs;
+    }, 0) / filteredTickets.length;
 
-// const WORK_START = 8; // 8 AM
-// const WORK_END = 17;  // 5 PM
+  return `${(avg / (60 * 60)).toFixed(1)}h`;
+}
 
-// const PH_HOLIDAYS = [
-//   "2026-01-01",
-//   "2026-04-09",
-//   "2026-12-25",
-//   // add more...
-// ];
-
-// function isHoliday(date: Date): boolean {
-//   const iso = date.toISOString().slice(0, 10);
-//   return PH_HOLIDAYS.includes(iso);
-// }
-
-// function isWorkingDay(date: Date): boolean {
-//   const day = date.getDay(); // 0 = Sun, 6 = Sat
-//   return day !== 0; // Mon–Sat only
-// }
-
-// function setTime(date: Date, hour: number): Date {
-//   const d = new Date(date);
-//   d.setHours(hour, 0, 0, 0);
-//   return d;
-// }
-
-// function nextDay(date: Date): Date {
-//   const d = new Date(date);
-//   d.setDate(d.getDate() + 1);
-//   d.setHours(0, 0, 0, 0);
-//   return d;
-// }
-
-// export function workingHoursDiff(start: Date, end: Date): number {
-//   if (end <= start) return 0;
-
-//   let total = 0;
-//   let current = new Date(start);
-
-//   while (current < end) {
-//     if (isWorkingDay(current) && !isHoliday(current)) {
-//       const dayStart = setTime(current, WORK_START);
-//       const dayEnd = setTime(current, WORK_END);
-
-//       const rangeStart = new Date(Math.max(current.getTime(), dayStart.getTime()));
-//       const rangeEnd = new Date(Math.min(end.getTime(), dayEnd.getTime()));
-
-//       if (rangeEnd > rangeStart) {
-//         total += (rangeEnd.getTime() - rangeStart.getTime()) / (1000 * 60 * 60);
-//       }
-//     }
-
-//     current = nextDay(current);
-//   }
-
-//   return total;
-// }
-
+// Avg Resolution Hours
 function avgResolutionHrs(tickets: Ticket[]): string {
   const resolved = tickets.filter(t => (t.status === "closed" || t.status === "needs_feedback"));
   if (!resolved.length) return "—";
 
   const avg =
     resolved.reduce((s, t) => {
-      const hrs = workingHoursDiff(new Date(t.created_at), new Date(t.completed_at));
-      return s + hrs;
-    }, 0) / resolved.length;
-
-  return `${avg.toFixed(1)}h`;
-}
-
-function avgResponseHrs(tickets: Ticket[]): string {
-  const resolved = tickets.filter(t => (t.status === "in_progress" || t.status === "closed" || t.status === "needs_feedback"));
-  if (!resolved.length) return "—";
-
-  const avg =
-    resolved.reduce((s, t) => {
-      const hrs = workingHoursDiff(new Date(t.created_at), new Date(t.started_at));
+      const hrs = getNetWorkingSeconds(new Date(t.created_at), new Date(t.completed_at), Number(t.on_hold_duration));
       return s + hrs;
     }, 0) / resolved.length;
 

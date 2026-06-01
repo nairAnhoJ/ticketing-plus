@@ -14,6 +14,7 @@ interface Props {
 	hasActiveFilters: string | boolean; clearFilters: () => void;
 	setSearchParams: (params: Record<string, string>) => void;
 	setShowAnalytics: () => void;
+	setSelectedTicket: () => void;
 }
 
 // Options
@@ -39,7 +40,7 @@ function FilterSelect({ label, value, onChange, options }: { label: string; valu
   );
 }
 
-function DateInput({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function DateInput({ label, value, onChange,  } : { label: string; value: string; onChange: (v: string) => void; }) {
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</label>
@@ -64,7 +65,8 @@ function FilterPanel({
 	filterDateTo, setFilterDateTo,
 	hasActiveFilters, clearFilters,
 	setSearchParams,
-	setShowAnalytics
+	setShowAnalytics,
+	setSelectedTicket
 }: Props) {
 
 	const handleGenerate = () => {
@@ -80,11 +82,12 @@ function FilterPanel({
 		const filteredParams: Record<string, string> = {};
 
 		Object.entries(params).forEach(([key, value]) => {
-				if (value !== null && value !== undefined && value !== "") {
-						filteredParams[key] = value;
-				}
+			if (value !== null && value !== undefined && value !== "") {
+					filteredParams[key] = value;
+			}
 		});
 
+		setSelectedTicket();
 		setSearchParams(filteredParams);
 	}
 

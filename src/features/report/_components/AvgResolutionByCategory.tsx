@@ -1,7 +1,7 @@
 import ChartCard from './ChartCard'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import ChartTooltip from './ChartTooltip'
-import { workingHoursDiff, type Option, type Ticket } from '../ReportIndex';
+import { getNetWorkingSeconds, type Option, type Ticket } from '../ReportIndex';
 
 interface Props {
 	tickets: Ticket[];
@@ -47,7 +47,7 @@ function AvgResolutionByCategory({ tickets, categories } : Props) {
 
     if (!resolved.length) return null;
 		const avg = 	resolved.reduce((s, t) => {
-			const hrs = workingHoursDiff(new Date(t.created_at), new Date(t.completed_at));
+			const hrs = getNetWorkingSeconds(new Date(t.created_at), new Date(t.completed_at), Number(t.on_hold_duration));
 			return s + hrs;
 		}, 0) / resolved.length;
 		
