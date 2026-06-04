@@ -6,14 +6,6 @@ const config = axios.create({
     withCredentials: true,
 })
 
-// config.interceptors.request.use((cnfg) => {
-//     const token = localStorage.getItem("token");
-//     if(token){
-//         cnfg.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return cnfg;
-// })
-
 config.interceptors.request.use(
     (response) => response,
     (error) => {
