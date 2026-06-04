@@ -656,18 +656,20 @@ const HomeIndex = () => {
                                                                                 </button>
                                                                             ) : (selectedTicket.status === 'in_progress') ? (
                                                                                 <>
-                                                                                    <button
-                                                                                        onClick={() => {setShowCompleteModal(true); setShowTicketMenu(false)}}
-                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                        Complete Ticket
-                                                                                    </button>
                                                                                     {
                                                                                         !selectedTicket.is_on_hold ? (
-                                                                                            <button
-                                                                                                onClick={() => {setShowHoldModal(true); setShowTicketMenu(false)}}
-                                                                                                className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
-                                                                                                Hold Ticket
-                                                                                            </button>
+                                                                                            <>
+                                                                                                <button
+                                                                                                    onClick={() => {setShowCompleteModal(true); setShowTicketMenu(false)}}
+                                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                    Complete Ticket
+                                                                                                </button>
+                                                                                                <button
+                                                                                                    onClick={() => {setShowHoldModal(true); setShowTicketMenu(false)}}
+                                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                    Hold Ticket
+                                                                                                </button>
+                                                                                            </>
                                                                                         ) : (
                                                                                             <button
                                                                                                 onClick={() => {handleShowConfirmationModal({
