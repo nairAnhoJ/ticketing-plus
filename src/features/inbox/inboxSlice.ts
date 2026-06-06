@@ -101,18 +101,18 @@ const initialState: InitialState = {
 
 
 
-export const fetchInbox = createAsyncThunk('inbox/fetch-all', async ({department_id, search = "", status}: {department_id: number, search: string, status: 'all' | 'pending' | 'in_progress'}) => {
+export const fetchInbox = createAsyncThunk('inbox/fetch-all', async ({department_id, search = "", status, assignee}: {department_id: number, search: string, status: 'all' | 'pending' | 'in_progress', assignee: number}) => {
     try {
-        const res = await config.get(`/inbox?department_id=${department_id}&search=${search}&status=${status}`);
+        const res = await config.get(`/inbox?department_id=${department_id}&search=${search}&status=${status}&assignee=${assignee}`);
         return res.data;
     } catch (error) {
         console.log(error)
     }
 });
 
-export const fetchNewInbox = createAsyncThunk('inbox/fetch-new', async ({department_id, search = "", status}: {department_id: number, search: string, status: 'all' | 'pending' | 'in_progress'}) => {
+export const fetchNewInbox = createAsyncThunk('inbox/fetch-new', async ({department_id, search = "", status, assignee}: {department_id: number, search: string, status: 'all' | 'pending' | 'in_progress', assignee: number}) => {
     try {
-        const res = await config.get(`/inbox?department_id=${department_id}&search=${search}&status=${status}`);
+        const res = await config.get(`/inbox?department_id=${department_id}&search=${search}&status=${status}&assignee=${assignee}`);
         return res.data;
     } catch (error) {
         console.log(error)

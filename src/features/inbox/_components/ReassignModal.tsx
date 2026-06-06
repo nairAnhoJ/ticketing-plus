@@ -1,39 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { reassign, sendUpdate } from "../inboxSlice";
 import { useAppDispatch } from "../../../app/hooks";
-import config from "../../../config/config";
-
-interface User {
-    id: number;
-    name: string;
-}
+import type { User } from "../InboxIndex";
 
 interface Props {
     id: number | undefined; 
+    users: User[];
     assigned_user_id: number; 
     close: () => void;
-    me: User
+    me: User;
 }
 
-const ReassignModal = ({id, assigned_user_id, close, me}: Props) => {
+const ReassignModal = ({id, users, assigned_user_id, close, me}: Props) => {
     const appDispatch = useAppDispatch();
 
-    const [users, setUsers] = useState<User[]>([]);
+    // const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<number | undefined>(undefined);
     const [error, setError] = useState<boolean>(false);
-
-    const fetchUsers = async () => {
-        try {
-            const response = await config.get(`/users/department/0`);
-            setUsers(response.data);
-        } catch (error) {
-            console.error('Error fetching users:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchUsers();
-    }, []);
 
     const handleSubmit = async () => {
         if(selectedUser){

@@ -10,6 +10,12 @@ import LnFormModal from "../../components/LnFormModal";
 import { fetchLNTicket } from "../home/homeSlice";
 import { fetchFormCategory } from "../create/createTicketSlice";
 import HoldModal from "./_components/HoldModal";
+import config from "../../config/config";
+
+export interface User {
+    id: number;
+    name: string;
+}
 
 interface ConfirmationDetails {
     type: "start" | "complete" | "resume";
@@ -55,6 +61,7 @@ const HomeIndex = () => {
     const [showTicketMenu, setShowTicketMenu] = useState(false);
     const [currentTab, setCurrentTab] = useState<'all' | 'pending' | 'in_progress'>('all');
     const [search, setSearch] = useState<string>('');
+    const [assignee, setAssignee] = useState<number>(0);
     const [inputUpdate, setInputUpdate] = useState<string>('');
     const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
     const [confirmationDetails, setConfirmationDetails] = useState<ConfirmationDetails>({
@@ -70,10 +77,22 @@ const HomeIndex = () => {
     const [showLnFormModal, setShowLnFormModal] = useState<boolean>(false);
     const isFirstRender = useRef(true);
     const me: Me = JSON.parse(user);
+    
+    const [users, setUsers] = useState<User[]>([]);
+
+    const fetchUsers = async () => {
+        try {
+            const response = await config.get(`/users/department/0`);
+            setUsers(response.data);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    };
 
     useEffect(()=>{
         appDispatch(fetchTicketCounts(me.department_id));
         appDispatch(fetchFormCategory());
+        fetchUsers();
     }, [])
 
     useEffect(()=>{
@@ -83,18 +102,18 @@ const HomeIndex = () => {
         }
 
         const timer = setTimeout(() => {
-            fetchInboxTickets(me.department_id, search, currentTab);
+            fetchInboxTickets(me.department_id, search, currentTab, assignee);
         }, 1000);
         return () => clearTimeout(timer);
     }, [search])
 
     useEffect(()=>{
-        fetchInboxTickets(me.department_id, search, currentTab);
-    }, [currentTab])
+        fetchInboxTickets(me.department_id, search, currentTab, assignee);
+    }, [currentTab, assignee])
 
     useEffect(()=>{
         const interval = setInterval(async() => {
-            await appDispatch(fetchNewInbox({department_id: me.department_id, search, status: currentTab}));
+            await appDispatch(fetchNewInbox({department_id: me.department_id, search, status: currentTab, assignee: assignee}));
             await appDispatch(fetchTicketCounts(me.department_id));
 
             if(selectedTicket?.id){
@@ -144,8 +163,8 @@ const HomeIndex = () => {
     const inProgressCount = useCountAnimation(Number(ticketCount.in_progress ?? 0));
     const feedbackCount = useCountAnimation(Number(ticketCount.needs_feedback ?? 0));
 
-    const fetchInboxTickets = (department_id: number, search: string, status: 'all' | 'pending' | 'in_progress') => {
-        appDispatch(fetchInbox({department_id: department_id, search: search, status: status}))
+    const fetchInboxTickets = (department_id: number, search: string, status: 'all' | 'pending' | 'in_progress', assignee: number) => {
+        appDispatch(fetchInbox({department_id: department_id, search: search, status: status, assignee: assignee}))
         .unwrap()
         .then((tickets)=>{
             if(tickets && tickets.length > 0){
@@ -230,7 +249,7 @@ const HomeIndex = () => {
             }else{
                 await appDispatch(changeTicketStatus({id: selectedTicket.id, type: confirmationDetails.type, user_id: me.id}));
             }
-            await appDispatch(fetchInbox({department_id: me.department_id, search: search, status: currentTab}))
+            await appDispatch(fetchInbox({department_id: me.department_id, search: search, status: currentTab, assignee: assignee}))
             .unwrap()
             .then((tickets)=>{
                 if(tickets && tickets.length > 0){
@@ -268,7 +287,7 @@ const HomeIndex = () => {
 
             {/* Reassign Modal */}
             {
-                showReassignModal && <ReassignModal close={()=>setShowReassignModal(false)} id={selectedTicket?.id} me={me} assigned_user_id={selectedTicket ? selectedTicket.assigned_user_id : 0}/>
+                showReassignModal && <ReassignModal close={()=>setShowReassignModal(false)} id={selectedTicket?.id} users={users} me={me} assigned_user_id={selectedTicket ? selectedTicket.assigned_user_id : 0}/>
             }
 
             {/* Hold Modal */}
@@ -486,8 +505,23 @@ const HomeIndex = () => {
                         </div>
                     </div>
 
+                    {/* Filter by assignee */}
+                    <div className="px-6 mt-3 flex">
+                        <div className="w-full flex items-center gap-x-3">
+                            <h1 className="text-xs font-bold">Assigned To:</h1>
+                            <select onChange={(e)=>setAssignee(Number(e.target.value))} className="flex-1 border border-slate-300 bg-white text-slate-700 text-sm px-3 py-1.5 pr-8 focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-transparent appearance-none cursor-pointer shadow-sm rounded-lg">
+                                <option value="0">All</option>
+                                {
+                                    users.map((user)=>(
+                                        <option key={user.id} value={user.id}>{user.name}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    </div>
+
                     {/* List */}
-                    <div className="w-full h-[calc(100%-148px)] overflow-y-auto mt-3 pl-1 relative">
+                    <div className="w-full h-[calc(100%-192px)] overflow-y-auto mt-3 pl-1 relative">
                         { listLoading ? (
                             <div className="w-full h-20">
                                 <Loading />
