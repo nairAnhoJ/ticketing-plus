@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 interface Data {
     id_number: string;
     password: string;
+    remember_me: boolean;
 }
 
 const LoginPage = () => {
@@ -17,7 +18,8 @@ const LoginPage = () => {
 
     const [data, setData] = useState<Data>({
         id_number: '',
-        password: ''
+        password: '',
+        remember_me: false
     })
 
     useEffect(() => {
@@ -86,8 +88,13 @@ const LoginPage = () => {
                                     {
                                         errors?.find((err) => err.path === 'password') && <p className="text-sm italic text-red-500">{errors?.find((err) => err.path === 'password')?.msg}</p>
                                     }
+
+                                    <div className="flex gap-x-1 mt-3">
+                                        <input onChange={(e) => setData({...data, remember_me: e.target.checked})} type="checkbox" id="remember_me" />
+                                        <label htmlFor="remember_me" className="text-sm text-slate-600">Keep me logged in</label>
+                                    </div>
                                 </div>
-                                <div className="w-full mt-6">
+                                <div className="w-full mt-3">
                                     <button disabled={loading} onClick={()=>dispatch(loginUser(data))} type="button" className="w-full py-2 bg-gray-600 rounded-lg text-white font-bold tracking-wide cursor-pointer">
                                         {
                                             loading ? 'LOGGING IN...' : 'LOGIN'
