@@ -17,6 +17,14 @@ interface Counts {
 	closed: number;
 }
 
+export interface TicketUpdates {
+    id: number;
+    message: string;
+    user_id: number;
+    created_by: string;
+    created_at: string;
+}
+
 export interface Ticket {
 	id: number;
 	ticket_number: string;
@@ -45,9 +53,11 @@ export interface SelectedTicket {
 	requested_at: string;
 	created_at: string;
 	started_at: string;
+	resolution: string;
 	completed_by: string;
 	completed_at: string;
 	on_hold_duration: string;
+	updates: TicketUpdates[] | null;
 }
 
 export interface Option {
@@ -277,6 +287,7 @@ function ReportIndex() {
 		try {
 			config.get(`inbox/${selectedTicketId}`)
 				.then((res)=>{
+					console.log(res.data)
 					setSelectedTicket({
 							id: res.data.id,
 							ticket_number: res.data.ticket_number,
@@ -288,9 +299,11 @@ function ReportIndex() {
 							requested_at: res.data.created_at,
 							created_at: res.data.created_at,
 							started_at: res.data.started_at,
+							resolution: res.data.resolution,
 							completed_by: res.data.completed_by,
 							completed_at: res.data.completed_at,
 							on_hold_duration: res.data.on_hold_duration,
+							updates: res.data.updates
 					})
 				}
 			)
