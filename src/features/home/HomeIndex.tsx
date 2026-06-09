@@ -7,6 +7,7 @@ import ConfirmationModal from "../../components/ConfimationModal";
 import FeedbackModal from "./_components/FeedbackModal";
 import { fetchFormCategory } from "../create/createTicketSlice";
 import LnFormModal from "../../components/LnFormModal";
+import ImageViewer from "../../components/ImageViewer";
 
 interface ConfirmationDetails {
     type: string;
@@ -63,6 +64,9 @@ const HomeIndex = () => {
         confirmText: '',
         cancelText: '',
     })
+    const [selectedFile, setSelectedFile] = useState<string>('');
+    const [selectedType, setSelectedType] = useState<string>('');
+    const [showImageViewer, setShowImageViewer] = useState<boolean>(false);
     const [showFeedbackModal, setShowFeedbackModal] = useState<boolean>(false);
     const [showLnFormModal, setShowLnFormModal] = useState<boolean>(false);
     const [showWriteTicketError, setShowWriteTicketError] = useState<boolean>(false);
@@ -167,13 +171,43 @@ const HomeIndex = () => {
         return filename.slice(lastDot + 1).toLowerCase();
     }
 
+    const icon = (path: string) => {
+        return ['jpg', 'png', 'jpeg'].includes(getFileExtension(path))
+            ? 'image.png'
+            : getFileExtension(path) === 'pdf'
+            ? 'pdf.png'
+            : ['doc', 'docx'].includes(getFileExtension(path))
+            ? 'doc.png'
+            : ['ppt', 'pptx'].includes(getFileExtension(path))
+            ? 'ppt.png'
+            : ['csv', 'xls', 'xlsx'].includes(getFileExtension(path))
+            ? 'xls.png'
+            : 'file.png';
+    }
+
+    const handleShowAttachments = (path: string, type: string) => {
+        const extension = path.slice(path.lastIndexOf(".") + 1);
+        if(extension.toLowerCase() == 'pdf' || extension.toLowerCase() == 'png' || extension.toLowerCase() == 'jpg' || extension.toLowerCase() == 'jpeg'){
+            setSelectedType(type);
+            setSelectedFile(path);
+            setShowImageViewer(true);
+        }else{
+            handleSingleDownload('', Number(selectedTicket?.id), path, 'request')
+        }
+    }
+
     const handleTicketSelect = async (id: number) => {
         await appDispatch(fetchSelectedRequest(id));
         await appDispatch(fetchLNTicket(id))
     }
 
-    const handleSingleDownload = (id: number, filename: string) => {
-        window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download/${id}/${filename}`, "_blank");
+    // const handleSingleDownload = (id: number, filename: string) => {
+    //     window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download/${id}/${filename}`, "_blank");
+    // }    
+
+    const handleSingleDownload = (e: any, id: number, filename: string, type: string) => {
+        e.stopPropagation();
+        window.open(`${import.meta.env.VITE_BASE_URL}/api/attachments/download/${id}/${filename}/${type}`, "_blank");
     }
 
     const handleDownloadAll = (id: number, type: string) => {
@@ -230,6 +264,9 @@ const HomeIndex = () => {
 
     return (
         <>
+            {/* Image Viewer */}
+            { <ImageViewer  showImageViewer={showImageViewer} onClose={() => setShowImageViewer(false)} file={selectedFile} type={selectedType} id={selectedTicket?.id!} /> }
+            
             {/* Confirmation Modal */}
             {
                 showConfirmationModal && <ConfirmationModal details={confirmationDetails} confirmClick={handleConfirmCancel} cancelClick={()=>setShowConfirmationModal(false)}/>
@@ -697,24 +734,17 @@ const HomeIndex = () => {
                                                             <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
                                                                 { 
                                                                     selectedTicket.reqAttachments.map((att, index)=>(
-                                                                        <button key={index} onClick={() => handleSingleDownload(selectedTicket.id, att.file_path)} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                                        <div key={index} onClick={()=>handleShowAttachments(att.file_path, 'request')} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
                                                                             <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                                                <img src={`/icons/${
-                                                                                    ['jpg', 'png'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'image.png' : ['pdf'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'pdf.png' : ['doc', 'docx'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'doc.png' : ['ppt', 'pptx'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'ppt.png' : ['csv', 'xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
-                                                                                    'xls.png' : ''
-                                                                                }`} className="w-9 h-9" alt="icon" />
+                                                                                <img src={`/icons/${icon(att.file_path)}`} className="w-9 h-9" alt="icon" />
                                                                             </div>
                                                                             <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
                                                                                 <h1 className="w-full truncate text-xs text-left text-neutral-800/90">{att.file_path}</h1>
                                                                             </div>
-                                                                            <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
+                                                                            <button onClick={(e) => handleSingleDownload(e, selectedTicket.id, att.file_path, 'request')} className="h-full aspect-square flex items-center justify-center text-neutral-600">
                                                                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                                            </div>
-                                                                        </button>
+                                                                            </button>
+                                                                        </div>
                                                                     ))
                                                                 }
                                                             </div>
@@ -742,24 +772,17 @@ const HomeIndex = () => {
                                                                         <div className="w-full h-18 mt-1 overflow-x-auto overflow-y-hidden flex gap-x-3">
                                                                             { 
                                                                                 selectedTicket.resAttachments.map((att, index)=>(
-                                                                                    <button key={index} onClick={() => handleSingleDownload(selectedTicket.id, att.file_path)} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
+                                                                                    <div key={index} onClick={()=>handleShowAttachments(att.file_path, 'resolution')} className="w-60 shrink-0 h-14 bg-neutral-200 p-2 rounded flex cursor-pointer hover:bg-neutral-300/80">
                                                                                         <div className="h-full aspect-square flex items-center justify-center rounded text-white">
-                                                                                            <img src={`/icons/${
-                                                                                                ['jpg', 'png'].includes(getFileExtension(att.file_path)) ?
-                                                                                                'image.png' : ['pdf'].includes(getFileExtension(att.file_path)) ?
-                                                                                                'pdf.png' : ['doc', 'docx'].includes(getFileExtension(att.file_path)) ?
-                                                                                                'doc.png' : ['ppt', 'pptx'].includes(getFileExtension(att.file_path)) ?
-                                                                                                'ppt.png' : ['csv', 'xls', 'xlsx'].includes(getFileExtension(att.file_path)) ?
-                                                                                                'xls.png' : ''
-                                                                                            }`} className="w-9 h-9" alt="icon" />
+                                                                                            <img src={`/icons/${icon(att.file_path)}`} className="w-9 h-9" alt="icon" />
                                                                                         </div>
                                                                                         <div className="w-[calc(100%-76px)] pl-1.5 flex items-center">
                                                                                             <h1 className="w-full truncate text-xs text-left text-neutral-800/90">{att.file_path}</h1>
                                                                                         </div>
-                                                                                        <div className="h-full aspect-square flex items-center justify-center text-neutral-600">
+                                                                                        <button onClick={(e) => handleSingleDownload(e, selectedTicket.id, att.file_path, 'resolution')} className="h-full aspect-square flex items-center justify-center text-neutral-600">
                                                                                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                                                                                        </div>
-                                                                                    </button>
+                                                                                        </button>
+                                                                                    </div>
                                                                                 ))
                                                                             }
                                                                         </div>

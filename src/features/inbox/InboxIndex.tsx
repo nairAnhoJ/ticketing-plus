@@ -11,7 +11,7 @@ import { fetchLNTicket } from "../home/homeSlice";
 import { fetchFormCategory } from "../create/createTicketSlice";
 import HoldModal from "./_components/HoldModal";
 import config from "../../config/config";
-import ImageViewer from "./_components/ImageViewer";
+import ImageViewer from "../../components/ImageViewer";
 
 export interface User {
     id: number;
