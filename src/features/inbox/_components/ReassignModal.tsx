@@ -22,7 +22,7 @@ const ReassignModal = ({id, users, assigned_user_id, close, me}: Props) => {
         if(selectedUser){
             setError(false)
             appDispatch(reassign({id: id!, user_id: selectedUser}))
-            appDispatch(sendUpdate({id: id!, user_id: me.id,  message: `This ticket has been reassigned to ${users.find(user => user.id === selectedUser)?.name}.`}));
+            appDispatch(sendUpdate({id: id!, user_id: me.id,  message: `This ticket has been reassigned from ${users.find(user => user.id === assigned_user_id)?.name} to ${users.find(user => user.id === selectedUser)?.name}.`}));
             close();
         }else{
             setError(true)
