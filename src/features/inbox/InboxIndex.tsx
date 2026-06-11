@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import React, { useEffect, useRef, useState } from "react";
-import { fetchInbox, fetchTicketCounts, fetchSelectedTicket, sendUpdate, changeTicketStatus, fetchNewInbox, fetchSelectedTicketUpdate, resume } from "./inboxSlice";
+import { fetchInbox, fetchTicketCounts, fetchSelectedTicket, sendUpdate, changeTicketStatus, fetchNewInbox, fetchSelectedTicketUpdate, resume, fetchDepartmentFeatures } from "./inboxSlice";
 import Loading from "../../components/Loading";
 import ConfirmationModal from "../../components/ConfimationModal";
 import CompleteModal from "./_components/CompleteModal";
@@ -51,11 +51,11 @@ interface Me {
     avatar: string | null;
 }
  
-const HomeIndex = () => {
+const InboxIndex = () => {
     const appDispatch = useAppDispatch();
 
     const { user } = useAppSelector((state) => state.auth);
-    const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount } = useAppSelector((state) => state.inbox)
+    const { listLoading, selectLoading, ticketList, selectedTicket, ticketCount, features } = useAppSelector((state) => state.inbox)
     const { lnTicket } = useAppSelector((state) => state.home)
     const { formCategories } = useAppSelector((state) => state.createTicket);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -96,6 +96,7 @@ const HomeIndex = () => {
     useEffect(()=>{
         appDispatch(fetchTicketCounts(me.department_id));
         appDispatch(fetchFormCategory());
+        appDispatch(fetchDepartmentFeatures());
         fetchUsers();
     }, [])
 
@@ -708,7 +709,7 @@ const HomeIndex = () => {
                                                             showTicketMenu &&
                                                             <>
                                                                 <div onClick={()=>setShowTicketMenu(false)} className="fixed top-0 left-0 h-screen w-screen z-1"></div>
-                                                                <div className="w-40 h-auto absolute right-0 -bottom-0.5 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2">
+                                                                <div className="w-48 h-auto absolute right-0 -bottom-0.5 translate-y-full bg-[#f4f4f4] shadow shadow-neutral-500 rounded-lg z-2 overflow-hidden">
                                                                     <div className="w-full flex flex-col">
                                                                         {   (selectedTicket.status === 'pending') ? (
                                                                                 <button
@@ -719,7 +720,7 @@ const HomeIndex = () => {
                                                                                         confirmText: 'Yes',
                                                                                         cancelText: 'Cancel'
                                                                                     }); setShowTicketMenu(false)}}
-                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90">
                                                                                     Start Ticket
                                                                                 </button>
                                                                             ) : (selectedTicket.status === 'in_progress') ? (
@@ -729,12 +730,12 @@ const HomeIndex = () => {
                                                                                             <>
                                                                                                 <button
                                                                                                     onClick={() => {setShowCompleteModal(true); setShowTicketMenu(false)}}
-                                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90">
                                                                                                     Complete Ticket
                                                                                                 </button>
                                                                                                 <button
                                                                                                     onClick={() => {setShowHoldModal(true); setShowTicketMenu(false)}}
-                                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90">
                                                                                                     Hold Ticket
                                                                                                 </button>
                                                                                             </>
@@ -747,7 +748,7 @@ const HomeIndex = () => {
                                                                                                     confirmText: 'Yes',
                                                                                                     cancelText: 'Cancel'
                                                                                                 }); setShowTicketMenu(false)}}
-                                                                                                className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                                className="cursor-pointer py-2 hover:bg-neutral-300/90">
                                                                                                 Resume Ticket
                                                                                             </button>
                                                                                         )
@@ -760,10 +761,19 @@ const HomeIndex = () => {
                                                                                 <>
                                                                                     <button
                                                                                         onClick={() => {setShowReassignModal(true); setShowTicketMenu(false)}}
-                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90 rounded-lg">
+                                                                                        className="cursor-pointer py-2 hover:bg-neutral-300/90">
                                                                                         Reassign Ticket
                                                                                     </button>
                                                                                 </>
+                                                                            )
+                                                                        }
+                                                                        {
+                                                                            selectedTicket.status !== 'cancelled' && features.find(f => f.department_id === me.department_id) && features.find(f => f.department_id === me.department_id)!.feature_key === 'service_report' && (
+                                                                                <Link to={`/service-report/${selectedTicket.id}`} target="_blank"
+                                                                                    onClick={() => setShowTicketMenu(false)}
+                                                                                    className="cursor-pointer py-2 hover:bg-neutral-300/90 text-center">
+                                                                                    Print Service Report
+                                                                                </Link>
                                                                             )
                                                                         }
                                                                     </div>
@@ -947,4 +957,4 @@ const HomeIndex = () => {
     )
 }
 
-export default HomeIndex
+export default InboxIndex

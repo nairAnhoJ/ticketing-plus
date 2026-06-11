@@ -12,6 +12,7 @@ import Inbox from '../features/inbox/InboxIndex'
 import Settings from '../features/settings/Settings'
 import SetPassword from '../features/SetPassword'
 import ReportIndex from '../features/report/ReportIndex'
+import ServiceReport from '../features/service-report/ServiceReport'
 
 function AppRoutes() {
 	return (
@@ -23,6 +24,7 @@ function AppRoutes() {
 							<Route path='/create-ticket' element={<CreateTicket />}></Route>
 
 							<Route path='/inbox' element={<Inbox />}></Route>
+							<Route path='/service-report/:id' element={<ServiceReport />}></Route>
 
 							<Route path='/ticket-report' element={<ReportIndex />}></Route>
 

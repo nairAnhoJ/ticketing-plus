@@ -24,6 +24,12 @@ export interface Attachment {
     type: string;
 }
 
+export interface Feature {
+    id: number;
+    department_id: number;
+    feature_key: string;
+}
+
 export interface Ticket{
     id: number;
     assigned_user: string;
@@ -85,6 +91,7 @@ interface InitialState {
     selectedTicket: SelectedTicket | null;
     listLoading: boolean;
     selectLoading: boolean;
+    features: Feature[];
 }
 
 const initialState: InitialState = {
@@ -96,7 +103,8 @@ const initialState: InitialState = {
     ticketList: [],
     selectedTicket: null,
     listLoading: false,
-    selectLoading: false
+    selectLoading: false,
+    features: []
 }
 
 
@@ -200,6 +208,15 @@ export const completeTicket = createAsyncThunk('inbox/complete-ticket', async (d
     }
 });
 
+export const fetchDepartmentFeatures = createAsyncThunk('inbox/department-features', async () => {
+    try {
+        const features = await config.get(`/department-features`);
+        return features.data;
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 
 
 
@@ -286,6 +303,15 @@ const inboxSlice = createSlice({
                 state.selectedTicket.assigned_user_id = payload.payload?.user.id;
                 state.selectedTicket.assigned_user = payload.payload?.user.name;
             }
+        })
+
+        
+        .addCase(fetchDepartmentFeatures.fulfilled, (state, payload) => {
+            state.features = payload.payload;
+            // if(state.selectedTicket){
+            //     state.selectedTicket.assigned_user_id = payload.payload?.user.id;
+            //     state.selectedTicket.assigned_user = payload.payload?.user.name;
+            // }
         })
 
         

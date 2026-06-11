@@ -41,7 +41,7 @@ const Navigation = () => {
 
         <>
             {/* For Mobile */}
-            <button onClick={()=>setShowMenu(!showMenu)} className={`lg:hidden absolute w-8 h-8 top-3.5 right-3.5 text-white transition-all duration-200 z-11 ${showMenu && 'rotate-180'}`}>
+            <button onClick={()=>setShowMenu(!showMenu)} className={`lg:hidden absolute w-8 h-8 top-3.5 right-3.5 text-white transition-all duration-200 z-11 ${location.pathname.startsWith('/service-report') && 'hidden'} ${showMenu && 'rotate-180'}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" className={`absolute top-0 w-8 transition-all duration-200 ${showMenu && 'opacity-0' }`} viewBox="0 -960 960 960" fill="currentColor">
                     <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
                 </svg>
