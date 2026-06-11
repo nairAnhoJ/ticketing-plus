@@ -298,10 +298,11 @@ const ITServiceReport: React.FC = () => {
         <div className="max-w-225 mx-auto bg-white rounded shadow-lg overflow-hidden text-[13px] text-gray-900">
 
           {/* Header */}
-          <div className="bg-[#1a1a2e] grid grid-cols-[auto_1fr_auto] items-center gap-5 px-7 py-5">
-            <div className="bg-red-700 rounded px-2.5 py-1.5 flex flex-col items-center gap-0.5">
-              <span className="text-[15px] font-extrabold text-white tracking-widest">TOYOTA</span>
-              <span className="text-[6.5px] font-bold text-red-200 uppercase tracking-widest">Material Handling</span>
+          <div className="bg-[#1a1a2e] grid grid-cols-[auto_1fr_auto] items-center gap-3 px-7 py-5">
+            <div className="rounded py-1.5 flex flex-col items-center gap-0.5 w-36">
+              <img src="/others/TOYOTA_MH_logo_.png" alt="logo" />
+              {/* <span className="text-[15px] font-extrabold text-white tracking-widest">TOYOTA</span>
+              <span className="text-[6.5px] font-bold text-red-200 uppercase tracking-widest">Material Handling</span> */}
             </div>
             <div>
               <div className="text-[18px] font-bold text-white tracking-tight">
