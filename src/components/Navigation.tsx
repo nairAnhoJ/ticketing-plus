@@ -25,11 +25,18 @@ const Navigation = () => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [expandMenu, setExpandMenu] = useState<boolean>(false);
     const [expandProfileMenu, setExpandProfileMenu] = useState<boolean>(false);
+    const [unreadCount, setUnreadCount] = useState<number | null>(null);
     const [showNotification, setShowNotification] = useState<boolean>(false);
     const me: Me = JSON.parse(user);
 
+    const fetchUnreadNotification = async() => {
+        const response = await config.get('/ticketing-plus/notifications/unread');
+        setUnreadCount(response.data.length);
+        // setShowNotification(response.data.unread);
+    }
 
     useEffect(()=>{
+        fetchUnreadNotification();
         dispatch(fetchInChargeDepartments());
     }, [])
 
@@ -116,11 +123,11 @@ const Navigation = () => {
                     {/* NOTIFICATION */}
                     <div className="relative">
                         <button onClick={() => setShowNotification(!showNotification)} className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/ticket-report' && 'bg-[#353535]' }`}>
-                            <div className="absolute text-[12px] border border-[#212121] rounded-full w-5 h-5 bg-red-500 top-0 left-5 font-medium flex items-center justify-center">3</div>
+                            { unreadCount && unreadCount > 0 ? ( <div className="absolute text-[12px] border border-[#212121] rounded-full w-5 h-5 bg-red-500 top-0 left-5 font-medium flex items-center justify-center">{unreadCount}</div> ) : ''}
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bell-icon lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
                             <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">Notification</h1>
                         </button>
-                        <Notification showNotification={showNotification} setShowNotification={() => setShowNotification(false)} />
+                        <Notification showNotification={showNotification} setShowNotification={() => setShowNotification(false)} updateCount={fetchUnreadNotification} />
                     </div>
                     <div className="relative">
                         {/* PROFILE DETAILS */}

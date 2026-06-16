@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from "react";
+import config from "../config/config";
 
 interface Notification {
   id: string;
   type: string;
   title: string;
   message: string;
-  ticketId?: string;
-  timestamp: string; // ISO
-  read: boolean;
+  ticket_number ?: string;
+  created_at: string; // ISO
+  is_read: boolean;
 }
 
 interface Props {
   showNotification: boolean;
   setShowNotification: () => void;
+  updateCount: () => void;
 }
 
 // ─── Config: icon, color, label per type ───────────────────────────────────────
@@ -50,7 +52,7 @@ function NotificationItem({ n, onClick, onToggleRead }: { n: Notification; onCli
     <div
       onClick={onClick}
       className={`group flex gap-3 px-4 py-3 cursor-pointer transition-colors border-b border-slate-50 last:border-b-0 ${
-        n.read ? "bg-white hover:bg-slate-50" : "bg-blue-50/40 hover:bg-blue-50"
+        n.is_read ? "bg-white hover:bg-slate-50" : "bg-blue-50/40 hover:bg-blue-50"
       }`}
     >
       {/* Icon */}
@@ -61,17 +63,17 @@ function NotificationItem({ n, onClick, onToggleRead }: { n: Notification; onCli
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <p className={`text-sm leading-snug ${n.read ? "font-medium text-slate-700" : "font-semibold text-slate-900"}`}>
+          <p className={`text-sm leading-snug ${n.is_read ? "font-medium text-slate-700" : "font-semibold text-slate-900"}`}>
             {n.title}
           </p>
-          {!n.read && <span className="shrink-0 w-2 h-2 rounded-full bg-blue-500 mt-1.5" />}
+          {!n.is_read && <span className="shrink-0 w-2 h-2 rounded-full bg-blue-500 mt-1.5" />}
         </div>
         <p className="text-xs text-slate-500 mt-0.5 leading-relaxed line-clamp-2">{n.message}</p>
         <div className="flex items-center gap-2 mt-1.5">
-          {n.ticketId && (
-            <span className="font-mono text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md">{n.ticketId}</span>
+          {n.ticket_number && (
+            <span className="font-mono text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md">{n.ticket_number}</span>
           )}
-          <span className="text-[11px] text-slate-400">{timeAgo(n.timestamp)}</span>
+          <span className="text-[11px] text-slate-400">{timeAgo(n.created_at)}</span>
           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md ml-auto ${cfg.bg} ${cfg.color} border-0 opacity-0 group-hover:opacity-100 transition-opacity`}>
             {cfg.label}
           </span>
@@ -81,10 +83,10 @@ function NotificationItem({ n, onClick, onToggleRead }: { n: Notification; onCli
       {/* Mark read/unread toggle */}
       <button
         onClick={(e) => { e.stopPropagation(); onToggleRead(); }}
-        title={n.read ? "Mark as unread" : "Mark as read"}
+        title={n.is_read ? "Mark as unread" : "Mark as read"}
         className="shrink-0 self-start mt-1 w-5 h-5 rounded-full border border-slate-200 text-slate-300 hover:border-blue-400 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100 flex items-center justify-center text-[10px]"
       >
-        {n.read ? "↺" : "✓"}
+        {n.is_read ? "↺" : "✓"}
       </button>
     </div>
   );
@@ -100,111 +102,18 @@ function NotificationItem({ n, onClick, onToggleRead }: { n: Notification; onCli
 
 
 
-function Notification({showNotification, setShowNotification}: Props) {
+function Notification({showNotification, setShowNotification, updateCount}: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "n1",
-      type: "assigned",
-      title: "New ticket assigned to you",
-      message: "\"Laptop overheating and randomly shutting down\" was assigned to you by Patricia Lim.",
-      ticketId: "T26-03-000001",
-      timestamp: "2026-03-26T15:42:00",
-      read: false,
-    },
-    {
-      id: "n2",
-      type: "sla_warning",
-      title: "SLA at risk — 2 hours remaining",
-      message: "\"Monitor not powering on after startup\" is approaching its SLA deadline (Mar 26, 5:00 PM).",
-      ticketId: "T26-03-000002",
-      timestamp: "2026-03-26T14:55:00",
-      read: false,
-    },
-    {
-      id: "n3",
-      type: "sla_breach",
-      title: "SLA breached",
-      message: "\"VPN access request\" has exceeded its resolution SLA by 4 hours.",
-      ticketId: "T26-03-000009",
-      timestamp: "2026-03-26T13:10:00",
-      read: false,
-    },
-    {
-      id: "n4",
-      type: "new_comment",
-      title: "New reply on your ticket",
-      message: "Henry Jabunan replied: \"Still happening even after restart, please advise.\"",
-      ticketId: "T26-03-000003",
-      timestamp: "2026-03-26T12:30:00",
-      read: false,
-    },
-    {
-      id: "n5",
-      type: "resolved",
-      title: "Ticket resolved — feedback requested",
-      message: "\"Keyboard not responding properly\" was marked resolved by John Arian Malondras. Please confirm if the issue is fixed.",
-      ticketId: "T26-03-000003",
-      timestamp: "2026-03-26T06:22:00",
-      read: true,
-    },
-    {
-      id: "n6",
-      type: "status_change",
-      title: "Ticket status updated",
-      message: "\"Cannot access shared drive\" moved from In-Progress to Closed.",
-      ticketId: "T26-03-000004",
-      timestamp: "2026-03-25T17:05:00",
-      read: true,
-    },
-    {
-      id: "n7",
-      type: "reassigned",
-      title: "Ticket reassigned",
-      message: "\"New office chair request\" was reassigned from you to Patricia Lim.",
-      ticketId: "T26-03-000005",
-      timestamp: "2026-03-25T11:20:00",
-      read: true,
-    },
-    {
-      id: "n8",
-      type: "mention",
-      title: "You were mentioned",
-      message: "Patricia Lim mentioned you in a comment: \"@you can you check the server logs for this?\"",
-      ticketId: "T26-03-000007",
-      timestamp: "2026-03-24T16:48:00",
-      read: true,
-    },
-    {
-      id: "n9",
-      type: "escalation",
-      title: "Ticket escalated to Critical",
-      message: "\"Email account locked\" priority was escalated from High to Critical due to repeated requests.",
-      ticketId: "T26-03-000012",
-      timestamp: "2026-03-24T09:15:00",
-      read: true,
-    },
-    {
-      id: "n10",
-      type: "reopened",
-      title: "Ticket reopened",
-      message: "Ana Dela Cruz reopened \"Payslip not received Feb\" — issue was not fully resolved.",
-      ticketId: "T26-03-000006",
-      timestamp: "2026-03-23T08:00:00",
-      read: true,
-    },
-    {
-      id: "n11",
-      type: "system",
-      title: "Scheduled maintenance tonight",
-      message: "The helpdesk portal will be unavailable from 10:00 PM to 12:00 AM for scheduled maintenance.",
-      timestamp: "2026-03-22T10:00:00",
-      read: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const fetchUnreadNotification = async() => {
+      const response = await config.get('/ticketing-plus/notifications/');
+      setNotifications(response.data);
+  }
 
   // Close on outside click
   useEffect(() => {
+    fetchUnreadNotification();
     function handler(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setShowNotification();
     }
@@ -212,18 +121,25 @@ function Notification({showNotification, setShowNotification}: Props) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
-  function markAllRead() {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  async function markAllRead() {
+    console.log('mark all as read');
+    await config.patch('/ticketing-plus/notifications/read-all');
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    updateCount();
   }
 
   function toggleRead(id: string) {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: !n.read } : n));
+    console.log('toggle read');
+
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: !n.is_read } : n));
   }
 
   function markRead(id: string) {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    console.log('mark as read');
+
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
   }
 
   return (
