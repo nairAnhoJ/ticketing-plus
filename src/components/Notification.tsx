@@ -106,14 +106,23 @@ function Notification({showNotification, setShowNotification, updateCount}: Prop
   const ref = useRef<HTMLDivElement>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const fetchUnreadNotification = async() => {
+  const fetchNotification = async() => {
       const response = await config.get('/ticketing-plus/notifications/');
       setNotifications(response.data);
+      updateCount();
   }
+
+  useEffect(()=>{
+    fetchNotification();
+    const fetchInterval = setInterval(() => {
+      fetchNotification();
+    }, 5000); // 5 seconds
+
+    return () => clearInterval(fetchInterval);
+  }, [])
 
   // Close on outside click
   useEffect(() => {
-    fetchUnreadNotification();
     function handler(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setShowNotification();
     }
@@ -130,21 +139,23 @@ function Notification({showNotification, setShowNotification, updateCount}: Prop
     updateCount();
   }
 
-  function toggleRead(id: string) {
-    console.log('toggle read');
-
+  async function toggleRead(id: string) {
+    console.log('toggle read', id);
+    await config.patch(`/ticketing-plus/notifications/${id}/toggle-read`);
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: !n.is_read } : n));
+    updateCount();
   }
 
-  function markRead(id: string) {
+  async function markRead(id: string) {
     console.log('mark as read');
-
+    await config.patch(`/ticketing-plus/notifications/${id}/read`);
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    updateCount();
   }
 
   return (
     // <div className="fixed w-screen h-screen">
-      <div className={`absolute bottom-0 left-12 mt-2 w-120 max-w-[calc(100vw-2rem)] bg-white rounded-2xl border border-slate-200 shadow-2xl shadow-black/60 overflow-hidden z-50 animate-fade-in transition-all duration-300 ${showNotification ? 'left-12 scale-100 opacity-100' : '-translate-x-[calc(57%)] translate-y-[calc(47%)] scale-0 opacity-0 pointer-events-none' }`}>
+      <div ref={ref} className={`absolute bottom-0 left-12 mt-2 w-120 max-w-[calc(100vw-2rem)] bg-white rounded-2xl border border-slate-200 shadow-2xl shadow-black/60 overflow-hidden z-50 animate-fade-in transition-all duration-300 ${showNotification ? 'left-12 scale-100 opacity-100' : '-translate-x-[calc(57%)] translate-y-[calc(47%)] scale-0 opacity-0 pointer-events-none' }`}>
         {/* Header */}
         <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2">

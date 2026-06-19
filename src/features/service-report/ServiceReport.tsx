@@ -165,7 +165,7 @@ const FieldInput: React.FC<FieldInputProps> = ({ label, value, onChange, placeho
 );
 
 const ReadOnlyInput = ({ label, value }: { label: string; value: string | undefined }) => (
-  <div className="flex flex-col gap-1">
+  <div className="flex flex gap-1">
     <span className="text-[9.5px] font-bold uppercase tracking-widest text-gray-400">{label}</span>
     <input
       type="text"
@@ -193,6 +193,7 @@ const TextAreaBlock: React.FC<TextAreaBlockProps> = ({ title, value, onChange, p
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       rows={rows}
+      maxLength={570}
       className="w-full border-0 resize-none text-[12px] text-gray-800 p-3.5 outline-none bg-transparent focus:bg-amber-50/30 transition-colors placeholder:text-gray-300 block"
     />
   </div>
@@ -298,7 +299,7 @@ const ITServiceReport: React.FC = () => {
         <div className="max-w-225 mx-auto bg-white rounded shadow-lg overflow-hidden text-[13px] text-gray-900">
 
           {/* Header */}
-          <div className="bg-[#1a1a2e] grid grid-cols-[auto_1fr_auto] items-center gap-3 px-7 py-5">
+          <div className="bg-[#1a1a2e] grid grid-cols-[auto_1fr_auto] items-center gap-3 px-7 pt-5">
             <div className="rounded py-1.5 flex flex-col items-center gap-0.5 w-36">
               <img src="/others/TOYOTA_MH_logo_.png" alt="logo" />
               {/* <span className="text-[15px] font-extrabold text-white tracking-widest">TOYOTA</span>
@@ -405,26 +406,25 @@ const ITServiceReport: React.FC = () => {
                 <TextAreaBlock
                   // title="Problem Reported"
                   // value={data?.description}
-
                   title="Problem Reported"
                   value={form.problemReported}
                   onChange={setField("problemReported")}
                   placeholder=""
-                  rows={5}
+                  rows={9}
                 />
                 <TextAreaBlock
                   title="Cause of the Problem"
                   value={form.causeOfProblem}
                   onChange={setField("causeOfProblem")}
                   placeholder=""
-                  rows={5}
+                  rows={9}
                 />
                 <TextAreaBlock
                   title="Action Taken"
                   value={form.actionTaken}
                   onChange={setField("actionTaken")}
                   placeholder=""
-                  rows={6}
+                  rows={9}
                 />
 
                 {/* Signatures */}
