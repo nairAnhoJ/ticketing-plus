@@ -45,18 +45,18 @@ function CustomerBrowser({ close, setSelectedCustomerId }: Props) {
     <div className="w-screen h-screen fixed top-0 left-0 z-10 bg-neutral-900/30 flex items-center justify-center">
 			<div className="w-4/5 h-4/5 bg-white rounded-lg">
 				<div className="w-full h-full flex flex-col">
-					<div className="flex items-center justify-between border-b border-neutral-200 p-4">
+					<div className="h-16 flex items-center justify-between border-b border-neutral-200 p-4">
 						<h1 className="font-bold text-lg">Customers</h1>
 						<button type="button" onClick={close} className="p-1 rounded hover:bg-neutral-100 cursor-pointer">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
 						</button>
 					</div>
-					<div className="flex-1 flex flex-col gap-y-3 p-4">
+					<div className="h-[calc(100%-64px)] flex-1 flex flex-col gap-y-3 p-4">
 						{/* Controls */}
 						<div>
 							<input type="text" placeholder="BP Code or Name..." className="border border-neutral-400 py-1 px-2 w-full rounded-lg" onChange={(e) => setSearch(e.target.value)} value={search} />
 						</div>
-						<div className="w-full flex-1 overflow-y-auto text-neutral-500">
+						<div className="w-full flex-1 overflow-y-scroll text-neutral-500">
 							<table className="w-full">
 								<thead>
 									<tr>
