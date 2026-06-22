@@ -56,46 +56,44 @@ function CustomerBrowser({ close, setSelectedCustomerId }: Props) {
 						<div>
 							<input type="text" placeholder="BP Code or Name..." className="border border-neutral-400 py-1 px-2 w-full rounded-lg" onChange={(e) => setSearch(e.target.value)} value={search} />
 						</div>
-
-								<div className="w-full flex-1 text-neutral-500">
-									<table className="w-full">
-										<thead>
+						<div className="w-full flex-1 overflow-y-auto text-neutral-500">
+							<table className="w-full">
+								<thead>
+									<tr>
+										<th className="px-2">#</th>
+										<th className="px-2">SAP BP Code</th>
+										<th className="px-2">LN BP Code</th>
+										<th className="text-left">Name</th>
+									</tr>
+								</thead>
+								<tbody>
+									{
+										loading ? (
 											<tr>
-												<th className="px-2">#</th>
-												<th className="px-2">SAP BP Code</th>
-												<th className="px-2">LN BP Code</th>
-												<th className="text-left">Name</th>
+												<td colSpan={3} className="pt-10">Loading...</td>
 											</tr>
-										</thead>
-										<tbody>
-											{
-												loading ? (
-													<tr>
-														<td colSpan={3} className="pt-10">Loading...</td>
+										) : (
+											customers.length > 0 ?
+												customers.map((customer, index) => (
+													<tr className="hover:bg-neutral-200 even:bg-neutral-100" key={customer.id}>
+														<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{index + 1}</td>
+														<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.sap_bp_code}</td>
+														<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.ln_bp_code}</td>
+														<td className="text-left cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.name}</td>
 													</tr>
-												) : (
-													customers.length > 0 ?
-														customers.map((customer, index) => (
-															<tr className="hover:bg-neutral-200 even:bg-neutral-100" key={customer.id}>
-																<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{index + 1}</td>
-																<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.sap_bp_code}</td>
-																<td className="text-center cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.ln_bp_code}</td>
-																<td className="text-left cursor-pointer hover:underline hover:text-blue-500" onClick={() => handleRowClick(customer.id)}>{customer.name}</td>
-															</tr>
-														)
-													) : (
-														<tr>
-															<td colSpan={3} className="text-center py-4">
-																No customers found.
-															</td>
-														</tr>
-													)
 												)
-											}
-										</tbody>
-									</table>
-								</div>
-							
+											) : (
+												<tr>
+													<td colSpan={3} className="text-center py-4">
+														No customers found.
+													</td>
+												</tr>
+											)
+										)
+									}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
