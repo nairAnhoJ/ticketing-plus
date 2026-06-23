@@ -13,6 +13,7 @@ import Settings from '../features/settings/Settings'
 import SetPassword from '../features/SetPassword'
 import ReportIndex from '../features/report/ReportIndex'
 import ServiceReport from '../features/service-report/ServiceReport'
+import Dashboard from '../features/Dashboard'
 
 function AppRoutes() {
 	return (
@@ -20,6 +21,8 @@ function AppRoutes() {
 			<Routes>
 					<Route element={<ProtectedRoute />}>
 						<Route element={<MainLayout />}>
+							<Route path='/dashboard' element={<Dashboard />}></Route>
+
 							<Route path='/' element={<HomeIndex />}></Route>
 							<Route path='/create-ticket' element={<CreateTicket />}></Route>
 
