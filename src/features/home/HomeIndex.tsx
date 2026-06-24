@@ -552,7 +552,7 @@ const HomeIndex = () => {
                                                                     <div className={`w-2 h-2 ml-1 rounded-full border
                                                                         ${
                                                                             ticket.status === 'pending' ? 'bg-red-500 border-red-600' : 
-                                                                            ticket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
+                                                                            ticket.status === 'in_progress' ? ticket.is_on_hold === 1 ? 'bg-slate-500 border-slate-600' : 'bg-amber-500 border-amber-600' : 
                                                                             ticket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
                                                                         }
                                                                     `}></div>
