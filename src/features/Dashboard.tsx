@@ -183,7 +183,7 @@ export function getNetWorkingSeconds(start: Date, end: Date, onHoldSeconds: numb
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000
 const isNearSlaBreach = (ticket: Ticket) => {
-  if(ticket.is_on_hold === 0){
+  if(ticket.is_on_hold === 0 && ticket.status !== 'needs_feedback'){
     const hours = getNetWorkingSeconds(new Date(ticket.created_at), new Date(), Number(ticket.on_hold_duration));
     const sla = ticket.sla_hours * 60 * 60 * 1000;
     const remaining = sla - hours * 60 * 60 * 1000;
@@ -194,7 +194,7 @@ const isNearSlaBreach = (ticket: Ticket) => {
 }
 
 const isSlaBreach = (ticket: Ticket) => {
-  if(ticket.is_on_hold === 0){
+  if(ticket.is_on_hold === 0 && ticket.status !== 'needs_feedback'){
     const hours = getNetWorkingSeconds(new Date(ticket.created_at), new Date(), Number(ticket.on_hold_duration));
     const sla = ticket.sla_hours * 60 * 60 * 1000;
     const remaining = sla - hours * 60 * 60 * 1000;
