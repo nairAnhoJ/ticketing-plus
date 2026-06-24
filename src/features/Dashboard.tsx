@@ -81,7 +81,7 @@ function StatBox({ label, count, lightBg, darkBg, lightBorder, darkBorder, light
     <div className={`rounded-2xl border flex flex-col justify-between p-8 min-h-44 ${lightBg} ${darkBg} ${lightBorder} ${darkBorder}`}>
       <span className={`text font-bold uppercase tracking-widest ${lightText} ${darkText}`}>{formatStatus(label)}</span>
       <div>
-        <span className={`text-[160px] font-black leading-none ${lightText} ${darkText}`}>{count}</span>
+        <span className={`text-[154px] font-black leading-none ${lightText} ${darkText}`}>{count}</span>
       </div>
     </div>
   );
@@ -342,7 +342,7 @@ export default function TVDashboard() {
           {/* ── Row 2: SLA alerts ──────────────────────────────────────────── */}
           <div className="grid grid-cols-4 gap-4 shrink-0">
             {/* Breached */}
-            <div className={`flex items-center gap-3 rounded-xl px-5 py-5 border flex-1 transition-colors ${
+            <div className={`flex items-center gap-3 rounded-xl px-5 py-6 border flex-1 transition-colors ${
               slaBreached.length > 0
                 ? "bg-red-50 dark:bg-red-500/10 border-red-300 dark:border-red-500/40"
                 : "bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/40"
@@ -353,13 +353,13 @@ export default function TVDashboard() {
                     SLA Breached
                   </p>
                 </div>
-                <p className={`w-full text-center text-3xl font-black leading-none mb-0.5 ${slaBreached.length > 0 ? "text-red-700 dark:text-red-300" : "text-slate-300 dark:text-slate-700"}`}>
+                <p className={`w-full text-center text-5xl font-black leading-none mb-0.5 ${slaBreached.length > 0 ? "text-red-700 dark:text-red-300" : "text-slate-300 dark:text-slate-700"}`}>
                   {slaBreached.length}
                 </p>
             </div>
 
             {/* At Risk */}
-            <div className={`flex items-center gap-3 rounded-xl px-5 py-5 border flex-1 transition-colors ${
+            <div className={`flex items-center gap-3 rounded-xl px-5 py-6 border flex-1 transition-colors ${
                 slaAtRisk.length > 0
                   ? "bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/40"
                   : "bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/40"
@@ -370,21 +370,21 @@ export default function TVDashboard() {
                   SLA At Risk
                 </p>
               </div>
-              <p className={`w-full text-center text-3xl font-black leading-none mb-0.5 ${slaAtRisk.length > 0 ? "text-amber-700 dark:text-amber-300" : "text-slate-300 dark:text-slate-700"}`}>
+              <p className={`w-full text-center text-5xl font-black leading-none mb-0.5 ${slaAtRisk.length > 0 ? "text-amber-700 dark:text-amber-300" : "text-slate-300 dark:text-slate-700"}`}>
                 {slaAtRisk.length}
               </p>
             </div>
 
             {/* On Hold */}
-            <div className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-xl px-5 py-5 shrink-0">
+            <div className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-xl px-5 py-6 shrink-0">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 whitespace-nowrap">ON HOLD</p>
-                <p className="w-full text-center text-3xl font-black leading-none mt-0.5 text-slate-900 dark:text-white">{onHoldTickets.length}</p>
+                <p className="w-full text-center text-5xl font-black leading-none mt-0.5 text-slate-900 dark:text-white">{onHoldTickets.length}</p>
             </div>
 
             {/* Total Open */}
-            <div className="flex items-center gap-3 bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-xl px-5 py-5 shrink-0">
+            <div className="flex items-center gap-3 bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-xl px-5 py-6 shrink-0">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 whitespace-nowrap">Total Open</p>
-                <p className="w-full text-center text-3xl font-black leading-none mt-0.5 text-slate-900 dark:text-white">{openTickets.length}</p>
+                <p className="w-full text-center text-5xl font-black leading-none mt-0.5 text-slate-900 dark:text-white">{openTickets.length}</p>
             </div>
           </div>
 

@@ -100,7 +100,7 @@ const Navigation = () => {
                         inchargeDepatments.find(d => d.department_id === me.department_id) && (
                             <>
                                 {/* DASHBOARD */}
-                                <Link to='/dashboard' title="Dashboard" className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/ticket-report' && 'bg-[#353535]' }`}>
+                                <Link to='/dashboard' title="Dashboard" className={`${expandMenu ? 'w-66' : 'w-10'} h-10 transition-all duration-200 relative overflow-hidden cursor-pointer gap-x-5.5 hover:bg-[#353535] p-2 rounded-lg ${location.pathname == '/dashboard' && 'bg-[#353535]' }`}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                                     <h1 className="absolute top-2.5 left-10 text-sm font-semibold whitespace-nowrap">Ticket Report</h1>
                                 </Link>
