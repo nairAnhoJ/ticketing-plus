@@ -94,12 +94,13 @@ function TicketRow({ ticket, breachIds, nearBreachIds }: { ticket: Ticket, breac
   return (
     <div className={`grid grid-cols-12 gap-4 px-5 py-3 rounded-xl ${SLA_ROW[sla]}`}>
       <span className="col-span-2 font-mono text-xs text-slate-400 dark:text-slate-600 shrink-0 text-center">{ticket.ticket_number}</span>
-      <div className="col-span-6 flex items-center gap-4">
+      <div className="col-span-5 flex items-center gap-4">
         <div className={`w-2 h-2 rounded-full shrink-0 ${STATUS_DOT[ticket.status]}`} />
         <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 flex-1 truncate">{ticket.subject}</span>
       </div>
       <span className="col-span-2 text-xs text-slate-400 dark:text-slate-600 shrink-0 text-center">{ticket.requester}</span>
-      <span className="col-span-2 text-xs text-slate-400 dark:text-slate-600 shrink-0 text-center">{timeAgo(ticket.created_at)}</span>
+      <span className="col-span-2 text-xs text-slate-400 dark:text-slate-600 shrink-0 text-center">{ticket.assigned_to}</span>
+      <span className="col-span-1 text-xs text-slate-400 dark:text-slate-600 shrink-0 text-center">{timeAgo(ticket.created_at)}</span>
     </div>
   );
 }
@@ -413,9 +414,10 @@ export default function TVDashboard() {
               {/* Column headers */}
               <div className="w-full grid grid-cols-12 gap-4 px-8 py-2 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50 dark:bg-transparent shrink-0">
                 <span className="col-span-2 text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercas text-center">Ticket ID</span>
-                <span className="col-span-6 text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase">Subject</span>
+                <span className="col-span-5 text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase">Subject</span>
                 <span className="col-span-2 text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase text-center">Submitted By</span>
-                <span className="col-span-2 text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase text-center">Submitted</span>
+                <span className="col-span-2 text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase text-center">Assigned To</span>
+                <span className="col-span-1 text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase text-center">Submitted</span>
                 {/* <span className="text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase w-28 text-right">SLA</span> */}
               </div>
 
