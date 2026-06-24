@@ -183,17 +183,25 @@ export function getNetWorkingSeconds(start: Date, end: Date, onHoldSeconds: numb
 
 const TWO_HOURS_MS = 2 * 60 * 60 * 1000
 const isNearSlaBreach = (ticket: Ticket) => {
-  const hours = getNetWorkingSeconds(new Date(ticket.created_at), new Date(), Number(ticket.on_hold_duration));
-  const sla = ticket.sla_hours * 60 * 60 * 1000
-  const remaining = sla - hours * 60 * 60 * 1000
-  return remaining > 0 && remaining <= TWO_HOURS_MS
+  if(ticket.is_on_hold === 0){
+    const hours = getNetWorkingSeconds(new Date(ticket.created_at), new Date(), Number(ticket.on_hold_duration));
+    const sla = ticket.sla_hours * 60 * 60 * 1000;
+    const remaining = sla - hours * 60 * 60 * 1000;
+    return remaining > 0 && remaining <= TWO_HOURS_MS;
+  }else{
+    return false;
+  }
 }
 
 const isSlaBreach = (ticket: Ticket) => {
-  const hours = getNetWorkingSeconds(new Date(ticket.created_at), new Date(), Number(ticket.on_hold_duration));
-  const sla = ticket.sla_hours * 60 * 60 * 1000
-  const remaining = sla - hours * 60 * 60 * 1000
-  return remaining < 0
+  if(ticket.is_on_hold === 0){
+    const hours = getNetWorkingSeconds(new Date(ticket.created_at), new Date(), Number(ticket.on_hold_duration));
+    const sla = ticket.sla_hours * 60 * 60 * 1000;
+    const remaining = sla - hours * 60 * 60 * 1000;
+    return remaining < 0;
+  }else{
+    return false;
+  }
 }
 
 
@@ -338,13 +346,13 @@ export default function TVDashboard() {
               slaBreached.length > 0
                 ? "bg-red-50 dark:bg-red-500/10 border-red-300 dark:border-red-500/40"
                 : "bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/40"
-            }`}>
-              <span className={`text-xl ${slaBreached.length > 0 ? "animate-bounce" : ""}`}>🚨</span>
-              <div>
-                <p className={`text-xs font-bold uppercase tracking-widest whitespace-nowrap ${slaBreached.length > 0 ? "text-red-600 dark:text-red-400" : "text-slate-400 dark:text-slate-600"}`}>
-                  SLA Breached
-                </p>
-              </div>
+              }`}>
+                <span className={`text-xl ${slaBreached.length > 0 ? "animate-bounce" : ""}`}>🚨</span>
+                <div>
+                  <p className={`text-xs font-bold uppercase tracking-widest whitespace-nowrap ${slaBreached.length > 0 ? "text-red-600 dark:text-red-400" : "text-slate-400 dark:text-slate-600"}`}>
+                    SLA Breached
+                  </p>
+                </div>
                 <p className={`w-full text-center text-3xl font-black leading-none mb-0.5 ${slaBreached.length > 0 ? "text-red-700 dark:text-red-300" : "text-slate-300 dark:text-slate-700"}`}>
                   {slaBreached.length}
                 </p>
@@ -352,10 +360,10 @@ export default function TVDashboard() {
 
             {/* At Risk */}
             <div className={`flex items-center gap-3 rounded-xl px-5 py-5 border flex-1 transition-colors ${
-              slaAtRisk.length > 0
-                ? "bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/40"
-                : "bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/40"
-            }`}>
+                slaAtRisk.length > 0
+                  ? "bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/40"
+                  : "bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/40"
+              }`}>
               <span className={`text-xl ${slaAtRisk.length > 0 ? "animate-pulse" : ""}`}>⏰</span>
               <div>
                 <p className={`text-xs font-bold uppercase tracking-widest whitespace-nowrap ${slaAtRisk.length > 0 ? "text-amber-600 dark:text-amber-400" : "text-slate-400 dark:text-slate-600"}`}>
@@ -367,16 +375,16 @@ export default function TVDashboard() {
               </p>
             </div>
 
-            {/* Total Open */}
-            <div className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-xl px-5 py-5 shrink-0">
-                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 whitespace-nowrap">Total Open</p>
-                <p className="w-full text-center text-3xl font-black leading-none mt-0.5 text-slate-900 dark:text-white">{openTickets.length}</p>
-            </div>
-
             {/* On Hold */}
             <div className="flex items-center gap-3 bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-xl px-5 py-5 shrink-0">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 whitespace-nowrap">ON HOLD</p>
                 <p className="w-full text-center text-3xl font-black leading-none mt-0.5 text-slate-900 dark:text-white">{onHoldTickets.length}</p>
+            </div>
+
+            {/* Total Open */}
+            <div className="flex items-center gap-3 bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-xl px-5 py-5 shrink-0">
+                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 whitespace-nowrap">Total Open</p>
+                <p className="w-full text-center text-3xl font-black leading-none mt-0.5 text-slate-900 dark:text-white">{openTickets.length}</p>
             </div>
           </div>
 
