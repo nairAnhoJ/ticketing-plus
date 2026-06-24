@@ -576,10 +576,6 @@ const InboxIndex = () => {
                                                             )
                                                             :
                                                             (
-                                                                // <div style={{backgroundColor: ticket.requester_bg_color, color: ticket.requester_text_color}} className={`w-12 h-12 rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
-                                                                //     <span>{ticket.requester_first_name[0].toUpperCase()}</span>
-                                                                //     <span>{ticket.requester_last_name[0].toUpperCase()}</span>
-                                                                // </div>
                                                                 <div className={`w-12 h-12 bg-[#212121] text-white rounded-full flex items-center justify-center gap-x-px text-lg font-bold`}>
                                                                     <span>{ticket.requester_first_name[0].toUpperCase()}</span>
                                                                     <span>{ticket.requester_last_name[0].toUpperCase()}</span>
@@ -595,7 +591,7 @@ const InboxIndex = () => {
                                                                     <div className={`w-2 h-2 ml-1 rounded-full border
                                                                         ${
                                                                             ticket.status === 'pending' ? 'bg-red-500 border-red-600' : 
-                                                                            ticket.status === 'in_progress' ? 'bg-amber-500 border-amber-600' : 
+                                                                            ticket.status === 'in_progress' ? ticket.is_on_hold === 1 ? 'bg-slate-500 border-slate-600' : 'bg-amber-500 border-amber-600' : 
                                                                             ticket.status === 'needs_feedback' ? 'bg-emerald-500 border-emerald-600' : 'bg-transparent border-transparent'
                                                                         }
                                                                     `}></div>

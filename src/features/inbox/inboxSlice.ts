@@ -44,6 +44,7 @@ export interface Ticket{
     subject: string;
     description: string;
     created_at: string;
+    is_on_hold: number;
     assigned_notif_count: number;
 }
 
