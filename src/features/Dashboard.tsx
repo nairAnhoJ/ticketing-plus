@@ -222,6 +222,7 @@ export default function TVDashboard() {
     return () => clearInterval(t);
   }, []);
 
+  const ticketsToDisplay = TICKETS.filter(t => t.status !== "needs_feedback");
   const newTickets        = TICKETS.filter(t => {
     return Date.now() - new Date(t.created_at).getTime() <= 24 * 60 * 60 * 1000
   });
@@ -234,7 +235,7 @@ export default function TVDashboard() {
   const onHoldTickets       = TICKETS.filter(t => t.is_on_hold === 1);
   const breachIds = new Set(slaBreached.map(t => t.id))
   const nearBreachIds = new Set(slaAtRisk.map(t => t.id))
-  const activeFeed = [...TICKETS].sort((a, b) => {
+  const activeFeed = [...ticketsToDisplay].sort((a, b) => {
     const getPriority = (ticket: any) => {
       if (breachIds.has(ticket.id)) return 1
       if (nearBreachIds.has(ticket.id)) return 2
