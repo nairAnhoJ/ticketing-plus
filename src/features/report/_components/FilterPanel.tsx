@@ -1,4 +1,4 @@
-import type { Option } from "../ReportIndex";
+import type { Option } from "../report.types"
 
 // type Status = "all" | "pending" | "in_progress" | "needs_feedback" | "closed";
 
