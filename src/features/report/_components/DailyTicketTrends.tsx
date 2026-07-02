@@ -1,7 +1,7 @@
 import ChartCard from './ChartCard'
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import ChartTooltip from './ChartTooltip'
-import type { Ticket } from '../ReportIndex';
+import type { Ticket } from '../report.types';
 
 interface Props {
   from: string;
