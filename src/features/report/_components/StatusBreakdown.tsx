@@ -1,7 +1,7 @@
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import ChartCard from "./ChartCard"
 import ChartTooltip from "./ChartTooltip"
-import type { Ticket } from "../ReportIndex";
+import type { Ticket } from "../report.types"
 
 type Status = "pending" | "in_progress" | "needs_feedback" | "closed";
 
