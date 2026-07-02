@@ -1,4 +1,7 @@
-import { useCountAnimation, getNetWorkingSeconds, type Ticket, workingSecondsDiff } from "../ReportIndex";
+import { useCountAnimation } from "../report.hooks";
+import type { Ticket } from "../report.types";
+import { getNetWorkingSeconds, workingSecondsDiff } from "../report.utils";
+
 
 function KpiCard({ label, value, sub, accent }: { label: string; value: string | number; sub?: string; accent: string }) {
   return (

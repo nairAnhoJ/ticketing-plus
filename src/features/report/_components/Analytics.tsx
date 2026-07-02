@@ -1,4 +1,4 @@
-import type { Option, Ticket } from "../ReportIndex"
+import type { Ticket, Option } from "../report.types";
 import AvgResolutionByCategory from "./AvgResolutionByCategory";
 import AvgResolutionByUser from "./AvgResolutionByUser";
 import AvgResponseByUser from "./AvgResponseByUser";

@@ -1,15 +1,8 @@
 import { useAppSelector } from "../../../app/hooks";
+import type { TicketUpdates } from "../report.types";
 
 interface Me {
   id: number;
-}
-
-export interface TicketUpdates {
-    id: number;
-    message: string;
-    user_id: number;
-    created_by: string;
-    created_at: string;
 }
 
 interface Props {

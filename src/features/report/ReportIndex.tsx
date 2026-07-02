@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import config from "../../config/config";
 import { useSearchParams } from "react-router-dom";
 import LoadingPage from "../../components/LoadingPage";
@@ -7,185 +7,8 @@ import TicketList from "./_components/TicketList";
 import StatCards from "./_components/StatCards";
 import FilterPanel from "./_components/FilterPanel";
 import Analytics from "./_components/Analytics";
-// import Analytics from "./_components/Analytics";
-
-interface Counts {
-	all: number;
-	pending: number;
-	in_progress: number;
-	needs_feedback: number;
-	closed: number;
-}
-
-export interface TicketUpdates {
-    id: number;
-    message: string;
-    user_id: number;
-    created_by: string;
-    created_at: string;
-}
-
-export interface Ticket {
-	id: number;
-	ticket_number: string;
-	category: string;
-	sla_hours: number;
-	subject: string;
-	status: "pending" | "in_progress" | "needs_feedback" | "closed";
-	requester: string;
-	created_at: string;
-	started_at: string;
-	started_by: string;
-	completed_at: string;
-	completed_by: string;
-	on_hold_duration: string;
-	rating: number | null;
-}
-
-export interface SelectedTicket { 
-	id: number;
-	ticket_number: string;
-	category: string;
-	subject: string;
-	description: string;
-	status: "pending" | "in_progress" | "needs_feedback" | "closed";
-	requester: string;
-	requested_at: string;
-	created_at: string;
-	started_at: string;
-	resolution: string;
-	completed_by: string;
-	completed_at: string;
-	on_hold_duration: string;
-	updates: TicketUpdates[] | null;
-}
-
-export interface Option {
-	id: Status;
-	name: string;
-}
-type Status = "all" | "pending" | "in_progress" | "needs_feedback" | "closed";
-
- 
-function fmt(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
-}
-
-
-
-
-
-
-export const useCountAnimation = (end: number) => {
-	const prev = useRef(0);
-	const [count, setCount] = useState(0);
-
-	useEffect(() => {
-		let frame: number;
-		const duration = 500;
-		const startTime = performance.now();
-
-		const start = prev.current;
-
-		const animate = (time: number) => {
-			const progress = Math.min(
-				(time - startTime) / duration,
-				1
-			);
-
-			const value = start + (end - start) * progress;
-
-			setCount(Math.floor(value));
-
-			if (progress < 1) {
-				frame = requestAnimationFrame(animate);
-			} else {
-				prev.current = end;
-			}
-		};
-
-		frame = requestAnimationFrame(animate);
-
-		return () => cancelAnimationFrame(frame);
-	}, [end]);
-
-	return count;
-};
-
-
-
-const WORK_START = 8;
-const WORK_END = 17;
-
-let holidaySet = new Set<string>();
-
-// call this once after fetching holidays
-export function setHolidays(holidays: string[]) {
-	holidaySet = new Set(holidays);
-}
-
-function formatLocalDate(date: Date): string {
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, "0");
-	const day = String(date.getDate()).padStart(2, "0");
-
-	return `${year}-${month}-${day}`;
-}
-
-function isWorkingDay(date: Date): boolean {
-	return date.getDay() !== 0;
-}
-
-function nextDay(date: Date): Date {
-	const d = new Date(date);
-	d.setDate(d.getDate() + 1);
-	d.setHours(0, 0, 0, 0);
-	return d;
-}
-
-function getWorkBounds(date: Date) {
-	const start = new Date(date);
-	start.setHours(WORK_START, 0, 0, 0);
-
-	const end = new Date(date);
-	end.setHours(WORK_END, 0, 0, 0);
-
-	return { start, end };
-}
-
-export function workingSecondsDiff(start: Date, end: Date): number {
-	if (end <= start) return 0;
-
-	let totalSeconds = 0;
-	let current = new Date(start);
-
-	while (current < end) {
-		const dayKey = formatLocalDate(current);
-
-		if (isWorkingDay(current) && !holidaySet.has(dayKey)) {
-			const { start: workStart, end: workEnd } = getWorkBounds(current);
-
-			const rangeStart = new Date(
-				Math.max(current.getTime(), workStart.getTime())
-			);
-
-			const rangeEnd = new Date(
-				Math.min(end.getTime(), workEnd.getTime())
-			);
-
-			if (rangeEnd > rangeStart) {
-				totalSeconds += Math.floor((rangeEnd.getTime() - rangeStart.getTime()) / 1000);
-			}
-		}
-		current = nextDay(current);
-	}
-	return Math.max(0, totalSeconds);
-}
-
-export function getNetWorkingSeconds(start: Date, end: Date, onHoldSeconds: number): number {
-	const working = workingSecondsDiff(start, end);
-	return (Math.max(0, working - (onHoldSeconds || 0))) / (60 * 60);
-}
+import type { Counts, SelectedTicket, Ticket, Option } from "./report.types";
+import { fmt, setHolidays } from "./report.utils";
 
 function ReportIndex() {
 	const [searchParams, setSearchParams] = useSearchParams()
@@ -215,10 +38,6 @@ function ReportIndex() {
 	const [filterDateTo, setFilterDateTo] = useState<string>(searchParams.get("dateTo") || today);
 	const hasActiveFilters = search || filterStatus || filterCategory || filterResolvedBy !== "all";
 
-	// Pagination
-	// const [page, setPage] = useState(1);
-	// const [pageSize, setPageSize] = useState(10);
-
 	const [categories, setCategories] = useState<Option[]>([])
 	const [resolvers, setResolvers] = useState<Option[]>([])
 
@@ -227,7 +46,6 @@ function ReportIndex() {
 		setHolidays(
 			res.data.map((h: any) => h.date)
 		);
-		// PH_HOLIDAYS = res.data.map((holiday: any) => holiday.date);
 	}
 
 	useEffect(() => {

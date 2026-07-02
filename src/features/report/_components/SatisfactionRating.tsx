@@ -1,6 +1,7 @@
 import { Cell, Label, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import ChartTooltip from "./ChartTooltip"
-import { useCountAnimation, type Ticket } from "../ReportIndex";
+import type { Ticket } from "../report.types";
+import { useCountAnimation } from "../report.hooks";
 
 type Status = "0" | "1";
 

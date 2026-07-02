@@ -1,20 +1,8 @@
 import { Cell, Label, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import ChartTooltip from "./ChartTooltip"
-import { useCountAnimation, getNetWorkingSeconds, type Ticket } from "../ReportIndex";
-
-// interface SelectedTicket {
-// 	id: number;
-// 	ticket_number: string;
-// 	category: string;
-// 	subject: string;
-// 	description: string;
-// 	status: "pending" | "in_progress" | "needs_feedback" | "closed";
-// 	requester: string;
-// 	requested_at: string;
-// 	created_at: string;
-// 	completed_by: string;
-// 	completed_at: string;
-// }
+import type { Ticket } from "../report.types";
+import { getNetWorkingSeconds } from "../report.utils";
+import { useCountAnimation } from "../report.hooks";
 
 type Status = "met" | "notMet";
 

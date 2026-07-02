@@ -1,7 +1,8 @@
 import ChartCard from './ChartCard'
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import ChartTooltip from './ChartTooltip'
-import { getNetWorkingSeconds, type Option, type Ticket } from '../ReportIndex';
+import type { Ticket, Option } from '../report.types';
+import { getNetWorkingSeconds } from '../report.utils';
 
 interface Props {
 	tickets: Ticket[];

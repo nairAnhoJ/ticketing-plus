@@ -1,19 +1,21 @@
+import type { SelectedTicket, Ticket } from "../report.types";
 
-interface Ticket {
-    id: number;
-    ticket_number: string;
-    category: string;
-    subject: string;
-    status: "pending" | "in_progress" | "needs_feedback" | "closed";
-    requester: string;
-    created_at: string;
-    completed_by: string;
-}
+// interface Ticket {
+//     id: number;
+//     ticket_number: string;
+//     category: string;
+//     subject: string;
+//     status: "pending" | "in_progress" | "needs_feedback" | "closed";
+//     requester: string;
+//     department: string;
+//     created_at: string;
+//     completed_by: string;
+// }
 
 interface Props {
 	tickets: Ticket[];
 	setSelectedTicketId: (id: number) => void;
-	selectedTicket: Ticket | null;
+	selectedTicket: SelectedTicket | null;
 }
 
 type Status = "all" | "pending" | "in_progress" | "needs_feedback" | "closed";
@@ -48,6 +50,7 @@ function TicketList({ tickets, selectedTicket, setSelectedTicketId } : Props) {
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider pl-6">Category</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap pl-6">Status</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Submitted By</th>
+								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Department</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Date</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Resolved By</th>
 						</tr>
@@ -75,6 +78,7 @@ function TicketList({ tickets, selectedTicket, setSelectedTicketId } : Props) {
 													<span className={`text-xs font-semibold px-2.5 py-1 rounded-lg ${statusColors[ticket.status]}`}>{formatStatus(ticket.status)}</span>
 											</td>
 											<td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.requester}</td>
+											<td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.department}</td>
 											<td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{fmtDate(ticket.created_at)}</td>
 											<td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{ticket.completed_by ?? <span className="text-slate-300">—</span>}</td>
 									</tr>

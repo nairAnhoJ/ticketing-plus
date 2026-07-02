@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { getNetWorkingSeconds, workingSecondsDiff, type SelectedTicket } from "../ReportIndex";
 import MessagesModal from "./MessagesModal";
+import type { SelectedTicket } from "../report.types";
+import { getNetWorkingSeconds, workingSecondsDiff } from "../report.utils";
 
 interface Props {
 	selectedTicket: SelectedTicket;
