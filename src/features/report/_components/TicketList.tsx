@@ -52,6 +52,7 @@ function TicketList({ tickets, selectedTicket, setSelectedTicketId } : Props) {
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Submitted By</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Department</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Date</th>
+								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Assigned To</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Resolved By</th>
 						</tr>
 				</thead>
@@ -80,6 +81,7 @@ function TicketList({ tickets, selectedTicket, setSelectedTicketId } : Props) {
 											<td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.requester}</td>
 											<td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.department}</td>
 											<td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{fmtDate(ticket.created_at)}</td>
+											<td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.assigned_to}</td>
 											<td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{ticket.completed_by ?? <span className="text-slate-300">—</span>}</td>
 									</tr>
 							))

@@ -116,6 +116,7 @@ function ReportIndex() {
 							requester: res.data.requester,
 							requested_at: res.data.created_at,
 							created_at: res.data.created_at,
+							assigned_to: res.data.assigned_user,
 							started_at: res.data.started_at,
 							resolution: res.data.resolution,
 							completed_by: res.data.completed_by,

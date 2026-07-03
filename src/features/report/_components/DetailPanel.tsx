@@ -85,6 +85,10 @@ function DetailPanel({ selectedTicket, setSelectedTicket }: Props) {
 							<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Submitted At</span>
 							<span className="text-sm text-slate-700">{fmt(selectedTicket.requested_at)}</span>
 					</div>
+					<div className="flex flex-col gap-0.5">
+							<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Assigned To</span>
+							<span className="text-sm text-slate-700">{selectedTicket.assigned_to}</span>
+					</div>
 					<div className="block mt-6 border-t border-slate-100 pt-3"></div>
 					{selectedTicket.completed_by && (
 							<>

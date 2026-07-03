@@ -24,6 +24,7 @@ export interface Ticket {
   requester: string;
   department: string;
   created_at: string;
+  assigned_to: string;
   started_at: string;
   started_by: string;
   completed_at: string;
@@ -41,6 +42,7 @@ export interface SelectedTicket {
   status: "pending" | "in_progress" | "needs_feedback" | "closed";
   requester: string;
   requested_at: string;
+  assigned_to: string;
   created_at: string;
   started_at: string;
   resolution: string;
