@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 interface Department {
@@ -7,10 +7,13 @@ interface Department {
 }
 
 function TicketManager() {
-  const [departments, setDepartments] = useState<Department[]>([{'id': 1, 'name': 'General'}, {'id': 2, 'name': 'IT'}, {'id': 3, 'name': 'HR'}]);
-  const [inChargeDepartments, setInChargeDepartments] = useState<Department[]>([{'id': 1, 'name': 'General'}]);
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [inChargeDepartments, setInChargeDepartments] = useState<Department[]>([]);
 
-
+  useEffect(() => {
+    setDepartments([{'id': 1, 'name': 'General'}, {'id': 2, 'name': 'IT'}, {'id': 3, 'name': 'HR'}]);
+    setInChargeDepartments([{'id': 1, 'name': 'General'}]);
+  }, []);
 
   return (
     <div className="space-y-4">
