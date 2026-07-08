@@ -3,6 +3,7 @@ import Tabs from "./_components/Tabs";
 import Profile from "./_components/Profile";
 import Security from "./_components/Security";
 import { useAppSelector } from "../../app/hooks";
+import SystemSettings from "./_components/SystemSettings";
 
 interface Me {
     id: number;
@@ -50,6 +51,11 @@ function Settings() {
                 {/* SECURITY */}
                 {activeTab === "Security" && (
                     <Security id={me.id}/>
+                )}
+
+                {/* SYSTEM SETTINGS */}
+                {activeTab === "System Settings" && (
+                    <SystemSettings />
                 )}
             </div>
         </div>

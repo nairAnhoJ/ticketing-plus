@@ -28,7 +28,7 @@ const statusColors: Record<Status, string> = {
 };
 
 function fmtDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "2-digit" });
+  return new Date(dateStr).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: true});
 }
 
 const formatStatus = (status: string) => {
