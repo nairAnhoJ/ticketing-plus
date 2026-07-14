@@ -106,7 +106,7 @@ function FilterPanel({
 								<label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Search</label>
 								<input
 										type="text"
-										placeholder="Ticket ID, subject, or name..."
+										placeholder="Ticket ID, subject, description, or action taken..."
 										value={search}
 										onChange={e => { setSearch(e.target.value); }}
 										className="rounded-xl border border-slate-300 bg-white text-slate-700 text-sm px-3 py-2 focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-transparent shadow-sm"
