@@ -34,6 +34,7 @@ function ReportIndex() {
 	const [filterStatus, setFilterStatus] = useState<string>(searchParams.get("status") || "");
 	const [filterCategory, setFilterCategory] = useState<string>(searchParams.get("category") || "");
 	const [filterResolvedBy, setFilterResolvedBy] = useState<string>(searchParams.get("resolvedBy") || "");
+	const [filterRating, setFilterRating] = useState<string>(searchParams.get("rating") || "");
 	const [filterDateFrom, setFilterDateFrom] = useState<string>(searchParams.get("dateFrom") || today);
 	const [filterDateTo, setFilterDateTo] = useState<string>(searchParams.get("dateTo") || today);
 	const hasActiveFilters = search || filterStatus || filterCategory || filterResolvedBy !== "all";
@@ -60,6 +61,7 @@ function ReportIndex() {
 				status: filterStatus,
 				category: filterCategory,
 				resolvedBy: filterResolvedBy,
+				rating: filterRating,
 				dateFrom: filterDateFrom,
 				dateTo: filterDateTo,
 			}
@@ -140,6 +142,7 @@ function ReportIndex() {
 		setFilterStatus("");
 		setFilterCategory("");
 		setFilterResolvedBy("");
+		setFilterRating("");
 		setFilterDateFrom(today);
 		setFilterDateTo(today);
 	}
@@ -220,6 +223,7 @@ function ReportIndex() {
 									filterStatus={filterStatus} setFilterStatus={setFilterStatus}
 									filterCategory={filterCategory} setFilterCategory={setFilterCategory}
 									filterResolvedBy={filterResolvedBy} setFilterResolvedBy={setFilterResolvedBy}
+									filterRating={filterRating} setFilterRating={setFilterRating}
 									filterDateFrom={filterDateFrom} setFilterDateFrom={setFilterDateFrom}
 									filterDateTo={filterDateTo} setFilterDateTo={setFilterDateTo}
 									hasActiveFilters={hasActiveFilters}

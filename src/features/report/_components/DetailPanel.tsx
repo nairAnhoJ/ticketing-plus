@@ -119,19 +119,19 @@ function DetailPanel({ selectedTicket, setSelectedTicket }: Props) {
 											<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Feedback</span>
 											<span className="text-sm text-slate-800">{selectedTicket.requester_feedback}</span>
 									</div>
-									{selectedTicket.completed_at && (
+									{/* {selectedTicket.completed_at && (
 											<div className="flex flex-col gap-0.5">
 											<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolved At</span>
 											<span className="text-sm text-slate-700">{fmt(selectedTicket.completed_at)}</span>
 											</div>
-									)}
+									)} */}
 							</>
 					)}
 
 					{/* Resolution time */}
 					{
 						selectedTicket.started_at && (
-							<div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
+							<div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 mt-9">
 									<span className="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Response Time</span>
 									<p className="text-sm font-bold text-emerald-800 mt-1">
 										{responseHrs().toFixed(2)}h

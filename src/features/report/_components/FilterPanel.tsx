@@ -9,6 +9,7 @@ interface Props {
 	filterStatus: string; setFilterStatus: (v: string) => void;
 	filterCategory: string; setFilterCategory: (v: string) => void;
 	filterResolvedBy: string; setFilterResolvedBy: (v: string) => void;
+	filterRating: string; setFilterRating: (v: string) => void;
 	filterDateFrom: string; setFilterDateFrom: (v: string) => void;
 	filterDateTo: string; setFilterDateTo: (v: string) => void;
 	hasActiveFilters: string | boolean; clearFilters: () => void;
@@ -19,10 +20,15 @@ interface Props {
 
 // Options
 const statuses: Option[] = [
-		{id:'pending', name: 'Pending' },
-		{id:'in_progress', name: 'In Progress' },
-		{id:'needs_feedback', name: 'Needs Feedback' },
-		{id:'closed', name: 'Closed' }
+	{id:'pending', name: 'Pending' },
+	{id:'in_progress', name: 'In Progress' },
+	{id:'needs_feedback', name: 'Needs Feedback' },
+	{id:'closed', name: 'Closed' }
+]
+
+const ratings: Option[] = [
+	{id: '1', name: 'Satisfied' },
+	{id: '0', name: 'Unsatisfied' },
 ]
 
 function FilterSelect({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: Option[] }) {
@@ -61,6 +67,7 @@ function FilterPanel({
 	filterStatus, setFilterStatus, 
 	filterCategory, setFilterCategory,
 	filterResolvedBy, setFilterResolvedBy,
+	filterRating, setFilterRating,
 	filterDateFrom, setFilterDateFrom,
 	filterDateTo, setFilterDateTo,
 	hasActiveFilters, clearFilters,
@@ -75,6 +82,7 @@ function FilterPanel({
 				status: filterStatus,
 				category: filterCategory,
 				resolvedBy: filterResolvedBy,
+				rating: filterRating,
 				dateFrom: filterDateFrom,
 				dateTo: filterDateTo,
 		};
@@ -125,6 +133,7 @@ function FilterPanel({
 				<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
 						<DateInput label="From Date" value={filterDateFrom} onChange={v => { setFilterDateFrom(v); }} />
 						<DateInput label="To Date" value={filterDateTo} onChange={v => { setFilterDateTo(v); }} />
+						<FilterSelect label="Rating" value={filterRating} onChange={v => { setFilterRating(v); }} options={ratings} />
 						<button onClick={handleGenerate} className=" h-9.5 bg-[#212121] hover:bg-[#181818] text-white rounded-xl self-end text-sm font-semibold cursor-pointer">Generate</button>
 						<button onClick={setShowAnalytics} className=" h-9.5 bg-[#212121] hover:bg-[#181818] text-white rounded-xl self-end text-sm font-semibold cursor-pointer">View Analytics and Charts</button>
 				</div>

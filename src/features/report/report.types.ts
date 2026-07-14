@@ -58,6 +58,6 @@ export interface SelectedTicket {
 export type Status = "all" | "pending" | "in_progress" | "needs_feedback" | "closed";
 
 export interface Option {
-  id: Status;
+  id: string;
   name: string;
 }
