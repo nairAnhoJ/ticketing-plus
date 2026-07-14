@@ -54,6 +54,7 @@ function TicketList({ tickets, selectedTicket, setSelectedTicketId } : Props) {
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Date</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Assigned To</th>
 								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Resolved By</th>
+								<th className="text-left px-4 py-3 font-semibold text-slate-500 uppercase text-xs tracking-wider whitespace-nowrap">Rating</th>
 						</tr>
 				</thead>
 			<tbody className="divide-y divide-slate-50">
@@ -83,6 +84,11 @@ function TicketList({ tickets, selectedTicket, setSelectedTicketId } : Props) {
 											<td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{fmtDate(ticket.created_at)}</td>
 											<td className="px-4 py-3 text-slate-600 whitespace-nowrap text-xs">{ticket.assigned_to}</td>
 											<td className="px-4 py-3 text-slate-500 whitespace-nowrap text-xs">{ticket.completed_by ?? <span className="text-slate-300">—</span>}</td>
+											<td className={`px-4 py-3 text-slate-600 whitespace-nowrap text-xs `}>
+												<span className={`font-semibold ${ticket.rating === 1 ? 'text-emerald-600' : 'text-red-600'}`}>
+													{ ticket.rating != null ? ticket.rating === 1 ? 'Satisfied' : 'Unsatisfied' : '' }
+												</span>
+											</td>
 									</tr>
 							))
 					}

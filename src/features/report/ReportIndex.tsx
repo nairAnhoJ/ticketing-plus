@@ -122,7 +122,10 @@ function ReportIndex() {
 							completed_by: res.data.completed_by,
 							completed_at: res.data.completed_at,
 							on_hold_duration: res.data.on_hold_duration,
-							updates: res.data.updates
+							updates: res.data.updates,
+							rating: res.data.requester_rating,
+							requester_feedback: res.data.requester_feedback,
+							feedback_submitted_at: res.data.feedback_submitted_at
 					})
 				}
 			)

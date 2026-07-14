@@ -50,6 +50,9 @@ export interface SelectedTicket {
   completed_at: string;
   on_hold_duration: string;
   updates: TicketUpdates[] | null;
+  rating: number | null;
+  requester_feedback: string;
+  feedback_submitted_at: string;
 }
 
 export type Status = "all" | "pending" | "in_progress" | "needs_feedback" | "closed";

@@ -89,16 +89,35 @@ function DetailPanel({ selectedTicket, setSelectedTicket }: Props) {
 							<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Assigned To</span>
 							<span className="text-sm text-slate-700">{selectedTicket.assigned_to}</span>
 					</div>
-					<div className="block mt-6 border-t border-slate-100 pt-3"></div>
 					{selectedTicket.completed_by && (
 							<>
+								<div className="block mt-6 border-t border-slate-100 pt-3"></div>
+								<div className="flex flex-col gap-0.5">
+										<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolution / Action Taken</span>
+										<span className="text-sm text-slate-700">{selectedTicket.resolution}</span>
+								</div>
+								<div className="flex flex-col gap-0.5">
+										<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolved By</span>
+										<span className="text-sm text-slate-800 font-medium">{selectedTicket.completed_by}</span>
+								</div>
+								{selectedTicket.completed_at && (
 									<div className="flex flex-col gap-0.5">
-											<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolution / Action Taken</span>
-											<span className="text-sm text-slate-700">{selectedTicket.resolution}</span>
+										<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolved At</span>
+										<span className="text-sm text-slate-700">{fmt(selectedTicket.completed_at)}</span>
+									</div>
+								)}
+							</>
+					)}
+					{selectedTicket.rating != null && (
+							<>
+									<div className="block mt-6 border-t border-slate-100 pt-3"></div>
+									<div className="flex flex-col gap-0.5">
+											<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Rating</span>
+											<span className={`text-sm font-semibold ${selectedTicket.rating === 1 ? 'text-emerald-600' : 'text-red-600'}`}>{ selectedTicket.rating != null ? selectedTicket.rating === 1 ? 'Satisfied' : 'Unsatisfied' : '' }</span>
 									</div>
 									<div className="flex flex-col gap-0.5">
-											<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolved By</span>
-											<span className="text-sm text-slate-800 font-medium">{selectedTicket.completed_by}</span>
+											<span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Feedback</span>
+											<span className="text-sm text-slate-800">{selectedTicket.requester_feedback}</span>
 									</div>
 									{selectedTicket.completed_at && (
 											<div className="flex flex-col gap-0.5">
