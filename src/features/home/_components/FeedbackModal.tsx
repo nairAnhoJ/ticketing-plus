@@ -10,6 +10,7 @@ interface Data {
 
 const FeedbackModal = ({id, close}: {id: number | undefined, close: () => void}) => {
     const dispatch = useAppDispatch();
+    const [error, setError] = useState<boolean>(false);
 
     const [data, setData] = useState<Data>({
         ticket_id: id,
@@ -18,10 +19,15 @@ const FeedbackModal = ({id, close}: {id: number | undefined, close: () => void})
     });
 
     const handleSubmit = async () => {
-        if([0,1].includes(data.rating)){
-            await dispatch(submitFeedback(data))
-            close();
-        };
+        if(data.rating === 0 && data.comment == ''){
+            setError(true);
+        }else{
+            setError(false);
+            if([0,1].includes(data.rating)){
+                await dispatch(submitFeedback(data))
+                close();
+            };
+        }
     }
 
     return (
@@ -43,7 +49,7 @@ const FeedbackModal = ({id, close}: {id: number | undefined, close: () => void})
                         <button onClick={()=>setData({...data, rating: 0})}><img src={`/icons/${(data.rating == 0 ? 'DislikeC.png' : 'DislikeG.png')}`} className="h-16 w-auto" /></button>
                     </div>
                     <div className="mt-6">
-                        <textarea onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setData({...data, comment: e.target.value})} className="w-full h-34 p-3 text-sm leading-4.5 border border-neutral-900/20 rounded-lg resize-none shadow-inner shadow-neutral-900/50 focus:outline-0" placeholder="Tell us about your experience!"></textarea>
+                        <textarea onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setData({...data, comment: e.target.value})} className={`w-full h-34 p-3 text-sm leading-4.5 border rounded-lg resize-none shadow-inner shadow-neutral-900/50 focus:outline-0 ${error ? 'border-red-500/80' : 'border-neutral-900/20'}`} placeholder="Tell us about your experience!"></textarea>
                     </div>
                 </div>
                 <div className="pt-3 pb-6 flex items-center justify-center gap-x-3">
