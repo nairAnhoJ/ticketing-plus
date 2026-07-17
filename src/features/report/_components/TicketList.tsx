@@ -61,7 +61,7 @@ function TicketList({ tickets, selectedTicket, setSelectedTicketId } : Props) {
 					{
 							tickets.length === 0 && (
 									<tr>
-											<td colSpan={7} className="text-center py-10 text-slate-400 text-sm">
+											<td colSpan={10} className="text-center py-10 text-slate-400 text-sm">
 													No data.
 											</td>
 									</tr>
@@ -95,38 +95,6 @@ function TicketList({ tickets, selectedTicket, setSelectedTicketId } : Props) {
 				</tbody>
 			</table>
 		</div>
-
-		{/* {totalPages > 1 && (
-			<div className="flex items-center justify-between px-5 py-3 border-t border-slate-100">
-				<span className="text-xs text-slate-400">Page {page} of {totalPages}</span>
-				<div className="flex gap-1">
-						<button
-								onClick={() => setPage(p => Math.max(1, p - 1))}
-								disabled={page === 1}
-								className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-						>
-								← Prev
-						</button>
-						{Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-								<button
-								key={p}
-								onClick={() => setPage(p)}
-								className={`w-8 h-8 rounded-lg text-xs font-semibold transition-colors ${page === p ? "bg-slate-900 text-white" : "text-slate-600 border border-slate-200 hover:bg-slate-50"}`}
-								>
-								{p}
-								</button>
-						))}
-						<button
-								onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-								disabled={page === totalPages}
-								className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-						>
-								Next →
-						</button>
-				</div>
-			</div>
-		) */}
-	
 		</div>
 	)
 }

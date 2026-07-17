@@ -33,6 +33,8 @@ function ReportIndex() {
 	const [search, setSearch] = useState<string>(searchParams.get("search") || "");
 	const [filterStatus, setFilterStatus] = useState<string>(searchParams.get("status") || "");
 	const [filterCategory, setFilterCategory] = useState<string>(searchParams.get("category") || "");
+	const [filterDepartment, setFilterDepartment] = useState<string>(searchParams.get("department") || "");
+	const [filterAssignedTo, setFilterAssignedTo] = useState<string>(searchParams.get("assignedTo") || "");
 	const [filterResolvedBy, setFilterResolvedBy] = useState<string>(searchParams.get("resolvedBy") || "");
 	const [filterRating, setFilterRating] = useState<string>(searchParams.get("rating") || "");
 	const [filterDateFrom, setFilterDateFrom] = useState<string>(searchParams.get("dateFrom") || today);
@@ -41,6 +43,7 @@ function ReportIndex() {
 
 	const [categories, setCategories] = useState<Option[]>([])
 	const [resolvers, setResolvers] = useState<Option[]>([])
+	const [departments, setDepartments] = useState<Option[]>([])
 
 	const fetchHolidays = async() => {
 		const res = await config.get("/holidays");
@@ -49,8 +52,14 @@ function ReportIndex() {
 		);
 	}
 
+	const fetchDepartments = async() => {
+		const res = await config.get("/departments");
+		setDepartments(res.data);
+	}
+
 	useEffect(() => {
 		fetchHolidays();
+		fetchDepartments();
 	}, [])
 
 	useEffect(()=>{
@@ -60,6 +69,8 @@ function ReportIndex() {
 				search: search,
 				status: filterStatus,
 				category: filterCategory,
+				department: filterDepartment,
+				assignedTo: filterAssignedTo,
 				resolvedBy: filterResolvedBy,
 				rating: filterRating,
 				dateFrom: filterDateFrom,
@@ -67,7 +78,6 @@ function ReportIndex() {
 			}
 		})
 		.then((res)=>{
-
 			// TicketCounts
 			setCounts({
 					all: res.data.tickets.length,
@@ -141,6 +151,8 @@ function ReportIndex() {
 		setSearch("");
 		setFilterStatus("");
 		setFilterCategory("");
+		setFilterDepartment("");
+		setFilterAssignedTo("");
 		setFilterResolvedBy("");
 		setFilterRating("");
 		setFilterDateFrom(today);
@@ -219,9 +231,12 @@ function ReportIndex() {
 							<FilterPanel 
 									categories={categories} 
 									resolvers={resolvers} 
+									departments={departments} 
 									search={search} setSearch={setSearch}
 									filterStatus={filterStatus} setFilterStatus={setFilterStatus}
 									filterCategory={filterCategory} setFilterCategory={setFilterCategory}
+									filterDepartment={filterDepartment} setFilterDepartment={setFilterDepartment}
+									filterAssignedTo={filterAssignedTo} setFilterAssignedTo={setFilterAssignedTo}
 									filterResolvedBy={filterResolvedBy} setFilterResolvedBy={setFilterResolvedBy}
 									filterRating={filterRating} setFilterRating={setFilterRating}
 									filterDateFrom={filterDateFrom} setFilterDateFrom={setFilterDateFrom}

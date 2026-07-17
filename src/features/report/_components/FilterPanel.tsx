@@ -5,9 +5,12 @@ import type { Option } from "../report.types"
 interface Props {
 	categories: Option[];
 	resolvers: Option[];
+	departments: Option[];
 	search: string; setSearch: (v: string) => void;
 	filterStatus: string; setFilterStatus: (v: string) => void;
-	filterCategory: string; setFilterCategory: (v: string) => void;
+	filterCategory: string; setFilterDepartment: (v: string) => void;
+	filterDepartment: string; setFilterCategory: (v: string) => void;
+	filterAssignedTo: string; setFilterAssignedTo: (v: string) => void;
 	filterResolvedBy: string; setFilterResolvedBy: (v: string) => void;
 	filterRating: string; setFilterRating: (v: string) => void;
 	filterDateFrom: string; setFilterDateFrom: (v: string) => void;
@@ -63,9 +66,12 @@ function DateInput({ label, value, onChange,  } : { label: string; value: string
 function FilterPanel({ 
 	categories, 
 	resolvers, 
+	departments, 
 	search, setSearch, 
 	filterStatus, setFilterStatus, 
 	filterCategory, setFilterCategory,
+	filterDepartment, setFilterDepartment,
+	filterAssignedTo, setFilterAssignedTo,
 	filterResolvedBy, setFilterResolvedBy,
 	filterRating, setFilterRating,
 	filterDateFrom, setFilterDateFrom,
@@ -81,6 +87,8 @@ function FilterPanel({
 				search: search,
 				status: filterStatus,
 				category: filterCategory,
+				department: filterDepartment,
+				assignedTo: filterAssignedTo,
 				resolvedBy: filterResolvedBy,
 				rating: filterRating,
 				dateFrom: filterDateFrom,
@@ -109,7 +117,7 @@ function FilterPanel({
 								</button>
 						)}
 				</div>
-				<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+				<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
 						<div className="col-span-3 sm:col-span-3 lg:col-span-2 flex flex-col gap-1 relative">
 								<label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Search</label>
 								<input
@@ -128,13 +136,15 @@ function FilterPanel({
 
 						<FilterSelect label="Status" value={filterStatus} onChange={v => { setFilterStatus(v); }} options={statuses} />
 						<FilterSelect label="Category" value={filterCategory} onChange={v => { setFilterCategory(v); }} options={categories} />
-						<FilterSelect label="Resolved By" value={filterResolvedBy} onChange={v => { setFilterResolvedBy(v); }} options={resolvers} />
+						<FilterSelect label="Department" value={filterDepartment} onChange={v => { setFilterDepartment(v); }} options={departments} />
+						<button onClick={handleGenerate} className=" h-9.5 bg-[#212121] hover:bg-[#181818] text-white rounded-xl self-end text-sm font-semibold cursor-pointer">Generate</button>
 				</div>
-				<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
+				<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
 						<DateInput label="From Date" value={filterDateFrom} onChange={v => { setFilterDateFrom(v); }} />
 						<DateInput label="To Date" value={filterDateTo} onChange={v => { setFilterDateTo(v); }} />
 						<FilterSelect label="Rating" value={filterRating} onChange={v => { setFilterRating(v); }} options={ratings} />
-						<button onClick={handleGenerate} className=" h-9.5 bg-[#212121] hover:bg-[#181818] text-white rounded-xl self-end text-sm font-semibold cursor-pointer">Generate</button>
+						<FilterSelect label="Assigned To" value={filterAssignedTo} onChange={v => { setFilterAssignedTo(v); }} options={resolvers} />
+						<FilterSelect label="Resolved By" value={filterResolvedBy} onChange={v => { setFilterResolvedBy(v); }} options={resolvers} />
 						<button onClick={setShowAnalytics} className=" h-9.5 bg-[#212121] hover:bg-[#181818] text-white rounded-xl self-end text-sm font-semibold cursor-pointer">View Analytics and Charts</button>
 				</div>
 		</div>
