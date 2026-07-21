@@ -42,10 +42,10 @@ export interface SelectedTicket {
   description: string;
   status: "pending" | "in_progress" | "needs_feedback" | "closed";
   requester: string;
-  requester_department: string;
+  requester_department: string | null;
   requested_at: string;
   assigned_to: string;
-  assigned_user: string;
+  assigned_user: string | null;
   created_at: string;
   started_at: string;
   resolution: string;

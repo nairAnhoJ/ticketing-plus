@@ -118,27 +118,28 @@ function ReportIndex() {
 			config.get(`inbox/${selectedTicketId}`)
 				.then((res)=>{
 					console.log(res.data)
-					setSelectedTicket({
-							id: res.data.id,
-							ticket_number: res.data.ticket_number,
-							category: res.data.ticket_category,
-							subject: res.data.subject,
-							description: res.data.description,
-							status: res.data.status,
-							requester: res.data.requester,
-							requested_at: res.data.created_at,
-							created_at: res.data.created_at,
-							assigned_to: res.data.assigned_user,
-							started_at: res.data.started_at,
-							resolution: res.data.resolution,
-							completed_by: res.data.completed_by,
-							completed_at: res.data.completed_at,
-							on_hold_duration: res.data.on_hold_duration,
-							updates: res.data.updates,
-							rating: res.data.requester_rating,
-							requester_feedback: res.data.requester_feedback,
-							feedback_submitted_at: res.data.feedback_submitted_at
-					})
+					setSelectedTicketId(res.data)
+					// setSelectedTicket({
+					// 		id: res.data.id,
+					// 		ticket_number: res.data.ticket_number,
+					// 		category: res.data.ticket_category,
+					// 		subject: res.data.subject,
+					// 		description: res.data.description,
+					// 		status: res.data.status,
+					// 		requester: res.data.requester,
+					// 		requested_at: res.data.created_at,
+					// 		created_at: res.data.created_at,
+					// 		assigned_to: res.data.assigned_user,
+					// 		started_at: res.data.started_at,
+					// 		resolution: res.data.resolution,
+					// 		completed_by: res.data.completed_by,
+					// 		completed_at: res.data.completed_at,
+					// 		on_hold_duration: res.data.on_hold_duration,
+					// 		updates: res.data.updates,
+					// 		rating: res.data.requester_rating,
+					// 		requester_feedback: res.data.requester_feedback,
+					// 		feedback_submitted_at: res.data.feedback_submitted_at
+					// })
 				}
 			)
 			.catch((err)=>console.log(err))

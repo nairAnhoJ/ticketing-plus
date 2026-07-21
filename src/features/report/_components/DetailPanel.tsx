@@ -68,7 +68,7 @@ function DetailPanel({ selectedTicket, setSelectedTicket }: Props) {
 
 					{/* Badges */}
 					<div className="flex flex-wrap gap-2">
-							<span className="bg-slate-100 text-slate-600 text-xs font-semibold px-2.5 py-1 rounded-lg">{selectedTicket.category}</span>
+							<span className="bg-slate-100 text-slate-600 text-xs font-semibold px-2.5 py-1 rounded-lg">{selectedTicket.ticket_category}</span>
 					</div>
 
 					{/* Title */}
