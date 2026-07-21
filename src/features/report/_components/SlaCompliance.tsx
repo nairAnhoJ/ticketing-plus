@@ -3,6 +3,8 @@ import ChartTooltip from "./ChartTooltip"
 import type { Ticket } from "../report.types";
 import { getNetWorkingSeconds } from "../report.utils";
 import { useCountAnimation } from "../report.hooks";
+import MissedSlaList from "./MissedSlaList";
+import { useState } from "react";
 
 type Status = "met" | "notMet";
 
@@ -27,6 +29,7 @@ const formatStatus = (status: string) => {
 
 
 function SlaCompliance({tickets}: {tickets: Ticket[]}) {
+	const [showMissedTickets, setShowMissedTickets] = useState(false);
 
 	const sla = tickets.reduce(
 		(acc, ticket) => {
@@ -37,6 +40,7 @@ function SlaCompliance({tickets}: {tickets: Ticket[]}) {
 				acc.met++;
 			} else {
 				acc.notMet++;
+				acc.missedTickets.push(ticket);
 			}
 
 			return acc;
@@ -44,6 +48,7 @@ function SlaCompliance({tickets}: {tickets: Ticket[]}) {
 		{
 			met: 0,
 			notMet: 0,
+			missedTickets: [] as Ticket[],
 		}
 	);
 
@@ -54,51 +59,56 @@ function SlaCompliance({tickets}: {tickets: Ticket[]}) {
   const slaComplianceRate = statusData.length > 0 ? Math.round((sla.met / (sla.met + sla.notMet)) * 100) : 0;
 
   return (
-		<div className={`bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4`}>
-			<div>
-				<h3 className="font-bold text-slate-800 text-sm">SLA Compliance %</h3>
-				<p className="text-xs text-slate-400 mt-0.5">Percentage of tickets resolved within SLA</p>
-			</div>
+		<>
+			<MissedSlaList tickets={sla.missedTickets} showMissedTickets={showMissedTickets}  onClose={() => setShowMissedTickets(false)}/>
+		
+			<div className={`bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4`}>
 
-			<ResponsiveContainer width="100%" height={220}>
-				<PieChart>
-					<Pie data={statusData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
-							{statusData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-					</Pie>
-					<Label position="center" fill="#666" fontSize={24} fontWeight="bold">
-            {useCountAnimation(slaComplianceRate)+"%"}
-          </Label>
-					<Tooltip content={<ChartTooltip />} />
-					<Legend
-							iconType="circle"
-							iconSize={8}
-							wrapperStyle={{ fontSize: "11px" }}
-							formatter={(value) => <span className="text-slate-600">{(value)}</span>}
-					/>
-				</PieChart>
-			</ResponsiveContainer>
-
-				<div className="w-full flex gap-x-6">
-					<div className="w-1/2">
-						<div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
-							{/* <span className="text-xl leading-none">👍</span> */}
-							<div>
-								<p className="text-xs font-semibold text-slate-500">Met</p>
-								<p className="text-lg font-extrabold text-emerald-700 leading-tight">{useCountAnimation(sla.met)}</p>
-							</div>
-						</div>
-					</div>
-					<div className="w-1/2">
-						<div className="flex items-center gap-2 bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">
-							{/* <span className="text-xl leading-none">👎</span> */}
-							<div>
-								<p className="text-xs font-semibold text-slate-500">Missed</p>
-								<p className="text-lg font-extrabold text-rose-700 leading-tight">{useCountAnimation(sla.notMet)}</p>
-							</div>
-						</div>
-					</div>
+				<div>
+					<h3 className="font-bold text-slate-800 text-sm">SLA Compliance %</h3>
+					<p className="text-xs text-slate-400 mt-0.5">Percentage of tickets resolved within SLA</p>
 				</div>
-		</div>
+
+				<ResponsiveContainer width="100%" height={220}>
+					<PieChart>
+						<Pie data={statusData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
+								{statusData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+						</Pie>
+						<Label position="center" fill="#666" fontSize={24} fontWeight="bold">
+							{useCountAnimation(slaComplianceRate)+"%"}
+						</Label>
+						<Tooltip content={<ChartTooltip />} />
+						<Legend
+								iconType="circle"
+								iconSize={8}
+								wrapperStyle={{ fontSize: "11px" }}
+								formatter={(value) => <span className="text-slate-600">{(value)}</span>}
+						/>
+					</PieChart>
+				</ResponsiveContainer>
+
+					<div className="w-full flex gap-x-6">
+						<div className="w-1/2">
+							<div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
+								{/* <span className="text-xl leading-none">👍</span> */}
+								<div>
+									<p className="text-xs font-semibold text-slate-500">Met</p>
+									<p className="text-lg font-extrabold text-emerald-700 leading-tight">{useCountAnimation(sla.met)}</p>
+								</div>
+							</div>
+						</div>
+						<div onClick={() => setShowMissedTickets(true)} className="w-1/2 cursor-pointer">
+							<div className="flex items-center gap-2 bg-rose-50 border border-rose-100 rounded-xl px-3 py-2">
+								{/* <span className="text-xl leading-none">👎</span> */}
+								<div>
+									<p className="text-xs font-semibold text-slate-500">Missed</p>
+									<p className="text-lg font-extrabold text-rose-700 leading-tight">{useCountAnimation(sla.notMet)}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+			</div>
+		</>
   )
 }
 

@@ -20,6 +20,7 @@ export interface Ticket {
   category: string;
   sla_hours: number;
   subject: string;
+  description: string;
   status: "pending" | "in_progress" | "needs_feedback" | "closed";
   requester: string;
   department: string;
@@ -36,13 +37,15 @@ export interface Ticket {
 export interface SelectedTicket { 
   id: number;
   ticket_number: string;
-  category: string;
+  ticket_category: string;
   subject: string;
   description: string;
   status: "pending" | "in_progress" | "needs_feedback" | "closed";
   requester: string;
+  requester_department: string;
   requested_at: string;
   assigned_to: string;
+  assigned_user: string;
   created_at: string;
   started_at: string;
   resolution: string;

@@ -19,7 +19,6 @@ function avgResponseHrs(tickets: Ticket[]): string {
   if (!filteredTickets.length) return "—";
 
   const avg = filteredTickets.reduce((s, t) => {
-      console.log(t.on_hold_duration)
       const hrs = workingSecondsDiff(new Date(t.created_at), new Date(t.started_at));
       return s + hrs;
     }, 0) / filteredTickets.length;
